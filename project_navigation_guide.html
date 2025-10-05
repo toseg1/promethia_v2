@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promethia Project - Navigation Guide</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 40px;
+            margin: 20px 0;
+        }
+        
+        h1 {
+            color: #2d3748;
+            border-bottom: 4px solid #667eea;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-align: center;
+        }
+        
+        h2 {
+            color: #4a5568;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            color: white;
+            border-radius: 8px;
+            font-size: 1.5em;
+        }
+        
+        h3 {
+            color: #2d3748;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            padding-left: 15px;
+            border-left: 4px solid #48bb78;
+            font-size: 1.3em;
+        }
+        
+        h4 {
+            color: #4a5568;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .command-block {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Monaco', 'Consolas', monospace;
+            overflow-x: auto;
+            border-left: 4px solid #4299e1;
+        }
+        
+        .folder-structure {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+        }
+        
+        .link-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .link-card {
+            background: linear-gradient(135deg, #e6fffa 0%, #f0fff4 100%);
+            border: 1px solid #81e6d9;
+            border-radius: 10px;
+            padding: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .link-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .link-card h4 {
+            color: #2d3748;
+            margin-top: 0;
+            border-bottom: 2px solid #4299e1;
+            padding-bottom: 8px;
+        }
+        
+        .link-card a {
+            color: #3182ce;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-block;
+            margin: 5px 0;
+            padding: 5px 10px;
+            background: white;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+        
+        .link-card a:hover {
+            background: #bee3f8;
+            color: #2b6cb0;
+        }
+        
+        .warning {
+            background: #fffbf0;
+            border: 2px solid #f6ad55;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .warning-icon {
+            color: #c05621;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+        
+        .info {
+            background: #ebf8ff;
+            border: 2px solid #90cdf4;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .info-icon {
+            color: #2b6cb0;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+        
+        .server-status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+        
+        .running {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+        
+        .stopped {
+            background: #fed7d7;
+            color: #c53030;
+        }
+        
+        .toc {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .toc h3 {
+            margin-top: 0;
+            border-left: none;
+            padding-left: 0;
+            color: #2d3748;
+        }
+        
+        .toc ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        .toc li {
+            margin: 10px 0;
+            padding: 10px 15px;
+            background: white;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+        
+        .toc li:hover {
+            background: #e2e8f0;
+        }
+        
+        .toc a {
+            text-decoration: none;
+            color: #3182ce;
+            font-weight: 500;
+        }
+        
+        .toc a:hover {
+            color: #2c5282;
+        }
+        
+        code {
+            background: #edf2f7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            color: #2d3748;
+            font-size: 0.9em;
+        }
+        
+        .emoji {
+            font-size: 1.2em;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Promethia Project Navigation Guide</h1>
+        
+        <div class="info">
+            <span class="info-icon">ℹ️</span><strong>Project Overview:</strong> Promethia is a comprehensive sports training application with a Django backend API and React frontend, designed for athletes and coaches to track training, events, and performance metrics.
+        </div>
+
+        <div class="toc">
+            <h3>📚 Quick Navigation</h3>
+            <ul>
+                <li><a href="#terminal-basics">🖥️ Terminal Navigation Basics</a></li>
+                <li><a href="#project-structure">📁 Project Structure</a></li>
+                <li><a href="#server-management">⚙️ Server Management</a></li>
+                <li><a href="#backend-endpoints">🔗 Backend Endpoints & Links</a></li>
+                <li><a href="#frontend-endpoints">🎨 Frontend Links</a></li>
+                <li><a href="#development-tools">🛠️ Development Tools</a></li>
+                <li><a href="#troubleshooting">🔧 Troubleshooting</a></li>
+            </ul>
+        </div>
+
+        <section id="terminal-basics">
+            <h2>🖥️ Terminal Navigation Basics</h2>
+            
+            <h3>Essential Commands</h3>
+            <div class="command-block">
+# Navigate to project root
+cd /Users/Gins/developments/promethia_react_v2
+
+# List files and directories
+ls -la
+
+# Navigate to backend
+cd backend
+
+# Navigate to frontend
+cd frontend
+
+# Go back to parent directory
+cd ..
+
+# Show current directory
+pwd
+
+# Clear terminal
+clear
+
+# View file contents
+cat filename.txt
+
+# Edit files (using nano)
+nano filename.txt
+            </div>
+
+            <h3>Project Navigation Commands</h3>
+            <div class="command-block">
+# Quick navigation aliases (you can add these to ~/.zshrc or ~/.bashrc)
+alias promethia="cd /Users/Gins/developments/promethia_react_v2"
+alias backend="cd /Users/Gins/developments/promethia_react_v2/backend"
+alias frontend="cd /Users/Gins/developments/promethia_react_v2/frontend"
+
+# Usage after adding aliases:
+promethia  # Goes to project root
+backend    # Goes to backend directory  
+frontend   # Goes to frontend directory
+            </div>
+        </section>
+
+        <section id="project-structure">
+            <h2>📁 Project Structure</h2>
+            
+            <h3>Root Directory Overview</h3>
+            <div class="folder-structure">
+promethia_react_v2/
+├── backend/                    # Django API Backend
+│   ├── accounts/               # User authentication & profiles
+│   ├── api/                    # API endpoints
+│   ├── core/                   # Core models (events, training)
+│   ├── backend/               # Django settings
+│   ├── manage.py              # Django management script
+│   ├── requirements.txt       # Python dependencies
+│   └── db.sqlite3            # SQLite database
+├── frontend/                  # React Frontend
+│   ├── src/                   # Source code
+│   ├── public/                # Static assets
+│   ├── package.json           # Node dependencies
+│   └── vite.config.ts         # Vite configuration
+├── database_structure.html    # Database documentation
+├── project_navigation_guide.html  # This guide
+└── README.md                  # Project documentation
+            </div>
+
+            <h3>Backend Structure Detail</h3>
+            <div class="folder-structure">
+backend/
+├── accounts/                  # User management app
+│   ├── models.py             # User, Profile, Achievement models
+│   ├── views.py              # Authentication views
+│   ├── urls.py               # Account URLs
+│   └── migrations/           # Database migrations
+├── core/                     # Core functionality app
+│   ├── events.py             # Training, Race, Event models  
+│   ├── models.py             # Base models (TimeStamped, SoftDelete)
+│   └── migrations/           # Database migrations
+├── api/                      # API endpoints
+│   ├── views.py              # API views
+│   └── urls.py               # API URLs
+├── backend/                  # Django configuration
+│   ├── settings.py           # Production settings
+│   ├── settings_dev.py       # Development settings
+│   ├── urls.py               # Main URL configuration
+│   └── wsgi.py               # WSGI configuration
+├── manage.py                 # Django management commands
+├── requirements.txt          # Python dependencies
+└── db.sqlite3               # SQLite database file
+            </div>
+
+            <h3>Frontend Structure Detail</h3>
+            <div class="folder-structure">
+frontend/
+├── src/
+│   ├── components/           # React components
+│   │   ├── auth/            # Authentication components
+│   │   ├── dashboard/       # Dashboard components
+│   │   ├── eventmodal/      # Event creation/editing
+│   │   ├── profile/         # User profile components
+│   │   └── ui/              # Reusable UI components
+│   ├── services/            # API service layers
+│   ├── hooks/               # Custom React hooks
+│   ├── contexts/            # React contexts
+│   ├── types/               # TypeScript definitions
+│   └── utils/               # Utility functions
+├── public/                  # Static assets
+├── package.json            # Dependencies & scripts
+└── vite.config.ts          # Build configuration
+            </div>
+        </section>
+
+        <section id="server-management">
+            <h2>⚙️ Server Management</h2>
+            
+            <h3>Starting the Backend Server (Django)</h3>
+            <div class="command-block">
+# Navigate to backend directory
+cd /Users/Gins/developments/promethia_react_v2/backend
+
+# Start development server
+python manage.py runserver --settings=backend.settings_dev
+
+# Alternative: Start on specific port
+python manage.py runserver 8000 --settings=backend.settings_dev
+
+# Run in background (optional)
+nohup python manage.py runserver --settings=backend.settings_dev &
+            </div>
+            
+            <div class="info">
+                <span class="info-icon">✅</span><strong>Backend Server:</strong> <span class="server-status running">Currently Running</span> on <a href="http://localhost:8000" target="_blank">http://localhost:8000</a>
+            </div>
+
+            <h3>Starting the Frontend Server (React + Vite)</h3>
+            <div class="command-block">
+# Navigate to frontend directory
+cd /Users/Gins/developments/promethia_react_v2/frontend
+
+# Install dependencies (first time only)
+npm install
+
+# Start development server
+npm run dev
+
+# Alternative: Start on specific port
+npm run dev -- --port 3000
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+            </div>
+
+            <div class="warning">
+                <span class="warning-icon">⚠️</span><strong>Frontend Server:</strong> <span class="server-status stopped">Not Running</span> - Use <code>npm run dev</code> to start on <a href="http://localhost:5173" target="_blank">http://localhost:5173</a>
+            </div>
+
+            <h3>Stopping Servers</h3>
+            <div class="command-block">
+# Stop servers running in terminal
+Ctrl + C
+
+# Kill server by port (if running in background)
+lsof -ti:8000 | xargs kill -9    # Kill Django server
+lsof -ti:5173 | xargs kill -9    # Kill Vite server
+
+# Find processes using ports
+lsof -i :8000  # Check Django port
+lsof -i :5173  # Check Vite port
+            </div>
+        </section>
+
+        <section id="backend-endpoints">
+            <h2>🔗 Backend Endpoints & Links</h2>
+            
+            <div class="link-grid">
+                <div class="link-card">
+                    <h4><span class="emoji">🛠️</span>Django Admin</h4>
+                    <a href="http://localhost:8000/admin/" target="_blank">Admin Interface</a>
+                    <p><strong>Purpose:</strong> Manage users, view data, admin tasks</p>
+                    <p><strong>Login:</strong> Superuser credentials required</p>
+                </div>
+
+                <div class="link-card">
+                    <h4><span class="emoji">🔌</span>API Endpoints</h4>
+                    <a href="http://localhost:8000/api/" target="_blank">API Root</a>
+                    <a href="http://localhost:8000/api/accounts/" target="_blank">Accounts API</a>
+                    <a href="http://localhost:8000/api/events/" target="_blank">Events API</a>
+                    <p><strong>Purpose:</strong> REST API for frontend communication</p>
+                </div>
+
+                <div class="link-card">
+                    <h4><span class="emoji">📊</span>API Documentation</h4>
+                    <a href="http://localhost:8000/api/docs/" target="_blank">Swagger UI</a>
+                    <a href="http://localhost:8000/api/redoc/" target="_blank">ReDoc</a>
+                    <a href="http://localhost:8000/api/schema/" target="_blank">OpenAPI Schema</a>
+                    <p><strong>Purpose:</strong> Interactive API documentation</p>
+                </div>
+
+                <div class="link-card">
+                    <h4><span class="emoji">👤</span>Authentication</h4>
+                    <a href="http://localhost:8000/accounts/login/" target="_blank">Login</a>
+                    <a href="http://localhost:8000/accounts/signup/" target="_blank">Signup</a>
+                    <a href="http://localhost:8000/accounts/profile/" target="_blank">Profile</a>
+                    <p><strong>Purpose:</strong> User authentication endpoints</p>
+                </div>
+
+                <div class="link-card">
+                    <h4><span class="emoji">🏃‍♂️</span>Training & Events</h4>
+                    <a href="http://localhost:8000/api/training/" target="_blank">Training Sessions</a>
+                    <a href="http://localhost:8000/api/races/" target="_blank">Races</a>
+                    <a href="http://localhost:8000/api/events/" target="_blank">Custom Events</a>
+                    <p><strong>Purpose:</strong> Manage training and event data</p>
+                </div>
+
+                <div class="link-card">
+                    <h4><span class="emoji">📈</span>Analytics & Reports</h4>
+                    <a href="http://localhost:8000/api/analytics/" target="_blank">Analytics Data</a>
+                    <a href="http://localhost:8000/api/metrics/" target="_blank">Performance Metrics</a>
+                    <p><strong>Purpose:</strong> Data analysis and reporting</p>
+                </div>
+            </div>
+
+            <h3>Django Management Commands</h3>
+            <div class="command-block">
+# Database operations
+python manage.py makemigrations  # Create migrations
+python manage.py migrate         # Apply migrations
+python manage.py showmigrations  # View migration status
+
+# User management  
+python manage.py createsuperuser # Create admin user
+python manage.py changepassword username # Change user password
+
+# Development utilities
+python manage.py shell           # Django shell
+python manage.py dbshell         # Database shell
+python manage.py runserver       # Start development server
+python manage.py collectstatic   # Collect static files
+python manage.py test            # Run tests
+
+# Custom commands (if available)
+python manage.py create_sample_data        # Create test data
+python manage.py create_superuser_if_none  # Auto-create superuser
+            </div>
+        </section>
+
+        <section id="frontend-endpoints">
+            <h2>🎨 Frontend Links</h2>
+            
+            <div class="link-grid">
+                <div class="link-card">
+                    <h4><span class="emoji">🏠</span>Main Application</h4>
+                    <a href="http://localhost:5173/" target="_blank">Home Page</a>
+                    <a href="http://localhost:5173/login" target="_blank">Login Page</a>
+                    <a href="http://localhost:5173/signup" target="_blank">Signup Page</a>
+                    <p><strong>Purpose:</strong> Main user interface</p>
+                </div>
+
+                <div class="link-card">
+                    <h4><span class="emoji">📊</span>Dashboard</h4>
+                    <a href="http://localhost:5173/dashboard" target="_blank">Dashboard</a>
+                    <a href="http://localhost:5173/athletes" target="_blank">Athletes</a>
+                    <a href="http://localhost:5173/analytics" target="_blank">Analytics</a>
+                    <p><strong>Purpose:</strong> User dashboard and management</p>
+                </div>
+
+                <div class="link-card">
+                    <h4><span class="emoji">📅</span>Calendar & Events</h4>
+                    <a href="http://localhost:5173/calendar" target="_blank">Calendar View</a>
+                    <a href="http://localhost:5173/events" target="_blank">Events</a>
+                    <a href="http://localhost:5173/training" target="_blank">Training</a>
+                    <p><strong>Purpose:</strong> Schedule and event management</p>
+                </div>
+
+                <div class="link-card">
+                    <h4><span class="emoji">👤</span>Profile Management</h4>
+                    <a href="http://localhost:5173/profile" target="_blank">User Profile</a>
+                    <a href="http://localhost:5173/settings" target="_blank">Settings</a>
+                    <a href="http://localhost:5173/metrics" target="_blank">Metrics</a>
+                    <p><strong>Purpose:</strong> User profile and settings</p>
+                </div>
+            </div>
+
+            <h3>Frontend Development Commands</h3>
+            <div class="command-block">
+# Development
+npm run dev              # Start development server
+npm run build            # Build for production  
+npm run preview          # Preview production build
+npm run lint             # Run ESLint
+npm run type-check       # TypeScript type checking
+
+# Testing
+npm run test             # Run tests
+npm run test:watch       # Run tests in watch mode
+npm run coverage         # Generate test coverage
+
+# Dependencies
+npm install              # Install all dependencies
+npm update               # Update dependencies
+npm audit                # Check for vulnerabilities
+npm audit fix            # Fix vulnerabilities
+            </div>
+        </section>
+
+        <section id="development-tools">
+            <h2>🛠️ Development Tools</h2>
+            
+            <div class="link-grid">
+                <div class="link-card">
+                    <h4><span class="emoji">📋</span>Database Management</h4>
+                    <a href="file:///Users/Gins/developments/promethia_react_v2/database_structure.html" target="_blank">Database Structure</a>
+                    <p><strong>SQLite Browser:</strong> Use DB Browser for SQLite</p>
+                    <p><strong>Location:</strong> <code>backend/db.sqlite3</code></p>
+                </div>
+
+                <div class="link-card">
+                    <h4><span class="emoji">📝</span>Logs & Debugging</h4>
+                    <p><strong>Django Logs:</strong> <code>backend/django.log</code></p>
+                    <p><strong>Browser DevTools:</strong> F12 in browser</p>
+                    <p><strong>Network Tab:</strong> Monitor API calls</p>
+                    <p><strong>Console:</strong> View JavaScript errors</p>
+                </div>
+
+                <div class="link-card">
+                    <h4><span class="emoji">🔧</span>Configuration Files</h4>
+                    <p><strong>Django:</strong> <code>backend/backend/settings_dev.py</code></p>
+                    <p><strong>Vite:</strong> <code>frontend/vite.config.ts</code></p>
+                    <p><strong>TypeScript:</strong> <code>frontend/tsconfig.json</code></p>
+                    <p><strong>Package:</strong> <code>frontend/package.json</code></p>
+                </div>
+
+                <div class="link-card">
+                    <h4><span class="emoji">🧪</span>Testing</h4>
+                    <p><strong>Django Tests:</strong> <code>python manage.py test</code></p>
+                    <p><strong>React Tests:</strong> <code>npm run test</code></p>
+                    <p><strong>Coverage:</strong> <code>npm run coverage</code></p>
+                    <p><strong>E2E Testing:</strong> Playwright/Cypress (if configured)</p>
+                </div>
+            </div>
+
+            <h3>Useful Development Commands</h3>
+            <div class="command-block">
+# Check what's running on ports
+lsof -i :8000   # Backend port
+lsof -i :5173   # Frontend port
+
+# Monitor logs
+tail -f backend/django.log        # Follow Django logs
+tail -f frontend/dist/access.log  # Follow frontend logs (if available)
+
+# Database inspection
+python manage.py dbshell          # Open database shell
+sqlite3 backend/db.sqlite3        # Direct SQLite access
+
+# Git operations (if using version control)
+git status                        # Check repository status
+git add .                         # Stage changes
+git commit -m "message"           # Commit changes
+git push                          # Push to remote repository
+            </div>
+        </section>
+
+        <section id="troubleshooting">
+            <h2>🔧 Troubleshooting</h2>
+            
+            <h3>Common Issues & Solutions</h3>
+            
+            <h4>🚨 "Port already in use" Error</h4>
+            <div class="command-block">
+# Find and kill process using port
+lsof -ti:8000 | xargs kill -9    # Kill Django server
+lsof -ti:5173 | xargs kill -9    # Kill Vite server
+
+# Or use different ports
+python manage.py runserver 8001  # Different port for Django
+npm run dev -- --port 3000       # Different port for Vite
+            </div>
+
+            <h4>🚨 Database Migration Issues</h4>
+            <div class="command-block">
+# Check migration status
+python manage.py showmigrations
+
+# Reset migrations (CAUTION: loses data)
+rm -rf accounts/migrations/00*.py
+rm -rf core/migrations/00*.py
+python manage.py makemigrations accounts core
+python manage.py migrate
+
+# Or fake apply specific migration
+python manage.py migrate accounts 0001 --fake
+            </div>
+
+            <h4>🚨 Frontend Build Issues</h4>
+            <div class="command-block">
+# Clear node modules and reinstall
+rm -rf node_modules package-lock.json
+npm install
+
+# Clear Vite cache
+rm -rf node_modules/.vite
+
+# Update dependencies
+npm update
+            </div>
+
+            <h4>🚨 CORS Issues</h4>
+            <div class="command-block">
+# Check Django settings_dev.py for:
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:5173",
+]
+
+# Or temporarily allow all (NOT for production)
+CORS_ALLOW_ALL_ORIGINS = True
+            </div>
+
+            <h3>Health Check Commands</h3>
+            <div class="command-block">
+# Backend health checks
+curl http://localhost:8000/admin/     # Should return Django admin page
+python manage.py check               # Django system check
+python manage.py check --deploy      # Production deployment check
+
+# Frontend health checks  
+curl http://localhost:5173/           # Should return frontend
+npm run type-check                   # TypeScript checks
+npm run lint                         # Code style checks
+
+# Database checks
+python manage.py showmigrations      # Migration status
+sqlite3 backend/db.sqlite3 ".tables" # List database tables
+            </div>
+
+            <div class="warning">
+                <span class="warning-icon">⚠️</span><strong>Important:</strong> Always backup your database before making major changes. The database file is located at <code>backend/db.sqlite3</code>
+            </div>
+        </section>
+
+        <div class="info" style="margin-top: 50px;">
+            <span class="info-icon">🎯</span><strong>Quick Start:</strong> 
+            <br>1. Open terminal and run: <code>cd /Users/Gins/developments/promethia_react_v2/backend && python manage.py runserver --settings=backend.settings_dev</code>
+            <br>2. Open new terminal and run: <code>cd /Users/Gins/developments/promethia_react_v2/frontend && npm run dev</code>
+            <br>3. Visit <a href="http://localhost:8000/admin/" target="_blank">Django Admin</a> and <a href="http://localhost:5173/" target="_blank">React Frontend</a>
+        </div>
+    </div>
+</body>
+</html>

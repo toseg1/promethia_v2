@@ -1,0 +1,39 @@
+{
+  "email": {
+    "required": "L'e-mail est requis",
+    "invalid": "Format d'e-mail invalide"
+  },
+
+  "password": {
+    "required": "Le mot de passe est requis",
+    "tooShort": "Le mot de passe doit contenir au moins 8 caractères",
+    "tooLong": "Le mot de passe doit contenir moins de 128 caractères",
+    "needsLowercase": "Le mot de passe doit contenir au moins une lettre minuscule",
+    "needsUppercase": "Le mot de passe doit contenir au moins une lettre majuscule",
+    "needsNumber": "Le mot de passe doit contenir au moins un chiffre",
+    "needsSpecialChar": "Le mot de passe doit contenir au moins un caractère spécial"
+  },
+
+  "phone": {
+    "required": "Le numéro de téléphone est requis",
+    "invalid": "Format de numéro de téléphone invalide"
+  },
+
+  "name": {
+    "required": "{{fieldName}} est requis",
+    "tooShort": "{{fieldName}} doit contenir au moins 2 caractères",
+    "invalidChars": "{{fieldName}} contient des caractères invalides"
+  },
+
+  "username": {
+    "required": "Le nom d'utilisateur est requis",
+    "tooShort": "Le nom d'utilisateur doit contenir au moins 3 caractères",
+    "invalidChars": "Le nom d'utilisateur ne peut contenir que des lettres, des chiffres, des tirets bas et des tirets"
+  },
+
+  "field": {
+    "required": "{{fieldName}} est requis",
+    "tooShort": "{{fieldName}} doit contenir au moins {{minLength}} caractères",
+    "invalidFormat": "{{fieldName}} n'a pas un format valide"
+  }
+}

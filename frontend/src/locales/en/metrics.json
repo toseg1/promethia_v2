@@ -1,0 +1,103 @@
+{
+  "title": "Metrics Calculator",
+
+  "types": {
+    "mas": {
+      "name": "MAS",
+      "fullName": "Maximal Aerobic Speed",
+      "unit": "km/h",
+      "description": "Calculate running times, speeds, and distances based on MAS (Maximal Aerobic Speed)",
+      "range": "12-22 km/h for runners"
+    },
+    "fpp": {
+      "name": "FTP",
+      "fullName": "Functional Threshold Power",
+      "unit": "watts",
+      "description": "Calculate cycling times, speeds, and distances based on Functional Threshold Power",
+      "range": "200-600 watts for cyclists"
+    },
+    "css": {
+      "name": "CSS",
+      "fullName": "Critical Swimming Speed",
+      "unit": "/100m",
+      "description": "Calculate swimming times, speeds, and distances based on Critical Swimming Speed",
+      "range": "1:00-3:00 /100m for swimmers"
+    }
+  },
+
+  "timePresets": {
+    "30s": "30s",
+    "45s": "45s",
+    "1min": "1min",
+    "2mins": "2mins",
+    "5mins": "5mins",
+    "10mins": "10mins",
+    "20mins": "20mins",
+    "30mins": "30mins",
+    "1h": "1h",
+    "1h30min": "1h 30min",
+    "2h": "2h"
+  },
+
+  "calculator": {
+    "enterValue": "Enter {{type}} value",
+    "calculate": "Calculate",
+    "intensity": "Intensity",
+    "time": "Time",
+    "distance": "Distance",
+    "speed": "Speed",
+    "pace": "Pace",
+    "results": "Results",
+    "noResults": "Enter values and click Calculate to see results",
+    "enterDistanceHelp": "Enter a distance to calculate how long it will take to complete at your target percentage.",
+    "enterTimeHelp": "Enter a time duration to calculate how far you can go at your target percentage.",
+    "help": {
+      "cssFromProfile": "Loaded from your profile (mm:ss per 100m). Adjustments here only affect the calculator.",
+      "cssFormat": "Format: mm:ss (e.g., 1:45 per 100m). This field is used for calculator scenarios only.",
+      "valueFromProfile": "Loaded from your profile. Tweak this number to explore scenarios without saving changes.",
+      "enterValue": "Typical range: {{range}}. Enter your value to start calculations."
+    }
+  },
+
+  "masCalculator": {
+    "yourCurrentMAS": "Your Current MAS",
+    "calculateTime": "Calculate Time",
+    "calculateDistance": "Calculate Distance",
+    "trainingZones": "Training Zones (Based on MAS)",
+    "enterVMA": "Enter VMA in km/h",
+    "enterDistance": "Enter distance",
+    "enterPercentage": "Enter percentage"
+  },
+
+  "ui": {
+    "metricsCalculator": "Metrics Calculator",
+    "subtitle":"Calculate performance metrics for running, cycling, and swimming",
+    "selectMetricType": "Select Metric Type",
+    "calculationResults": "Calculation Results",
+    "current":"Your Current",
+    "add":"Add your",
+    "profile":"in Profile",
+    "settings":"Settings",
+    "enter":"Enter",
+    "percentage":"Percentage (%)",
+    "perc":"percentage",
+    "intensity":"Training Intensity",
+    "presets":"Quick Intensity Presets:",
+    "dpresets":"Quick Distance Presets",
+    "dpresetsUnit":"Quick Distance Presets ({{unit}}):",
+    "tpresets":"Quick Time Presets:",
+    "distance_time":"Distance & Time",
+    "distance":"Calculate Distance",
+    "time":"Calculate Time",
+    "cover":"Distance to cover at your target",
+    "duration":"Time Duration",
+    "hours":"Hours",
+    "minutes":"Minutes",
+    "seconds":"Seconds",
+    "howLong":"How long you want to train at your target",
+    "enterDistanceIn": "Enter distance in {{unit}}",
+    "meters": "meters",
+    "kilometers": "kilometers"
+
+  }
+}

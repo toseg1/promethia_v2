@@ -1,0 +1,303 @@
+{
+  "title": "Calendrier",
+  "subtitle": "Gérez vos séances d'entraînement, courses et événements",
+  "addEvent": "Ajouter un Événement",
+  "loading": "Chargement du calendrier…",
+  "errorLoading": "Impossible de charger les événements pour le moment. Veuillez actualiser la page.",
+
+  "viewModes": {
+    "month": "Mois",
+    "week": "Semaine"
+  },
+
+  "filters": {
+    "allAthletes": "Tous les Athlètes",
+    "allEvents": "Tous les Événements",
+    "training": "Entraînement",
+    "races": "Courses",
+    "custom": "Personnalisé"
+  },
+
+  "months": {
+    "january": "Janvier",
+    "february": "Février",
+    "march": "Mars",
+    "april": "Avril",
+    "may": "Mai",
+    "june": "Juin",
+    "july": "Juillet",
+    "august": "Août",
+    "september": "Septembre",
+    "october": "Octobre",
+    "november": "Novembre",
+    "december": "Décembre"
+  },
+
+  "weekDays": {
+    "sunday": "Dimanche",
+    "monday": "Lundi",
+    "tuesday": "Mardi",
+    "wednesday": "Mercredi",
+    "thursday": "Jeudi",
+    "friday": "Vendredi",
+    "saturday": "Samedi"
+  },
+
+  "weekDaysShort": {
+    "sun": "Dim",
+    "mon": "Lun",
+    "tue": "Mar",
+    "wed": "Mer",
+    "thu": "Jeu",
+    "fri": "Ven",
+    "sat": "Sam"
+  },
+
+  "eventModal": {
+    "editEvent": "Modifier l'Événement",
+    "createEvent": "Créer un Événement",
+    "eventType": "Type d'Événement",
+    "eventTypeLocked": "Le type d'événement est verrouillé lors de la modification de cet événement.",
+    "eventTypeChangeHint": "Pour changer le type d'événement, créez un nouvel événement au lieu de modifier l'existant.",
+    "sport": "Sport",
+    "title": "Titre",
+    "titlePlaceholder": "Titre de l'événement",
+    "athlete": "Athlète",
+    "selectAthlete": "Sélectionner un athlète",
+    "trainingType": "Entraînement",
+    "raceType": "Course",
+    "customEventType": "Événement Personnalisé",
+    "unknownAthlete": "Athlète inconnu",
+    "deleteEventTitle": "Supprimer cet événement?",
+    "deleteEventDescription": "La suppression de cet événement mettra à jour votre calendrier Promethia immédiatement. Cette action ne peut pas être annulée.",
+    "deleting": "Suppression…",
+    "deleteEvent": "Supprimer l'Événement",
+    "keepEvent": "Conserver l'Événement",
+    "date": "Date",
+    "dateStart": "Date de Début",
+    "dateEnd": "Date de Fin",
+    "duration": "Durée (min)",
+    "durationPlaceholder": "Minutes",
+    "time": "Heure",
+    "timePlaceholder": "HH:MM",
+    "description": "Description",
+    "descriptionPlaceholder": "Ajouter des détails ou du contexte",
+    "distance": "Distance",
+    "distancePlaceholder": "ex: 10K, Semi-Marathon, 1500m",
+    "location": "Lieu",
+    "locationPlaceholder": "Lieu de la course",
+    "eventLocationPlaceholder": "Lieu de l'événement",
+    "startTime": "Heure de Départ",
+    "eventColor": "Couleur de l'Événement",
+    "selectColor": "Sélectionner la couleur",
+    "notes": "Notes",
+    "notesPlaceholder": "Ajouter des détails ou des notes",
+    "eventDetailsPlaceholder": "Ajouter des détails ou du contexte",
+    "cancel": "Annuler",
+    "saving": "Enregistrement...",
+    "saveEvent": "Enregistrer l'Événement"
+  },
+
+  "intervalBuilder": {
+    "title":"Blocs d'Entraînement",
+     "templates":"Templates",
+    "create":"Créer",
+    "defaultName": "Nouvel entraînement",
+    "duration": "Durée",
+    "unit": "Unité",
+    "save":"Sauvegarder",
+    "selectUnit": "Sélectionner l'unité",
+    "seconds": "Secondes",
+    "minutes": "Minutes",
+    "saveToLibrary":"Enregistrer dans votre bibliothèque d'entraînements",
+    "enterDuration": "Entrer la durée",
+    "components": "composants",
+    "intervals": "Intervalles",
+    "structure": "Structure",
+    "nested": "Imbriqué",
+    "noComponentsYet": "Aucun composant pour le moment",
+    "addComponentsMessage": "Ajoutez des composants d'entraînement ci-dessus pour créer votre séance",
+    "trainingNamePlaceholder": "Nom de l'entraînement...",
+    "cancel": "Annuler",
+    "saveTraining": "Enregistrer l'Entraînement",
+    "name":"Nom",
+    "notes":"Descriptions",
+    "notesPlaceholder":"Ajouter des détails...",
+    "editComponent":"Modifier",
+    "setRepetitions":"Répetitions",
+    "repetitionsHint":"Définissez le nombre de répétitions pour vos sous-intervalles.",
+    "subIntervals":"Sous-intervalles",
+    "work":"Interval",
+    "rest":"Repos",
+    "intensity":"Intensité",
+    "zoneType": "Zone d'Entraînement",
+    "selectZone":"Sélectionner la Zone",
+    "timeBased":"Temps",
+    "distanceBased":"Distance",
+    "optional":"Optionel",
+    "distance":"Distance",
+    "intervalType":"Type d'Interval",
+    "enterDistance": "Entrer une Distance",
+    "currentType":"Type Actuel",
+    "meters":"Mètres",
+    "kilometers":"Kilomètres",
+    "mas":"VMA",
+    "fpp":"PSF",
+    "css":"VNS",
+    "enterRepetitions":"Ajouter des répétitions...",
+    "noTemplates":"Pas encore de modèles d'entraînement. Ajoutez votre premier !",
+    "block":"Enchaînement",
+    "blocks":"Enchaînements",
+    
+    
+    "zoneTypes":{
+      "heartRate":"Fréquence Cardiaque"
+    }
+  },
+
+  "validation": {
+    "title": {
+      "required": "Event title is required",
+      "minLength": "Title must be at least {{min}} characters",
+      "maxLength": "Title must be less than {{max}} characters"
+    },
+    "sport": {
+      "required": "Please select a sport"
+    },
+    "athlete": {
+      "required": "Please select an athlete for this event"
+    },
+    "training": {
+      "dateRequired": "Training date is required",
+      "durationNumber": "Duration must be a valid number",
+      "durationPositive": "Duration must be greater than 0",
+      "durationMax": "Duration cannot exceed 24 hours (1440 minutes)"
+    },
+    "race": {
+      "dateRequired": "Race date is required"
+    },
+    "custom": {
+      "dateRequired": "Event start date is required",
+      "colorRequired": "Please select an event color"
+    },
+    "time": {
+      "format": "Time must be in HH:MM format"
+    },
+    "date": {
+      "afterStart": "End date must be after start date"
+    },
+    "component": {
+      "nameRequired": "Component name is required",
+      "durationRequired": "Duration is required",
+      "durationPositive": "Duration must be greater than 0",
+      "unitRequired": "Unit is required",
+      "repetitions": "Repetitions must be at least 1",
+      "durationOrDistance": "Duration or distance is required",
+      "distancePositive": "Distance must be greater than 0",
+      "intensityNumber": "Intensity must be a valid number",
+      "intensityRange": "Intensity must be between 1% and 110%",
+      "intensityUnit": "Zone type is required"
+    }
+  },
+
+  "moreEvents": "+{{count}} de plus",
+
+  "eventTooltip": {
+    "atTime": "à {{time}}",
+    "dragHint": "Glisser pour déplacer"
+  },
+
+  "weekView": {
+    "eventCount": "{{count}} événement{{count, plural, one {} other {s}}}",
+    "noEvents": "Aucun événement planifié"
+  },
+
+  "eventCards": {
+    "raceEvent": "Événement de Course",
+    "trainingSession": "Séance d'Entraînement",
+    "customEvent": "Événement Personnalisé",
+    "racePeriod": "Période de Course",
+    "trainingPeriod": "Période d'Entraînement",
+    "eventPeriod": "Période d'Événement",
+    "allDayEvent": "Événement Toute la Journée",
+    "startWave": "Vague de Départ",
+    "bibNumber": "Numéro de Dossard",
+    "performanceGoals": "Objectifs de Performance",
+    "goalTime": "Temps Objectif",
+    "timeObjective": "Objectif de Temps",
+    "pacePlan": "Plan d'Allure",
+    "estimatedFinish": "Arrivée Estimée",
+    "raceCoach": "Entraîneur de Course",
+    "raceDescription": "Description de la Course",
+    "raceStrategy": "Stratégie de Course",
+    "trainingPlan": "Plan d'Entraînement",
+    "assignedCoach": "Entraîneur Assigné",
+    "trainingBlocks": "Blocs d'Entraînement",
+    "subIntervals": "{{count}} sous-intervalle{{count, plural, one {} other {s}}}",
+    "detailLabels": {
+      "time": "Temps",
+      "distance": "Distance",
+      "intensity": "Intensité",
+      "repetitions": "Répétitions",
+      "notes":"Notes"
+    },
+    "priority": {
+      "high": "Priorité élevée",
+      "medium": "Priorité moyenne",
+      "low": "Priorité faible"
+    },
+    "fullDayDetail": "Prévu pour la journée entière",
+    "organizedBy": "Organisé par",
+    "website": "Site web",
+    "attendeesHeading": "Participants ({{count}})",
+    "tags": "Étiquettes",
+    "reminders": "Rappels",
+    "customDeleteTitle": "Supprimer cet événement ?",
+    "customDeleteDescription": "La suppression de cet événement personnalisé mettra immédiatement à jour votre calendrier Promethia.",
+    "customDeleteConfirm": "Supprimer l'événement",
+    "customDeleteProgress": "Suppression…",
+    "blockTypes": {
+      "warmup": "Échauffement",
+      "run": "Course",
+      "interval": "Intervalle",
+      "recovery": "Récupération",
+      "rest": "Repos",
+      "cooldown": "Retour au calme",
+      "custom": "Personnalisé"
+    },
+    "fields": {
+      "sport": "Sport",
+      "duration": "Durée",
+      "time": "Temps",
+      "timeRange": "Période",
+      "startTime": "Début",
+      "distance": "Distance",
+      "location": "Localisation",
+      "athlete": "Athlète",
+      "description": "Description",
+      "notes": "Notes"
+    },
+    "actions": {
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "close": "Fermer",
+      "editTraining": "Modofier l'Entraînement",
+      "editRace": "Modifier la Course"
+    },
+    "deleteTrainingTitle": "Supprimer cet évènement ?",
+    "deleteTrainingDescription": "La suppression de cet entraînement mettra immédiatement à jour votre calendrier Promethia.",
+    "deleteTrainingConfirm": "Suppression de l'Entraînement",
+    "deleteTrainingProgress": "Suppression…",
+    "deleteRaceTitle": "Supprimer cet évènement ?",
+    "deleteRaceDescription": "La suppression de cette course mettra immédiatement à jour votre calendrier Promethia.",
+    "deleteRaceConfirm": "Suppresion de la Course",
+    "deleteRaceProgress": "Suppression…",
+    "registrationStatus": {
+      "registered": "Registered",
+      "pending": "Registration Pending",
+      "waitlist": "Waitlisted",
+      "unknown": "Status unknown"
+    },
+    "raceCategory": "Catégorie"
+  }
+}

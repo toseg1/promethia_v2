@@ -1,0 +1,167 @@
+{
+  "athletes": {
+    "title": "Athletes",
+    "subtitle": "Manage your athletes and track their performance",
+    "addAthlete": "Add Athlete",
+    "searchAthletesPlaceholder": "Search athletes...",
+    "stats": {
+      "totalAthletes": "Total Athletes",
+      "activeAthletes": "Active Athletes",
+      "avgCompletion": "Avg Completion",
+      "totalEvents": "Total Events"
+    },
+    "table": {
+      "athlete": "Athlete",
+      "sport": "Sport",
+      "status": "Status",
+      "upcomingEvents": "Upcoming Events",
+      "completionRate": "Completion Rate",
+      "lastActivity": "Last Activity",
+      "actions": "Actions",
+      "viewCalendar": "View Calendar",
+      "allSports": "All Sports"
+    },
+    "emptyState": {
+      "noAthletesFound": "No athletes found",
+      "adjustFilters": "Try adjusting your search or filters",
+      "addFirstAthlete": "Add your first athlete to get started"
+    }
+  },
+
+  "analytics": {
+    "title": "Performance Analytics",
+    "totalSessions": "Total Sessions",
+    "totalDuration": "Total Duration",
+    "averageSession": "Average Session",
+    "sportDistribution": "Sport Distribution",
+    "completionRate": "Completion Rate"
+  },
+
+  "athlete": {
+    "welcome": "Welcome, {{name}}!",
+    "subtitle": "Ready to crush your training goals today?",
+    "loading": "Loading dashboard…",
+
+    "stats": {
+      "thisWeek": "This Week",
+      "sessionsCompleted": "Sessions Completed",
+      "weeklyVolume": "Weekly Volume",
+      "totalTrainingTime": "Total Training Time",
+      "upcomingTrainings": "Upcoming Trainings",
+      "upcomingRaces": "Upcoming Races",
+      "next30Days": "Next 30 Days",
+      "nextMonth": "Next Month"
+    },
+
+    "quickActions": "Quick Actions",
+    "recentActivity": "Recent Activity",
+    "noActivity": "No activity recorded yet.",
+    "soon": "Soon"
+  },
+
+  "coach": {
+    "welcome": "Welcome, Coach {{name}}!",
+    "subtitle": "Manage your athletes and track their performance",
+    "loading": "Loading dashboard…",
+
+    "stats": {
+      "totalAthletes": "Total Athletes",
+      "trained": "Trained",
+      "activeAthletes": "Active Athletes",
+      "lastMonth": "Last Month",
+      "athletesTrainings": "Athletes' Trainings",
+      "next30Days": "Next 30 Days",
+      "upcomingRaces": "Upcoming Races",
+      "nextMonth": "Next Month"
+    },
+
+    "quickActions": "Quick Actions",
+    "recentActivity": "Recent Activity",
+    "noRecentActivity": "No recent activity recorded.",
+
+    "selectedCount": "{{count}} selected",
+    "soon": "Soon",
+
+    "addAthleteModal": {
+      "title": "Add Athlete",
+      "subtitle": "Share your unique coach code",
+      "yourCode": "Your Unique Coach Code",
+      "codeCopied": "Code Copied!",
+      "copyCode": "Copy Code",
+      "codeNotAvailable": "Code Not Available",
+      "instructions": "Send your unique code to your future athlete to link his/her calendar",
+      "loadError": "We could not load your coach code. Please reopen this modal after refreshing the dashboard.",
+      "done": "Done",
+      "codeUnavailableError": "Coach code not available. Please try again later.",
+      "copiedSuccess": "Code copied to clipboard!",
+      "copyFailed": "Failed to copy code"
+    },
+
+    "athleteTable": {
+      "athlete": "Athlete",
+      "sport": "Sport",
+      "status": "Status",
+      "upcomingEvents": "Upcoming Events",
+      "completionRate": "Completion Rate",
+      "lastActivity": "Last Activity",
+      "actions": "Actions",
+      "searchPlaceholder": "Search athletes...",
+      "filterBySport": "Filter by sport",
+      "noSportsAvailable": "No sports available",
+      "allAthletes": "All Athletes",
+      "viewCalendar": "View Calendar",
+      "clearFilters": "Clear Filters",
+      "noSports": "No sports assigned",
+      "moreSports": "+{{count}}",
+      "noRecentTraining": "No recent training",
+      "viewDetails": "View Details",
+      "removeAthlete": "Remove Athlete",
+      "viewCalendarTooltip": "View {{name}}'s calendar",
+      "avatarAlt": "{{name}}'s avatar"
+    },
+
+    "removeAthlete": {
+      "title": "Remove athlete?",
+      "message": "Removing {{name}} will revoke your coaching access to this athlete.",
+      "removing": "Removing…",
+      "confirm": "Remove Athlete",
+      "cancel": "Keep Athlete",
+      "successToast": "{{name}} has been removed from your roster.",
+      "errorToast": "Failed to remove athlete"
+    },
+
+    "athleteModal": {
+      "contactInfo": "Contact Information",
+      "notProvided": "Not provided",
+      "performanceMetrics": "Performance Metrics",
+      "mas": "MAS (km/h)",
+      "fpp": "FTP (W)",
+      "css": "CSS (/100m)",
+      "notSet": "Not set",
+      "sports": "Sports",
+      "athleticProfile": "Athletic Profile",
+      "yearsOfTraining": "Years of Training:",
+      "about": "About:",
+      "noDescription": "No description provided yet",
+      "achievements": "Achievements",
+      "noAchievements": "No achievements recorded yet",
+      "profileAlt": "Profile photo for {{name}}"
+    },
+
+    "filters": {
+      "allEvents": "All Events",
+      "training": "Training",
+      "races": "Races",
+      "custom": "Custom"
+    }
+  },
+
+  "actions": {
+    "addEvent": "Add New Event",
+    "addAthlete": "Add Athlete",
+    "viewCalendar": "View Calendar",
+    "metricsCalculator": "Metrics Calculator",
+    "myCoach": "My Promethia Coach",
+    "deviceSync": "Device Sync"
+  }
+}

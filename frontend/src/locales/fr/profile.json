@@ -1,0 +1,202 @@
+{
+  "title": "Profil",
+  "subtitle":"Gérez vos informations personnelles et vos indicateurs de performances",
+  "viewPrivacy":"Voir la politque de confidentialité",
+  "privacyPolicy":"En utilisant Promethia, vous acceptez nos conditions d'utilisation et reconnaissez notre engagement envers la protection de votre vie privée.",
+
+  "imageUpload": {
+    "invalidFileType": "Veuillez sélectionner une image PNG, JPG, JPEG ou WebP",
+    "fileTooLarge": "La taille de l'image doit être inférieure à 5 Mo",
+    "updateSuccess": "Photo de profil mise à jour avec succès !",
+    "updateError": "Échec de la mise à jour de la photo de profil. Veuillez réessayer.",
+    "removeSuccess": "Image de profil supprimée avec succès !",
+    "removeError": "Échec de la suppression de l'image de profil. Veuillez réessayer."
+  },
+
+  "coachCode": {
+    "title": "Code d'Entraîneur",
+    "copySuccess": "Code copié dans le presse-papiers !",
+    "copyError": "Échec de la copie du code",
+    "notAvailable": "Code d'entraîneur non disponible. Veuillez réessayer plus tard.",
+    "copyButton": "Copier le Code",
+    "codeCopied": "Code Copié !",
+    "codeNotAvailable": "Code Non Disponible"
+  },
+
+  "notifications": {
+    "profileUpdateSuccess": "Profil mis à jour avec succès !",
+    "profileUpdateError": "Erreur lors de l'enregistrement du profil : {{message}}",
+    "coachConnectedSuccess": "Entraîneur connecté avec succès !",
+    "coachDisconnectedSuccess": "{{firstName}} {{lastName}} a été déconnecté.",
+    "certificationSaveSuccess": "Certification enregistrée avec succès !",
+    "certificationSaveError": "Échec de l'enregistrement de la certification : {{message}}",
+    "certificationDeleteSuccess": "Certification supprimée avec succès !",
+    "certificationDeleteError": "Échec de la suppression de la certification : {{message}}",
+    "achievementSaveSuccess": "Accomplissement enregistré avec succès !",
+    "achievementSaveError": "Échec de l'enregistrement de l'accomplissement : {{message}}",
+    "achievementDeleteSuccess": "Accomplissement supprimé avec succès !",
+    "achievementDeleteError": "Échec de la suppression de l'accomplissement : {{message}}",
+    "sportsSelectionError": "Échec de l'enregistrement de la sélection des sports.",
+    "professionalDetailsSaveSuccess": "Détails professionnels enregistrés avec succès !",
+    "professionalDetailsSaveError": "Erreur lors de l'enregistrement des détails professionnels : {{message}}",
+    "fieldSaveSuccess": "{{field}} enregistré avec succès !",
+    "fieldSaveError": "Échec de l'enregistrement de {{field}}. Veuillez réessayer.",
+    "athleticProfileSaveSuccess": "Profil athlétique mis à jour avec succès !",
+    "athleticProfileSaveError": "Échec de l'enregistrement des modifications. Veuillez réessayer.",
+    "achievementRemoveSuccess": "Accomplissement supprimé avec succès !",
+    "achievementRemoveError": "Échec de la suppression de l'accomplissement. Veuillez réessayer.",
+    "certificationAddSuccess": "Certification ajoutée avec succès !",
+    "achievementAddSuccess": "Accomplissement ajouté avec succès !",
+    "accountDeletionWarning": "La suppression du compte serait traitée ici. Dans une vraie application, cela supprimerait définitivement le compte utilisateur."
+  },
+
+  "validation": {
+    "allFieldsRequired": "Veuillez remplir tous les champs requis pour la certification",
+    "certificationTitleRequired": "Le titre de la certification est requis",
+    "sportRequired": "La sélection du sport est requise",
+    "achievementTitleRequired": "Le titre de l'accomplissement est requis",
+    "achievementCategoryRequired": "La catégorie de l'accomplissement est requise",
+    "allAchievementFieldsRequired": "Veuillez remplir tous les champs requis pour l'accomplissement"
+  },
+
+  "accountDeletion": {
+    "title": "Supprimer le Compte",
+    "description": "Attention : Cette action est permanente. Votre compte et toutes les données associées seront supprimés.",
+    "confirmButton": "Oui, Supprimer le Compte",
+    "cancelButton": "Annuler",
+    "button": "Supprimer le Compte"
+  },
+
+  "personalInfo": {
+    "title": "Informations Personnelles",
+    "username": "Nom d'utilisateur",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "email": "Email",
+    "phone": "Téléphone",
+    "phoneNumberPlaceholder": "Entrez le numéro de téléphone",
+    "dateOfBirth": "Date de naissance",
+    
+    "coachRelationshipTitle": "Relation Entraîneur-Athlète",
+    "coachRelationshipDesc": "Votre ID unique pour établir des connexions avec les athlètes",
+    "yourCoachId": "Votre ID d'entraîneur unique",
+    "copied": "Copié !",
+    "copy": "Copier",
+    "shareCoachIdMessage": "Partagez cet ID unique avec les athlètes afin qu'ils puissent se connecter à vous et partager leurs données d'entraînement",
+    
+    "coachConnectionsTitle": "Connexions avec les entraîneurs",
+    "coachConnectionsDesc": "Connectez-vous avec des entraîneurs pour partager vos données d'entraînement",
+    "addCoach": "Ajouter un entraîneur",
+    "coachCode": "Code entraîneur",
+    "enterCoachCode": "Entrez le code de l'entraîneur",
+    "askCoachCodeMessage": "Demandez à votre entraîneur son code unique pour établir une connexion",
+    "connect": "Connecter",
+    "cancel": "Annuler",
+    "connectedCoaches": "Entraîneurs connectés ({{count}})",
+    "viewDetails": "Voir les détails",
+    "disconnectCoach": "Se déconnecter de l'entraîneur",
+    "noCoaches": "Aucun entraîneur connecté",
+    "addCoachMessage": "Cliquez sur 'Ajouter un entraîneur' pour commencer"
+  },
+  "professionalDetails": {
+    "view": "Voir les détails",
+    "yearsExperience": "Années d'expérience",
+    "yearsTraining": "Années d'entraînement",
+    "years": "ans",
+    "notSpecified": "Non spécifié",
+    "sports": "Sports",
+    "certifications": "Certifications",
+    "noSportsYet": "Aucun sport sélectionné",
+    "noCertificationsYet": "Aucune certification",
+    "achievements": "Réalisations",
+    "viewAll": "Voir toutes",
+    "noAchievementsYet": "Aucune réalisation",
+    
+    "modalTitleCoach": "Profil Professionnel",
+    "modalTitleAthlete": "Profil Athlétique",
+    "modalDescCoach": "Gérez vos qualifications et votre expérience d'entraîneur",
+    "modalDescAthlete": "Gérez votre parcours sportif et vos réalisations",
+    
+    "yearsCoachingLabel": "Années d'expérience d'entraîneur",
+    "yearsTrainingLabel": "Années d'expérience d'entraînement",
+    "yearsExperiencePlaceholder": "Entrez les années",
+    
+    "aboutCoachingLabel": "À propos de votre philosophie d'entraîneur",
+    "aboutAthleteLabel": "À propos de votre parcours sportif",
+    "aboutCoachingPlaceholder": "Décrivez votre philosophie d'entraîneur, votre approche et ce qui vous motive...",
+    "aboutAthletePlaceholder": "Partagez votre histoire sportive, vos objectifs et ce qui vous motive...",
+    
+    "sportsInvolvedLabel": "Sports pratiqués",
+    "coachingCertificationsLabel": "Certifications d'entraîneur",
+    
+    "custom": "Personnalisé",
+    "issuer": "Émetteur",
+    "year": "Année",
+    "sport": "Sport",
+    "category": "Catégorie",
+    "descriptionOptional": "Description (Optionnelle)",
+    
+    "addCertification": "Ajouter une certification personnalisée",
+    "certificationTitle": "Titre de la certification",
+    "certificationNamePlaceholder": "ex: Entraîneur de natation niveau 2",
+    "issuingOrganization": "Organisation émettrice",
+    "issuingOrgPlaceholder": "ex: Fédération Française de Natation",
+    
+    "addAchievement": "Ajouter une réalisation",
+    "achievementTitle": "Titre de la réalisation",
+    "achievementTitlePlaceholder": "ex: Médaille d'or au championnat national",
+    "achievementDescriptionPlaceholder": "Fournissez des détails sur cette réalisation...",
+    
+    "saveChanges": "Enregistrer les modifications"
+  },
+
+ "performanceMetrics": {
+    "title": "Métriques de Performance",
+    "close": "Fermer",
+    "edit": "Modifier",
+    
+    "mas": "VMA",
+    "masDescription": "Vitesse Maximale Aérobie - La vitesse minimale à laquelle VO2max est atteint",
+    "kmh": "km/h",
+    
+    "fpp": "PSF",
+    "fppDescription": "Puissance au Seuil Fonctionnel - Puissance de sortie durable pour des périodes prolongées",
+    "watts": "watts",
+    
+    "css": "VNC",
+    "cssDescription": "Vitesse Natation Critique - Allure de nage qui peut être maintenue pendant des périodes prolongées",
+    "cssPlaceholder": "mm:ss",
+    "per100m": "/100m"
+  },
+
+
+  "picture":{
+    "remove":"Supprimer la photo de profil ?",
+    "comfirmMessage":"Cela supprimera votre photo de profil et affichera vos initiales à la place.",
+    "cancel":"Annuler"
+  },
+  "profile": {
+    "professionalTitle": "Profil Professionnel",
+    "athleticTitle": "Profil Athlétique",
+    "professionalDesc": "Gérez votre expérience d'entraîneur, vos certifications et vos réalisations",
+    "athleticDesc": "Gérez votre parcours sportif, votre implication et vos réalisations"
+  },
+   "coachDetails": {
+    "contactInformation": "Informations de Contact",
+    "notProvided": "Non fourni",
+    "coachingMetrics": "Métriques d'Entraînement",
+    "yearsExperience": "Années d'Expérience",
+    "athletesTrained": "Athlètes Entraînés",
+    "certifications": "Certifications",
+    "professionalProfile": "Profil Professionnel",
+    "yearsOfCoachingExperience": "Années d'expérience d'entraîneur",
+    "about": "À propos",
+    "noDescriptionProvided": "Aucune description fournie",
+    "certificationsTitle": "Certifications",
+    "moreCertifications": "+{{count}} autres certifications",
+    "noCertifications": "Aucune certification enregistrée",
+    "achievementsTitle": "Réalisations",
+    "moreAchievements": "+{{count}} autres réalisations",
+    "noAchievements": "Aucune réalisation enregistrée"
+  }
+}

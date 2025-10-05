@@ -1,0 +1,207 @@
+{
+  "title": "Profile",
+  "subtitle":"Manage your personal information and performance metrics",
+  "viewPrivacy":"View Privacy Policy",
+  "privacyPolicy":"By using Promethia, you agree to our terms of service and acknowledge our commitment to your privacy.",
+
+  "imageUpload": {
+    "invalidFileType": "Please select a PNG, JPG, JPEG, or WebP image file",
+    "fileTooLarge": "Image size must be less than 5MB",
+    "updateSuccess": "Profile picture updated successfully!",
+    "updateError": "Failed to update profile picture. Please try again.",
+    "removeSuccess": "Profile image removed successfully!",
+    "removeError": "Failed to remove profile image. Please try again.",
+    "removeConfirmTitle": "Remove Profile Picture?",
+    "removeConfirmDescription": "This will remove your profile picture and show your initials instead.",
+    "removeConfirmCancel": "Cancel",
+    "removeConfirmSubmit": "Remove",
+    "removeInProgress": "Removing..."
+  },
+
+  "coachCode": {
+    "title": "Coach Code",
+    "copySuccess": "Code copied to clipboard!",
+    "copyError": "Failed to copy code",
+    "notAvailable": "Coach code not available. Please try again later.",
+    "copyButton": "Copy Code",
+    "codeCopied": "Code Copied!",
+    "codeNotAvailable": "Code Not Available"
+  },
+
+  "notifications": {
+    "profileUpdateSuccess": "Profile updated successfully!",
+    "profileUpdateError": "Error saving profile: {{message}}",
+    "coachConnectedSuccess": "Coach connected successfully!",
+    "coachDisconnectedSuccess": "{{firstName}} {{lastName}} has been disconnected.",
+    "certificationSaveSuccess": "Certification saved successfully!",
+    "certificationSaveError": "Failed to save certification: {{message}}",
+    "certificationDeleteSuccess": "Certification deleted successfully!",
+    "certificationDeleteError": "Failed to delete certification: {{message}}",
+    "achievementSaveSuccess": "Achievement saved successfully!",
+    "achievementSaveError": "Failed to save achievement: {{message}}",
+    "achievementDeleteSuccess": "Achievement deleted successfully!",
+    "achievementDeleteError": "Failed to delete achievement: {{message}}",
+    "sportsSelectionError": "Failed to save sports selection.",
+    "professionalDetailsSaveSuccess": "Professional details saved successfully!",
+    "professionalDetailsSaveError": "Error saving professional details: {{message}}",
+    "fieldSaveSuccess": "{{field}} saved successfully!",
+    "fieldSaveError": "Failed to save {{field}}. Please try again.",
+    "athleticProfileSaveSuccess": "Athletic profile updated successfully!",
+    "athleticProfileSaveError": "Failed to save changes. Please try again.",
+    "achievementRemoveSuccess": "Achievement removed successfully!",
+    "achievementRemoveError": "Failed to remove achievement. Please try again.",
+    "certificationAddSuccess": "Certification added successfully!",
+    "achievementAddSuccess": "Achievement added successfully!",
+    "accountDeletionWarning": "Account deletion would be processed here. In a real app, this would permanently delete the user account."
+  },
+
+  "validation": {
+    "allFieldsRequired": "Please fill in all required fields for the certification",
+    "certificationTitleRequired": "Certification title is required",
+    "sportRequired": "Sport selection is required",
+    "achievementTitleRequired": "Achievement title is required",
+    "achievementCategoryRequired": "Achievement category is required",
+    "allAchievementFieldsRequired": "Please fill in all required fields for the achievement"
+  },
+
+  "accountDeletion": {
+    "title": "Delete Account",
+    "description": "Warning: This action is permanent. Your account and all associated data will be deleted.",
+    "confirmButton": "Yes, Delete Account",
+    "cancelButton": "Cancel",
+    "button": "Delete Account"
+  },
+
+  "personalInfo": {
+    "title": "Personal Information",
+    "username": "Username",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "phone": "Phone",
+    "phoneNumberPlaceholder": "Enter phone number",
+    "dateOfBirth": "Date of Birth",
+    
+    "coachRelationshipTitle": "Coach-Athlete Relationship",
+    "coachRelationshipDesc": "Your unique ID for establishing connections with athletes",
+    "yourCoachId": "Your Unique Coach ID",
+    "copied": "Copied!",
+    "copy": "Copy",
+    "shareCoachIdMessage": "Share this unique ID with athletes so they can connect to you and share their training data",
+    
+    "coachConnectionsTitle": "Coach Connections",
+    "coachConnectionsDesc": "Connect with coaches to share your training data",
+    "addCoach": "Add Coach",
+    "coachCode": "Coach Code",
+    "enterCoachCode": "Enter coach code",
+    "askCoachCodeMessage": "Ask your coach for their unique code to establish a connection",
+    "connect": "Connect",
+    "cancel": "Cancel",
+    "connectedCoaches": "Connected Coaches ({{count}})",
+    "viewDetails": "View details",
+    "disconnectCoach": "Disconnect from coach",
+    "noCoaches": "No coaches connected yet",
+    "addCoachMessage": "Click 'Add Coach' to get started"
+  },
+
+  "professionalDetails": {
+    "view": "View Details",
+    "yearsExperience": "Years of Experience",
+    "yearsTraining": "Years Training",
+    "years": "years",
+    "notSpecified": "Not specified",
+    "sports": "Sports",
+    "certifications": "Certifications",
+    "noSportsYet": "No sports selected yet",
+    "noCertificationsYet": "No certifications yet",
+    "achievements": "Achievements",
+    "viewAll": "View all",
+    "noAchievementsYet": "No achievements yet",
+    
+    "modalTitleCoach": "Professional Profile",
+    "modalTitleAthlete": "Athletic Profile",
+    "modalDescCoach": "Manage your coaching credentials and experience",
+    "modalDescAthlete": "Manage your athletic background and achievements",
+    
+    "yearsCoachingLabel": "Years of Coaching Experience",
+    "yearsTrainingLabel": "Years of Training Experience",
+    "yearsExperiencePlaceholder": "Enter years",
+    
+    "aboutCoachingLabel": "About Your Coaching Philosophy",
+    "aboutAthleteLabel": "About Your Athletic Journey",
+    "aboutCoachingPlaceholder": "Describe your coaching philosophy, approach, and what drives you as a coach...",
+    "aboutAthletePlaceholder": "Share your athletic story, goals, and what motivates you in your training...",
+    
+    "sportsInvolvedLabel": "Sports Involved",
+    "coachingCertificationsLabel": "Coaching Certifications",
+    
+    "custom": "Custom",
+    "issuer": "Issuer",
+    "year": "Year",
+    "sport": "Sport",
+    "category": "Category",
+    "descriptionOptional": "Description (Optional)",
+    
+    "addCertification": "Add Custom Certification",
+    "certificationTitle": "Certification Title",
+    "certificationNamePlaceholder": "e.g., Level 2 Swimming Coach",
+    "issuingOrganization": "Issuing Organization",
+    "issuingOrgPlaceholder": "e.g., USA Swimming",
+    
+    "addAchievement": "Add Achievement",
+    "achievementTitle": "Achievement Title",
+    "achievementTitlePlaceholder": "e.g., National Championship Gold Medal",
+    "achievementDescriptionPlaceholder": "Provide details about this achievement...",
+    
+    "saveChanges": "Save Changes"
+  },
+
+ "performanceMetrics": {
+    "title": "Performance Metrics",
+    "close": "Close",
+    "edit": "Edit",
+    
+    "mas": "MAS",
+    "masDescription": "Maximum Aerobic Speed - The minimum speed at which VO2max is reached",
+    "kmh": "km/h",
+    
+    "fpp": "FTP",
+    "fppDescription": "Functional Threshold Power - Sustainable power output for extended periods",
+    "watts": "watts",
+    
+    "css": "CSS",
+    "cssDescription": "Critical Swimming Speed - Swimming pace that can be sustained for extended periods",
+    "cssPlaceholder": "mm:ss",
+    "per100m": "/100m"
+  },
+
+  "picture":{
+    "remove":"Remove Profile Picture?",
+    "comfirmMessage":"This will remove your profile picture and show your initials instead.",
+    "cancel":"Cancel"
+  },
+    "profile": {
+    "professionalTitle": "Professional Profile",
+    "athleticTitle": "Athletic Profile",
+    "professionalDesc": "Manage your coaching experience, certifications, and achievements",
+    "athleticDesc": "Manage your athletic background, sports involvement, and achievements"
+  },
+    "coachDetails": {
+    "contactInformation": "Contact Information",
+    "notProvided": "Not provided",
+    "coachingMetrics": "Coaching Metrics",
+    "yearsExperience": "Years Experience",
+    "athletesTrained": "Athletes Trained",
+    "certifications": "Certifications",
+    "professionalProfile": "Professional Profile",
+    "yearsOfCoachingExperience": "Years of Coaching Experience",
+    "about": "About",
+    "noDescriptionProvided": "No description provided yet",
+    "certificationsTitle": "Certifications",
+    "moreCertifications": "+{{count}} more certifications",
+    "noCertifications": "No certifications recorded yet",
+    "achievementsTitle": "Achievements",
+    "moreAchievements": "+{{count}} more achievements",
+    "noAchievements": "No achievements recorded yet"
+  }
+}

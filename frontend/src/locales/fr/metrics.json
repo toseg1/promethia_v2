@@ -1,0 +1,102 @@
+{
+  "title": "Calculateur de Métriques",
+
+  "types": {
+    "mas": {
+      "name": "VMA",
+      "fullName": "Vitesse Maximale Aérobie",
+      "unit": "km/h",
+      "description": "Calculez les temps, vitesses et distances de course basés sur la VMA (Vitesse Maximale Aérobie)",
+      "range": "12-22 km/h pour les coureurs"
+    },
+    "fpp": {
+      "name": "PSF",
+      "fullName": "Puissance Seuil Fonctionnelle",
+      "unit": "watts",
+      "description": "Calculez les temps, vitesses et distances de cyclisme basés sur la Puissance Seuil Fonctionnelle",
+      "range": "200-600 watts pour les cyclistes"
+    },
+    "css": {
+      "name": "VCN",
+      "fullName": "Vitesse Critique de Nage",
+      "unit": "/100m",
+      "description": "Calculez les temps, vitesses et distances de natation basés sur la Vitesse Critique de Nage",
+      "range": "1:00-3:00 /100m pour les nageurs"
+    }
+  },
+
+  "timePresets": {
+    "30s": "30s",
+    "45s": "45s",
+    "1min": "1min",
+    "2mins": "2min",
+    "5mins": "5min",
+    "10mins": "10min",
+    "20mins": "20min",
+    "30mins": "30min",
+    "1h": "1h",
+    "1h30min": "1h 30min",
+    "2h": "2h"
+  },
+
+  "calculator": {
+    "enterValue": "Entrer la valeur {{type}}",
+    "calculate": "Calculer",
+    "intensity": "Intensité",
+    "time": "Temps",
+    "distance": "Distance",
+    "speed": "Vitesse",
+    "pace": "Allure",
+    "results": "Résultats",
+    "noResults": "Entrez des valeurs et cliquez sur Calculer pour voir les résultats",
+    "enterDistanceHelp": "Entrez une distance pour calculer le temps nécessaire pour atteindre votre objectif en pourcentage.",
+    "enterTimeHelp": "Entrez une durée pour calculer jusqu'où vous pouvez aller avec votre pourcentage cible.",
+    "help": {
+      "cssFromProfile": "Chargé à partir de votre profil (mm:ss par 100 m). Les réglages effectués ici n'affectent que le calculateur.",
+      "cssFormat": "Format : mm:ss (par exemple, 1:45 pour 100 m). Ce champ est utilisé uniquement pour les scénarios de calculatrice.",
+      "valueFromProfile": "Chargé à partir de votre profil. Modifiez ce chiffre pour explorer différents scénarios sans enregistrer les modifications.",
+      "enterValue": "Plage typique: {{range}}. Entrez votre valeur pour lancer les calculs."
+    }
+  },
+
+  "masCalculator": {
+    "yourCurrentMAS": "Votre VMA Actuelle",
+    "calculateTime": "Calculer le Temps",
+    "calculateDistance": "Calculer la Distance",
+    "trainingZones": "Zones d'Entraînement (Basées sur VMA)",
+    "enterVMA": "Entrer la VMA en km/h",
+    "enterDistance": "Entrer la distance",
+    "enterPercentage": "Entrer le pourcentage"
+  },
+
+  "ui": {
+    "metricsCalculator": "Calculateur de Métriques",
+    "subtitle":"Calculez les indicateurs de performance pour la course à pied, le cyclisme et la natation",
+    "selectMetricType": "Sélectionnez le Type de Métrique",
+    "calculationResults": "Résultats de Calcul",
+    "current":"Actuelle",
+    "add":"Ajoute ta",
+    "profile":"depuis Profil",
+    "settings":"Settings",
+    "enter":"Entrer",
+     "percentage":"Pourcentage (%)",
+    "perc":"pourcentage",
+    "intensity":"Intensité d'Entraînement",
+    "presets":"Préréglages d'intensité:",
+    "dpresets":"Préréglages de distance",
+    "dpresetsUnit":"Préréglages de distance ({{unit}}):",
+    "tpresets":"Préréglages de temps:",
+    "distance_time":"Distance & Temps",
+    "distance":"Calcul de Distance",
+    "time":"Calcul de Temps",
+    "cover":"Distance à parcourir jusqu'à votre cible",
+    "duration":"Temps",
+    "hours":"Heures",
+    "minutes":"Minutes",
+    "seconds":"Secondes",
+    "howLong":"Combien de temps souhaitez-vous vous entraîner à cette allure ?",
+    "enterDistanceIn": "Entrer une distance en {{unit}}",
+    "meters": "mètres",
+    "kilometers": "kilomètres"
+  }
+}

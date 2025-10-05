@@ -1,0 +1,29 @@
+{
+  "somethingWentWrong": "Quelque chose s'est mal passé",
+  "unexpectedError": "Nous avons rencontré une erreur inattendue. Cela a été signalé et nous travaillerons à le corriger.",
+  "tryAgain": "Réessayer",
+  "reloadPage": "Recharger la Page",
+  "errorDetails": "Détails de l'Erreur",
+  "error": "Erreur :",
+  "stack": "Pile :",
+
+  "workInProgress": {
+    "comingSoon": "Prochainement",
+    "inDevelopment": "En Développement",
+    "betaTesting": "Test Bêta",
+    "enhancedPerformance": "Performance Améliorée",
+    "enhancedPerformanceDesc": "Analyses et perspectives avancées pour de meilleurs résultats d'entraînement",
+    "smartIntegration": "Intégration Intelligente",
+    "smartIntegrationDesc": "Connectivité transparente avec vos appareils d'entraînement préférés",
+    "personalizedExperience": "Expérience Personnalisée",
+    "personalizedExperienceDesc": "Recommandations adaptées basées sur vos schémas d'entraînement",
+    "notifyQuestion": "Voulez-vous être notifié lors du lancement de cette fonctionnalité ?",
+    "stayTuned": "Restez à l'écoute pour les mises à jour dans les notifications de votre tableau de bord"
+  },
+
+  "sessionRestore": {
+    "title": "Restauration de la Session",
+    "pleaseWait": "Veuillez patienter pendant que nous restaurons votre session...",
+    "retrying": "Nouvelle tentative de connexion..."
+  }
+}

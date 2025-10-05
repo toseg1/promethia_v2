@@ -1,0 +1,302 @@
+{
+  "title": "Calendar",
+  "subtitle": "Manage your training sessions, races, and events",
+  "addEvent": "Add Event",
+  "loading": "Loading calendar…",
+  "errorLoading": "Unable to load events right now. Please try refreshing the page.",
+  "moreEvents": "+{{count}} more",
+
+  "eventTooltip": {
+    "atTime": "at {{time}}",
+    "dragHint": "Drag to move"
+  },
+
+  "viewModes": {
+    "month": "Month",
+    "week": "Week"
+  },
+
+  "filters": {
+    "allAthletes": "All Athletes",
+    "allEvents": "All Events",
+    "training": "Training",
+    "races": "Races",
+    "custom": "Custom"
+  },
+
+  "months": {
+    "january": "January",
+    "february": "February",
+    "march": "March",
+    "april": "April",
+    "may": "May",
+    "june": "June",
+    "july": "July",
+    "august": "August",
+    "september": "September",
+    "october": "October",
+    "november": "November",
+    "december": "December"
+  },
+
+  "weekDays": {
+    "sunday": "Sunday",
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday"
+  },
+
+  "weekDaysShort": {
+    "sun": "Sun",
+    "mon": "Mon",
+    "tue": "Tue",
+    "wed": "Wed",
+    "thu": "Thu",
+    "fri": "Fri",
+    "sat": "Sat"
+  },
+
+  "eventModal": {
+    "unknownAthlete": "Unknown athlete",
+    "editEvent": "Edit Event",
+    "createEvent": "Create Event",
+    "eventType": "Event Type",
+    "eventTypeLocked": "Event type is locked while editing this event.",
+    "eventTypeChangeHint": "To change the event type, create a new event instead of editing the existing one.",
+    "sport": "Sport",
+    "title": "Title",
+    "titlePlaceholder": "Event title",
+    "athlete": "Athlete",
+    "selectAthlete": "Select an athlete",
+    "trainingType": "Training",
+    "raceType": "Race",
+    "customEventType": "Custom Event",
+    "deleteEventTitle": "Delete this event?",
+    "deleteEventDescription": "Removing this event will update your Promethia calendar immediately. This action cannot be undone.",
+    "deleting": "Deleting…",
+    "deleteEvent": "Delete Event",
+    "keepEvent": "Keep Event",
+    "date": "Date",
+    "dateStart": "Date Start",
+    "dateEnd": "Date End",
+    "duration": "Duration (min)",
+    "durationPlaceholder": "Minutes",
+    "time": "Time",
+    "timePlaceholder": "HH:MM",
+    "description": "Description",
+    "descriptionPlaceholder": "Add training details or context",
+    "distance": "Distance",
+    "distancePlaceholder": "e.g., 10K, Half Marathon, 1500m",
+    "location": "Location",
+    "locationPlaceholder": "Race location",
+    "eventLocationPlaceholder": "Event location",
+    "startTime": "Start Time",
+    "eventColor": "Event Color",
+    "selectColor": "Select color",
+    "notes": "Notes",
+    "notesPlaceholder": "Add race details or notes",
+    "eventDetailsPlaceholder": "Add event details or context",
+    "cancel": "Cancel",
+    "saving": "Saving...",
+    "saveEvent": "Save Event"
+  },
+
+  "intervalBuilder": {
+    "title":"Interval Builder",
+    "templates":"Templates",
+    "create":"Create",
+    "defaultName": "New Training",
+    "duration": "Duration",
+    "unit": "Unit",
+    "selectUnit": "Select unit",
+    "seconds": "Seconds",
+    "minutes": "Minutes",
+    "save":"Save",
+    "saveToLibrary":"Save to your templates library",
+    "enterDuration": "Enter duration",
+    "components": "components",
+    "intervals": "Intervals",
+    "structure": "Structure",
+    "nested": "Nested",
+    "noComponentsYet": "No components yet",
+    "addComponentsMessage": "Add training components above to build your workout",
+    "trainingNamePlaceholder": "Training name...",
+    "cancel": "Cancel",
+    "saveTraining": "Save Training",
+    "name":"Nom",
+    "notes":"Descriptions",
+    "notesPlaceholder":"Add details...",
+    "editComponent":"Edit",
+    "setRepetitions":"Repetitions",
+    "repetitionsHint":"Set the number of repetitions for your sub-intervals",
+    "subIntervals":"Sub-Intervals",
+    "work":"Work",
+    "rest":"Rest",
+    "intensity":"Intensity",
+    "zoneType": "Zone Type",
+    "selectZone":"Select Zone Type",
+    "timeBased":"Time",
+    "distanceBased":"Distance",
+    "optional":"Optional",
+    "distance":"Distance",
+    "intervalType":"Interval Type",
+    "enterDistance": "Enter Distance",
+    "currentType":"Current Type",
+    "meters":"Meters",
+    "kilometers":"Kilometers",
+    "mas":"MAS",
+    "fpp":"FTP",
+    "css":"CSS",
+    "enterRepetitions":"Add repetitions...",
+    "noTemplates":"No templates yet. Add your first one!",
+    "block":"Sequence",
+    "blocks":"Sequences",
+    
+    
+    "zoneTypes":{
+      "heartRate":"Heart Rate"
+    }
+  },
+
+  "validation": {
+    "title": {
+      "required": "Event title is required",
+      "minLength": "Title must be at least {{min}} characters",
+      "maxLength": "Title must be less than {{max}} characters"
+    },
+    "sport": {
+      "required": "Please select a sport"
+    },
+    "athlete": {
+      "required": "Please select an athlete for this event"
+    },
+    "training": {
+      "dateRequired": "Training date is required",
+      "durationNumber": "Duration must be a valid number",
+      "durationPositive": "Duration must be greater than 0",
+      "durationMax": "Duration cannot exceed 24 hours (1440 minutes)"
+    },
+    "race": {
+      "dateRequired": "Race date is required"
+    },
+    "custom": {
+      "dateRequired": "Event start date is required",
+      "colorRequired": "Please select an event color"
+    },
+    "time": {
+      "format": "Time must be in HH:MM format"
+    },
+    "date": {
+      "afterStart": "End date must be after start date"
+    },
+    "component": {
+      "nameRequired": "Component name is required",
+      "durationRequired": "Duration is required",
+      "durationPositive": "Duration must be greater than 0",
+      "unitRequired": "Unit is required",
+      "repetitions": "Repetitions must be at least 1",
+      "durationOrDistance": "Duration or distance is required",
+      "distancePositive": "Distance must be greater than 0",
+      "intensityNumber": "Intensity must be a valid number",
+      "intensityRange": "Intensity must be between 1% and 110%",
+      "intensityUnit": "Zone type is required"
+    }
+  },
+
+  "weekView": {
+    "eventCount": "{{count}} event{{count, plural, one {} other {s}}}",
+    "noEvents": "No events scheduled"
+  },
+
+  "eventCards": {
+    "raceEvent": "Race Event",
+    "trainingSession": "Training Session",
+    "customEvent": "Custom Event",
+    "racePeriod": "Race Period",
+    "trainingPeriod": "Training Period",
+    "eventPeriod": "Event Period",
+    "allDayEvent": "All Day Event",
+    "startWave": "Start Wave",
+    "bibNumber": "Bib Number",
+    "performanceGoals": "Performance Goals",
+    "goalTime": "Goal Time",
+    "timeObjective": "Time Objective",
+    "pacePlan": "Pace Plan",
+    "estimatedFinish": "Estimated Finish",
+    "raceCoach": "Race Coach",
+    "raceDescription": "Race Description",
+    "raceStrategy": "Race Strategy",
+    "trainingPlan": "Training Plan",
+    "assignedCoach": "Assigned Coach",
+    "trainingBlocks": "Training Blocks",
+    "subIntervals": "{{count}} sub-interval{{count, plural, one {} other {s}}}",
+    "detailLabels": {
+      "time": "Time",
+      "distance": "Distance",
+      "intensity": "Intensity",
+      "repetitions": "Reps",
+      "notes":"Notes"
+    },
+    "priority": {
+      "high": "High Priority",
+      "medium": "Medium Priority",
+      "low": "Low Priority"
+    },
+    "fullDayDetail": "Scheduled for the full day",
+    "organizedBy": "Organized by",
+    "website": "Website",
+    "attendeesHeading": "Attendees ({{count}})",
+    "tags": "Tags",
+    "reminders": "Reminders",
+    "customDeleteTitle": "Delete this event?",
+    "customDeleteDescription": "Removing this custom event will update your Promethia calendar immediately.",
+    "customDeleteConfirm": "Delete Event",
+    "customDeleteProgress": "Deleting…",
+    "blockTypes": {
+      "warmup": "Warm-up",
+      "run": "Run",
+      "interval": "Interval",
+      "recovery": "Recovery",
+      "rest": "Rest",
+      "cooldown": "Cool-down",
+      "custom": "Custom"
+    },
+    "fields": {
+      "sport": "Sport",
+      "duration": "Duration",
+      "time": "Time",
+      "timeRange": "Time Range",
+      "startTime": "Start Time",
+      "distance": "Distance",
+      "location": "Location",
+      "athlete": "Athlete",
+      "description": "Description",
+      "notes": "Notes"
+    },
+    "actions": {
+      "edit": "Edit event",
+      "delete": "Delete event",
+      "close": "Close",
+      "editTraining": "Edit Training",
+      "editRace": "Edit Race"
+    },
+    "deleteTrainingTitle": "Delete this event?",
+    "deleteTrainingDescription": "Removing this training will update your Promethia calendar immediately.",
+    "deleteTrainingConfirm": "Delete Training",
+    "deleteTrainingProgress": "Deleting…",
+    "deleteRaceTitle": "Delete this event?",
+    "deleteRaceDescription": "Removing this race will update your Promethia calendar immediately.",
+    "deleteRaceConfirm": "Delete Race",
+    "deleteRaceProgress": "Deleting…",
+    "registrationStatus": {
+      "registered": "Registered",
+      "pending": "Registration Pending",
+      "waitlist": "Waitlisted",
+      "unknown": "Status unknown"
+    },
+    "raceCategory": "Category"
+  }
+}

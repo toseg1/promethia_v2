@@ -1,0 +1,167 @@
+{
+  "athletes": {
+    "title": "Athlètes",
+    "subtitle": "Gérez vos athlètes et suivez leurs performances",
+    "addAthlete": "Ajouter un Athlète",
+    "searchAthletesPlaceholder": "Rechercher des athlètes...",
+    "stats": {
+      "totalAthletes": "Total d'Athlètes",
+      "activeAthletes": "Athlètes Actifs",
+      "avgCompletion": "Complétion Moyenne",
+      "totalEvents": "Total d'Événements"
+    },
+    "table": {
+      "athlete": "Athlète",
+      "sport": "Sport",
+      "status": "Statut",
+      "upcomingEvents": "Événements À Venir",
+      "completionRate": "Taux de Complétion",
+      "lastActivity": "Dernière Activité",
+      "actions": "Actions",
+      "viewCalendar": "Voir le Calendrier",
+      "allSports": "Tous les Sports"
+    },
+    "emptyState": {
+      "noAthletesFound": "Aucun athlète trouvé",
+      "adjustFilters": "Essayez d'ajuster votre recherche ou vos filtres",
+      "addFirstAthlete": "Ajoutez votre premier athlète pour commencer"
+    }
+  },
+
+  "analytics": {
+    "title": "Analyses de Performance",
+    "totalSessions": "Total de Séances",
+    "totalDuration": "Durée Totale",
+    "averageSession": "Séance Moyenne",
+    "sportDistribution": "Répartition des Sports",
+    "completionRate": "Taux de Complétion"
+  },
+
+  "athlete": {
+    "welcome": "Bienvenue, {{name}} !",
+    "subtitle": "Prêt à écraser vos objectifs d'entraînement aujourd'hui ?",
+    "loading": "Chargement du tableau de bord…",
+
+    "stats": {
+      "thisWeek": "Cette Semaine",
+      "sessionsCompleted": "Séances Terminées",
+      "weeklyVolume": "Volume Hebdomadaire",
+      "totalTrainingTime": "Temps Total d'Entraînement",
+      "upcomingTrainings": "Entraînements À Venir",
+      "upcomingRaces": "Courses À Venir",
+      "next30Days": "30 Prochains Jours",
+      "nextMonth": "Mois Prochain"
+    },
+
+    "quickActions": "Actions Rapides",
+    "recentActivity": "Activité Récente",
+    "noActivity": "Aucune activité enregistrée pour le moment.",
+    "soon": "Soon"
+  },
+
+  "coach": {
+    "welcome": "Bienvenue, Coach {{name}} !",
+    "subtitle": "Gérez vos athlètes et suivez leurs performances",
+    "loading": "Chargement du tableau de bord…",
+
+    "stats": {
+      "totalAthletes": "Total d'Athlètes",
+      "trained": "Entraînés",
+      "activeAthletes": "Athlètes Actifs",
+      "lastMonth": "Mois Dernier",
+      "athletesTrainings": "Entraînements des Athlètes",
+      "next30Days": "30 Prochains Jours",
+      "upcomingRaces": "Courses À Venir",
+      "nextMonth": "Mois Prochain"
+    },
+
+    "quickActions": "Actions Rapides",
+    "recentActivity": "Activité Récente",
+    "noRecentActivity": "Aucune activité récente enregistrée.",
+
+    "selectedCount": "{{count}} sélectionné(s)",
+    "soon": "Soon",
+
+    "addAthleteModal": {
+      "title": "Ajouter un Athlète",
+      "subtitle": "Partagez votre code d'entraîneur unique",
+      "yourCode": "Votre Code d'Entraîneur Unique",
+      "codeCopied": "Code Copié!",
+      "copyCode": "Copier le Code",
+      "codeNotAvailable": "Code Non Disponible",
+      "instructions": "Envoyez votre code unique à votre futur athlète pour lier son calendrier",
+      "loadError": "Nous n'avons pas pu charger votre code d'entraîneur. Veuillez rouvrir cette fenêtre après avoir actualisé le tableau de bord.",
+      "done": "Terminé",
+      "codeUnavailableError": "Code d'entraîneur non disponible. Veuillez réessayer plus tard.",
+      "copiedSuccess": "Code copié dans le presse-papiers!",
+      "copyFailed": "Échec de la copie du code"
+    },
+
+    "athleteTable": {
+      "athlete": "Athlète",
+      "sport": "Sport",
+      "status": "Statut",
+      "upcomingEvents": "Événements À Venir",
+      "completionRate": "Taux de Complétion",
+      "lastActivity": "Dernière Activité",
+      "actions": "Actions",
+      "searchPlaceholder": "Rechercher des athlètes...",
+      "filterBySport": "Filtrer par sport",
+      "noSportsAvailable": "Aucun sport disponible",
+      "allAthletes": "Tous les Athlètes",
+      "viewCalendar": "Voir le Calendrier",
+      "clearFilters": "Effacer les filtres",
+      "noSports": "No sports assigned",
+      "moreSports": "+{{count}}",
+      "noRecentTraining": "No recent training",
+      "viewDetails": "Voir les détails",
+      "removeAthlete": "Supprimer l'athlète",
+      "viewCalendarTooltip": "View {{name}}'s calendar",
+      "avatarAlt": "{{name}}'s avatar"
+    },
+
+    "removeAthlete": {
+      "title": "Retirer l'athlète ?",
+      "message": "Retirer {{name}} révoquera votre accès d'entraîneur à cet athlète.",
+      "removing": "Suppression en cours…",
+      "confirm": "Retirer l'Athlète",
+      "cancel": "Garder l'Athlète",
+      "successToast": "{{name}} a été retiré de votre liste.",
+      "errorToast": "Échec du retrait de l'athlète"
+    },
+
+    "athleteModal": {
+      "contactInfo": "Informations de Contact",
+      "notProvided": "Non fourni",
+      "performanceMetrics": "Métriques de Performance",
+      "mas": "VMA (km/h)",
+      "fpp": "SFP (W)",
+      "css": "VNC (/100m)",
+      "notSet": "Non défini",
+      "sports": "Sports",
+      "athleticProfile": "Profil Athlétique",
+      "yearsOfTraining": "Années d'Entraînement :",
+      "about": "À propos :",
+      "noDescription": "Aucune description fournie pour le moment",
+      "achievements": "Accomplissements",
+      "noAchievements": "Aucun accomplissement enregistré pour le moment",
+      "profileAlt": "Profile photo for {{name}}"
+    },
+
+    "filters": {
+      "allEvents": "Tous les Événements",
+      "training": "Entraînement",
+      "races": "Courses",
+      "custom": "Personnalisé"
+    }
+  },
+
+  "actions": {
+    "addEvent": "Ajouter un Événement",
+    "addAthlete": "Ajouter un Athlète",
+    "viewCalendar": "Voir le Calendrier",
+    "metricsCalculator": "Calculateur de Métriques",
+    "myCoach": "Mon Coach Promethia",
+    "deviceSync": "Synchronisation des Appareils"
+  }
+}

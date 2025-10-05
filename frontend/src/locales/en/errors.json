@@ -1,0 +1,29 @@
+{
+  "somethingWentWrong": "Something went wrong",
+  "unexpectedError": "We encountered an unexpected error. This has been reported and we'll work to fix it.",
+  "tryAgain": "Try Again",
+  "reloadPage": "Reload Page",
+  "errorDetails": "Error Details",
+  "error": "Error:",
+  "stack": "Stack:",
+
+  "workInProgress": {
+    "comingSoon": "Coming Soon",
+    "inDevelopment": "In Development",
+    "betaTesting": "Beta Testing",
+    "enhancedPerformance": "Enhanced Performance",
+    "enhancedPerformanceDesc": "Advanced analytics and insights for better training outcomes",
+    "smartIntegration": "Smart Integration",
+    "smartIntegrationDesc": "Seamless connectivity with your favorite training devices",
+    "personalizedExperience": "Personalized Experience",
+    "personalizedExperienceDesc": "Tailored recommendations based on your training patterns",
+    "notifyQuestion": "Want to be notified when this feature launches?",
+    "stayTuned": "Stay tuned for updates in your dashboard notifications"
+  },
+
+  "sessionRestore": {
+    "title": "Restoring Session",
+    "pleaseWait": "Please wait while we restore your session...",
+    "retrying": "Retrying connection..."
+  }
+}

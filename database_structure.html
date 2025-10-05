@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Structure - Complete Documentation</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #1a202c;
+            border-bottom: 4px solid #3182ce;
+            padding-bottom: 15px;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+        }
+        
+        h2 {
+            color: #2d3748;
+            margin-top: 50px;
+            margin-bottom: 25px;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px;
+            font-size: 1.8em;
+        }
+        
+        h3 {
+            color: #4a5568;
+            margin-top: 35px;
+            margin-bottom: 20px;
+            padding-left: 15px;
+            border-left: 5px solid #38a169;
+            font-size: 1.4em;
+        }
+        
+        h4 {
+            color: #2d3748;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        .overview {
+            background: linear-gradient(135deg, #e6fffa 0%, #f0fff4 100%);
+            border: 2px solid #81e6d9;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+        
+        .model-section {
+            margin-bottom: 50px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #fafafa;
+        }
+        
+        .model-header {
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+            color: white;
+            padding: 20px;
+            margin: 0;
+        }
+        
+        .model-content {
+            padding: 25px;
+            background: white;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        th {
+            background: #4a5568;
+            color: white;
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+        
+        tr:hover {
+            background-color: #f7fafc;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        .field-name {
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-weight: 600;
+            color: #2d3748;
+            background: #f7fafc;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        
+        .field-type {
+            color: #3182ce;
+            font-weight: 500;
+        }
+        
+        .required {
+            background: #fed7d7;
+            color: #c53030;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .optional {
+            background: #c6f6d5;
+            color: #2f855a;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .auto {
+            background: #bee3f8;
+            color: #2b6cb0;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .choices {
+            background: #fef5e7;
+            border: 1px solid #f6ad55;
+            border-radius: 6px;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+        
+        .choices-title {
+            font-weight: 600;
+            color: #c05621;
+            margin-bottom: 8px;
+        }
+        
+        .choice-item {
+            font-family: 'Monaco', 'Consolas', monospace;
+            margin: 3px 0;
+            color: #744210;
+        }
+        
+        .validation {
+            background: #f0fff4;
+            border: 1px solid #9ae6b4;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .validation-title {
+            font-weight: 600;
+            color: #22543d;
+            margin-bottom: 10px;
+        }
+        
+        .relationship {
+            background: #e6f3ff;
+            border: 1px solid #90cdf4;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .relationship-title {
+            font-weight: 600;
+            color: #2c5282;
+            margin-bottom: 10px;
+        }
+        
+        .note {
+            background: #fffbf0;
+            border-left: 4px solid #f6ad55;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 6px 6px 0;
+        }
+        
+        .note-icon {
+            color: #c05621;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        
+        .abstract-model {
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            border: 2px dashed #a0aec0;
+        }
+        
+        .code {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.85em;
+        }
+        
+        .toc {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .toc h3 {
+            margin-top: 0;
+            color: #2d3748;
+            border-left: none;
+            padding-left: 0;
+        }
+        
+        .toc ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        .toc li {
+            margin: 8px 0;
+            padding: 8px 15px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        
+        .toc li:hover {
+            background-color: #e2e8f0;
+        }
+        
+        .toc a {
+            text-decoration: none;
+            color: #3182ce;
+            font-weight: 500;
+        }
+        
+        .toc a:hover {
+            color: #2c5282;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .metric-card {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .metric-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #3182ce;
+        }
+        
+        .metric-label {
+            color: #6c757d;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 8px;
+        }
+        
+        .json-structure {
+            background: #1a202c;
+            color: #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            line-height: 1.4;
+        }
+        
+        .json-key {
+            color: #63b3ed;
+        }
+        
+        .json-string {
+            color: #68d391;
+        }
+        
+        .json-number {
+            color: #f6ad55;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗄️ Database Structure - Complete Documentation</h1>
+        
+        <div class="overview">
+            <strong>Overview:</strong> This documentation covers the complete database structure for the sports training application, including all models, fields, relationships, and validation rules. The system supports user management, training data, events, and coach-athlete relationships with comprehensive data integrity.
+        </div>
+
+        <div class="toc">
+            <h3>📚 Table of Contents</h3>
+            <ul>
+                <li><a href="#core-models">Core Base Models</a></li>
+                <li><a href="#user-models">User & Authentication Models</a></li>
+                <li><a href="#profile-models">Profile Models</a></li>
+                <li><a href="#achievement-models">Achievement & Certification Models</a></li>
+                <li><a href="#event-models">Event Models</a></li>
+                <li><a href="#relationships">Model Relationships</a></li>
+                <li><a href="#validation">Validation Rules</a></li>
+            </ul>
+        </div>
+
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-number">12</div>
+                <div class="metric-label">Total Models</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-number">3</div>
+                <div class="metric-label">Abstract Base Models</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-number">9</div>
+                <div class="metric-label">Concrete Models</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-number">15+</div>
+                <div class="metric-label">Relationships</div>
+            </div>
+        </div>
+
+        <section id="core-models">
+            <h2>🏗️ Core Base Models</h2>
+            <p><em>Location: <code>/backend/core/models.py</code></em></p>
+
+            <div class="model-section abstract-model">
+                <h3 class="model-header">TimeStampedModel (Abstract)</h3>
+                <div class="model-content">
+                    <p><strong>Purpose:</strong> Provides automatic timestamp tracking for all models</p>
+                    <p><strong>File:</strong> <code>/backend/core/models.py:4-9</code> | <strong>Class:</strong> <code>TimeStampedModel</code></p>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="field-name">created_at</span></td>
+                                <td><span class="field-type">DateTimeField</span></td>
+                                <td><span class="auto">Auto</span></td>
+                                <td>Automatically set when record is created</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">updated_at</span></td>
+                                <td><span class="field-type">DateTimeField</span></td>
+                                <td><span class="auto">Auto</span></td>
+                                <td>Automatically updated when record is modified</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="model-section abstract-model">
+                <h3 class="model-header">SoftDeleteModel (Abstract)</h3>
+                <div class="model-content">
+                    <p><strong>Purpose:</strong> Implements soft delete functionality</p>
+                    <p><strong>File:</strong> <code>/backend/core/models.py:12-26</code> | <strong>Class:</strong> <code>SoftDeleteModel</code></p>
+                    <p><strong>Methods:</strong> <code>delete()</code> at line 19, <code>hard_delete()</code> at line 25</p>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="field-name">is_deleted</span></td>
+                                <td><span class="field-type">BooleanField</span></td>
+                                <td><span class="auto">Auto</span></td>
+                                <td>Marks record as deleted (default: False)</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">deleted_at</span></td>
+                                <td><span class="field-type">DateTimeField</span></td>
+                                <td><span class="optional">Optional</span></td>
+                                <td>Timestamp when record was soft deleted</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="note">
+                        <span class="note-icon">🔧</span><strong>Methods:</strong> Includes <code>delete()</code> for soft delete and <code>hard_delete()</code> for permanent deletion
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="user-models">
+            <h2>👤 User & Authentication Models</h2>
+            <p><em>Location: <code>/backend/accounts/models.py</code></em></p>
+
+            <div class="model-section">
+                <h3 class="model-header">User (Main User Model)</h3>
+                <div class="model-content">
+                    <p><strong>Inherits:</strong> AbstractUser | <strong>Manager:</strong> UserManager (custom) | <strong>Table:</strong> accounts_user</p>
+                    <p><strong>File:</strong> <code>/backend/accounts/models.py:15-140</code> | <strong>Class:</strong> <code>User</code></p>
+                    <p><strong>Manager:</strong> <code>UserManager</code> at <code>/backend/accounts/models.py:11-13</code></p>
+                    
+                    <h4>Core Identity Fields</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Constraints</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="field-name">email</span></td>
+                                <td><span class="field-type">EmailField</span></td>
+                                <td><span class="required">Required</span></td>
+                                <td>unique=True, USERNAME_FIELD</td>
+                                <td>Primary authentication field</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">username</span></td>
+                                <td><span class="field-type">CharField</span></td>
+                                <td><span class="required">Required</span></td>
+                                <td>inherited from AbstractUser</td>
+                                <td>Secondary identifier</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">first_name</span></td>
+                                <td><span class="field-type">CharField</span></td>
+                                <td><span class="required">Required</span></td>
+                                <td>max_length=30, default=''</td>
+                                <td>User's first name</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">last_name</span></td>
+                                <td><span class="field-type">CharField</span></td>
+                                <td><span class="required">Required</span></td>
+                                <td>max_length=30, default=''</td>
+                                <td>User's last name</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">user_type</span></td>
+                                <td><span class="field-type">CharField</span></td>
+                                <td><span class="required">Required</span></td>
+                                <td>max_length=10, default='athlete'</td>
+                                <td>User role in the system</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="choices">
+                        <div class="choices-title">User Type Choices:</div>
+                        <div class="choice-item">• 'athlete' → Athlete</div>
+                        <div class="choice-item">• 'coach' → Coach</div>
+                    </div>
+
+                    <h4>Contact Information</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Constraints</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="field-name">country_number</span></td>
+                                <td><span class="field-type">CharField</span></td>
+                                <td><span class="optional">Optional</span></td>
+                                <td>max_length=10, default='+1'</td>
+                                <td>Country code for phone number</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">phone_number</span></td>
+                                <td><span class="field-type">CharField</span></td>
+                                <td><span class="optional">Optional</span></td>
+                                <td>max_length=20, custom validator</td>
+                                <td>User's phone number</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="validation">
+                        <div class="validation-title">Phone Number Validation:</div>
+                        <p>Uses <code>validate_phone_number()</code> at <code>/backend/accounts/models.py:208-216</code> - accepts international format with 9-15 digits, optional country code</p>
+                    </div>
+
+                    <h4>Profile Information</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Constraints</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="field-name">date_of_birth</span></td>
+                                <td><span class="field-type">DateField</span></td>
+                                <td><span class="optional">Optional</span></td>
+                                <td>null=True, blank=True</td>
+                                <td>User's birth date for age calculation</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">profile_image</span></td>
+                                <td><span class="field-type">ImageField</span></td>
+                                <td><span class="optional">Optional</span></td>
+                                <td>upload_to='profiles/', null=True</td>
+                                <td>User's profile photo</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">coach_id</span></td>
+                                <td><span class="field-type">CharField</span></td>
+                                <td><span class="auto">Auto-generated</span></td>
+                                <td>max_length=20, unique=True</td>
+                                <td>Unique ID for coach-athlete connections</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4>Performance Metrics</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Validation</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="field-name">mas</span></td>
+                                <td><span class="field-type">FloatField</span></td>
+                                <td><span class="optional">Optional</span></td>
+                                <td>0-50 km/h</td>
+                                <td>Maximum Aerobic Speed</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">fpp</span></td>
+                                <td><span class="field-type">FloatField</span></td>
+                                <td><span class="optional">Optional</span></td>
+                                <td>0-2000 watts</td>
+                                <td>Functional Power Profile</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">css</span></td>
+                                <td><span class="field-type">FloatField</span></td>
+                                <td><span class="optional">Optional</span></td>
+                                <td>0-3600 seconds</td>
+                                <td>Critical Swim Speed (stored as seconds)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="validation">
+                        <div class="validation-title">Performance Metrics Validation:</div>
+                        <p>• <strong>MAS:</strong> Uses <code>validate_mas()</code> at <code>/backend/accounts/models.py:218-222</code> - reasonable upper limit for human running speed</p>
+                        <p>• <strong>FPP:</strong> Uses <code>validate_fpp()</code> at <code>/backend/accounts/models.py:225-229</code> - reasonable upper limit for cycling power</p>
+                        <p>• <strong>CSS:</strong> Uses <code>validate_css()</code> at <code>/backend/accounts/models.py:232-236</code> - stored as seconds, displayed as mm:ss format</p>
+                        <p>• <strong>Helper Functions:</strong> <code>css_display()</code> at line 238, <code>css_parse()</code> at line 247</p>
+                    </div>
+
+                    <h4>System Fields</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="field-name">is_verified</span></td>
+                                <td><span class="field-type">BooleanField</span></td>
+                                <td><span class="auto">Auto</span></td>
+                                <td>Email verification status (default: False)</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">created_at</span></td>
+                                <td><span class="field-type">DateTimeField</span></td>
+                                <td><span class="auto">Auto</span></td>
+                                <td>Account creation timestamp</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">updated_at</span></td>
+                                <td><span class="field-type">DateTimeField</span></td>
+                                <td><span class="auto">Auto</span></td>
+                                <td>Last modification timestamp</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="note">
+                        <span class="note-icon">🔑</span><strong>Custom Properties:</strong> <code>full_name</code> (line 77), <code>age</code> (line 80), <code>full_phone_number</code> (line 86), <code>css_display</code> (line 89)
+                    </div>
+
+                    <div class="note">
+                        <span class="note-icon">🗂️</span><strong>Indexes:</strong> email, user_type, coach_id, created_at
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="profile-models">
+            <h2>📋 Profile Models</h2>
+
+            <div class="model-section">
+                <h3 class="model-header">AthleticProfile</h3>
+                <div class="model-content">
+                    <p><strong>Relationship:</strong> One-to-One with User (athletes only)</p>
+                    <p><strong>File:</strong> <code>/backend/accounts/models.py:143-158</code> | <strong>Class:</strong> <code>AthleticProfile</code></p>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Constraints</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="field-name">user</span></td>
+                                <td><span class="field-type">OneToOneField</span></td>
+                                <td><span class="required">Required</span></td>
+                                <td>→ User, CASCADE, athletes only</td>
+                                <td>Link to User account</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">experience_years</span></td>
+                                <td><span class="field-type">PositiveIntegerField</span></td>
+                                <td><span class="optional">Optional</span></td>
+                                <td>null=True, blank=True</td>
+                                <td>Years of sports experience</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">about_notes</span></td>
+                                <td><span class="field-type">TextField</span></td>
+                                <td><span class="optional">Optional</span></td>
+                                <td>blank=True</td>
+                                <td>Additional information about athlete</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">sports_involved</span></td>
+                                <td><span class="field-type">JSONField</span></td>
+                                <td><span class="optional">Optional</span></td>
+                                <td>default=list, blank=True</td>
+                                <td>Multiple sports selection</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="choices">
+                        <div class="choices-title">Sports Choices (Multiple Selection):</div>
+                        <div class="choice-item">• 'running' → Running</div>
+                        <div class="choice-item">• 'cycling' → Cycling</div>
+                        <div class="choice-item">• 'swimming' → Swimming</div>
+                        <div class="choice-item">• 'triathlon' → Triathlon</div>
+                        <div class="choice-item">• 'strength' → Strength</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="model-section">
+                <h3 class="model-header">ProfessionalProfile</h3>
+                <div class="model-content">
+                    <p><strong>Relationship:</strong> One-to-One with User (coaches only)</p>
+                    <p><strong>File:</strong> <code>/backend/accounts/models.py:161-169</code> | <strong>Class:</strong> <code>ProfessionalProfile</code></p>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Constraints</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="field-name">user</span></td>
+                                <td><span class="field-type">OneToOneField</span></td>
+                                <td><span class="required">Required</span></td>
+                                <td>→ User, CASCADE, coaches only</td>
+                                <td>Link to User account</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">experience_years</span></td>
+                                <td><span class="field-type">PositiveIntegerField</span></td>
+                                <td><span class="optional">Optional</span></td>
+                                <td>null=True, blank=True</td>
+                                <td>Years of coaching experience</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">about_notes</span></td>
+                                <td><span class="field-type">TextField</span></td>
+                                <td><span class="optional">Optional</span></td>
+                                <td>blank=True</td>
+                                <td>Professional background information</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="model-section">
+                <h3 class="model-header">CoachAssignment</h3>
+                <div class="model-content">
+                    <p><strong>Purpose:</strong> Manages coach-athlete access relationships (Many-to-Many through model)</p>
+                    <p><strong>File:</strong> <code>/backend/accounts/models.py:172-206</code> | <strong>Class:</strong> <code>CoachAssignment</code></p>
+                    <p><strong>Methods:</strong> <code>clean()</code> validation at line 191, <code>save()</code> at line 200, <code>__str__()</code> at line 204</p>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Constraints</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="field-name">mentee</span></td>
+                                <td><span class="field-type">ForeignKey</span></td>
+                                <td><span class="required">Required</span></td>
+                                <td>→ User, CASCADE</td>
+                                <td>Athlete receiving coaching</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">coach</span></td>
+                                <td><span class="field-type">ForeignKey</span></td>
+                                <td><span class="required">Required</span></td>
+                                <td>→ User, CASCADE</td>
+                                <td>Coach providing guidance</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">start_date</span></td>
+                                <td><span class="field-type">DateField</span></td>
+                                <td><span class="auto">Auto</span></td>
+                                <td>auto_now_add=True</td>
+                                <td>Relationship start date</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">end_date</span></td>
+                                <td><span class="field-type">DateField</span></td>
+                                <td><span class="optional">Optional</span></td>
+                                <td>null=True, blank=True</td>
+                                <td>Relationship end date</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">is_active</span></td>
+                                <td><span class="field-type">BooleanField</span></td>
+                                <td><span class="auto">Auto</span></td>
+                                <td>default=True</td>
+                                <td>Active relationship status</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">notes</span></td>
+                                <td><span class="field-type">TextField</span></td>
+                                <td><span class="optional">Optional</span></td>
+                                <td>blank=True</td>
+                                <td>Additional relationship notes</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="validation">
+                        <div class="validation-title">Constraints:</div>
+                        <p>• Unique constraint on mentee+coach where is_active=True</p>
+                        <p>• Prevents self-assignment</p>
+                        <p>• End date must be after start date</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="achievement-models">
+            <h2>🏆 Achievement & Certification Models</h2>
+
+            <div class="model-section">
+                <h3 class="model-header">Achievement</h3>
+                <div class="model-content">
+                    <p><strong>Relationship:</strong> Many-to-One with AthleticProfile</p>
+                    <p><strong>File:</strong> <code>/backend/accounts/models.py:256-299</code> | <strong>Class:</strong> <code>Achievement</code></p>
+                    <p><strong>Methods:</strong> <code>clean()</code> validation at line 285, <code>__str__()</code> at line 295</p>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Constraints</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="field-name">profile</span></td>
+                                <td><span class="field-type">ForeignKey</span></td>
+                                <td><span class="required">Required</span></td>
+                                <td>→ AthleticProfile, CASCADE</td>
+                                <td>Link to athlete profile</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">category</span></td>
+                                <td><span class="field-type">CharField</span></td>
+                                <td><span class="required">Required</span></td>
+                                <td>max_length=30, choices</td>
+                                <td>Type of achievement</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">year</span></td>
+                                <td><span class="field-type">PositiveIntegerField</span></td>
+                                <td><span class="required">Required</span></td>
+                                <td>1900 ≤ year ≤ current year</td>
+                                <td>Year of achievement</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">title</span></td>
+                                <td><span class="field-type">CharField</span></td>
+                                <td><span class="required">Required</span></td>
+                                <td>max_length=200</td>
+                                <td>Achievement title/name</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">description</span></td>
+                                <td><span class="field-type">TextField</span></td>
+                                <td><span class="optional">Optional</span></td>
+                                <td>blank=True</td>
+                                <td>Detailed description</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="choices">
+                        <div class="choices-title">Achievement Categories:</div>
+                        <div class="choice-item">• 'race_achievement' → Race Achievement</div>
+                        <div class="choice-item">• 'personal_record' → Personal Record</div>
+                        <div class="choice-item">• 'competition_results' → Competition Results</div>
+                        <div class="choice-item">• 'training_milestone' → Training Milestone</div>
+                        <div class="choice-item">• 'other' → Other</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="model-section">
+                <h3 class="model-header">Certification</h3>
+                <div class="model-content">
+                    <p><strong>Relationship:</strong> Many-to-One with ProfessionalProfile</p>
+                    <p><strong>File:</strong> <code>/backend/accounts/models.py:302-348</code> | <strong>Class:</strong> <code>Certification</code></p>
+                    <p><strong>Methods:</strong> <code>clean()</code> validation at line 324, <code>__str__()</code> at line 336, <code>is_recent</code> property at line 340</p>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Constraints</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="field-name">profile</span></td>
+                                <td><span class="field-type">ForeignKey</span></td>
+                                <td><span class="required">Required</span></td>
+                                <td>→ ProfessionalProfile, CASCADE</td>
+                                <td>Link to coach profile</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">sport</span></td>
+                                <td><span class="field-type">CharField</span></td>
+                                <td><span class="required">Required</span></td>
+                                <td>max_length=50, choices</td>
+                                <td>Sport certification is for</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">year</span></td>
+                                <td><span class="field-type">PositiveIntegerField</span></td>
+                                <td><span class="required">Required</span></td>
+                                <td>1900 ≤ year ≤ current year</td>
+                                <td>Year certification was obtained</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">title</span></td>
+                                <td><span class="field-type">CharField</span></td>
+                                <td><span class="required">Required</span></td>
+                                <td>max_length=200</td>
+                                <td>Certification title/name</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">issuing_organization</span></td>
+                                <td><span class="field-type">CharField</span></td>
+                                <td><span class="optional">Optional</span></td>
+                                <td>max_length=200, blank=True</td>
+                                <td>Organization that issued certification</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="choices">
+                        <div class="choices-title">Sport Choices:</div>
+                        <div class="choice-item">• 'running' → Running</div>
+                        <div class="choice-item">• 'cycling' → Cycling</div>
+                        <div class="choice-item">• 'swimming' → Swimming</div>
+                        <div class="choice-item">• 'triathlon' → Triathlon</div>
+                        <div class="choice-item">• 'other' → Other</div>
+                    </div>
+
+                    <div class="note">
+                        <span class="note-icon">📅</span><strong>Property:</strong> <code>is_recent</code> at line 340 - indicates if certification is from the last 5 years
+                    </div>
+                </div>
+            </div>
+
+            <div class="model-section">
+                <h3 class="model-header">CoachAchievement</h3>
+                <div class="model-content">
+                    <p><strong>Relationship:</strong> Many-to-One with ProfessionalProfile</p>
+                    <p><strong>Note:</strong> Same structure as Achievement but for coaches</p>
+                    <p><strong>File:</strong> <code>/backend/accounts/models.py:351-384</code> | <strong>Class:</strong> <code>CoachAchievement</code></p>
+                    <p><strong>Methods:</strong> <code>clean()</code> validation at line 370, <code>__str__()</code> at line 380</p>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="field-name">profile</span></td>
+                                <td><span class="field-type">ForeignKey</span></td>
+                                <td><span class="required">Required</span></td>
+                                <td>→ ProfessionalProfile, CASCADE</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">category</span></td>
+                                <td><span class="field-type">CharField</span></td>
+                                <td><span class="required">Required</span></td>
+                                <td>Same choices as Achievement</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">year</span></td>
+                                <td><span class="field-type">PositiveIntegerField</span></td>
+                                <td><span class="required">Required</span></td>
+                                <td>Achievement year</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">title</span></td>
+                                <td><span class="field-type">CharField</span></td>
+                                <td><span class="required">Required</span></td>
+                                <td>Achievement title</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">description</span></td>
+                                <td><span class="field-type">TextField</span></td>
+                                <td><span class="optional">Optional</span></td>
+                                <td>Detailed description</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="event-models">
+            <h2>📅 Event Models</h2>
+            <p><em>Location: <code>/backend/core/events.py</code></em></p>
+
+            <div class="model-section abstract-model">
+                <h3 class="model-header">Event (Abstract Base Model)</h3>
+                <div class="model-content">
+                    <p><strong>Purpose:</strong> Base model for all event types | <strong>Manager:</strong> EventManager</p>
+                    <p><strong>File:</strong> <code>/backend/core/events.py:11-31</code> | <strong>Class:</strong> <code>Event</code></p>
+                    <p><strong>Manager:</strong> <code>EventManager</code> at <code>/backend/core/events.py:7-9</code></p>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Constraints</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="field-name">title</span></td>
+                                <td><span class="field-type">CharField</span></td>
+                                <td><span class="required">Required</span></td>
+                                <td>max_length=200</td>
+                                <td>Event title/name</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">athlete</span></td>
+                                <td><span class="field-type">ForeignKey</span></td>
+                                <td><span class="required">Required</span></td>
+                                <td>→ User, CASCADE, athletes only</td>
+                                <td>Athlete who owns the event</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">date</span></td>
+                                <td><span class="field-type">DateTimeField</span></td>
+                                <td><span class="required">Required</span></td>
+                                <td>-</td>
+                                <td>Event date and time</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="note">
+                        <span class="note-icon">🎯</span><strong>Properties:</strong> <code>is_upcoming</code> at line 27, <code>is_today</code> at line 30
+                    </div>
+                </div>
+            </div>
+
+            <div class="model-section">
+                <h3 class="model-header">Training</h3>
+                <div class="model-content">
+                    <p><strong>Inherits:</strong> Event | <strong>Manager:</strong> TrainingManager</p>
+                    <p><strong>File:</strong> <code>/backend/core/events.py:75-395</code> | <strong>Class:</strong> <code>Training</code></p>
+                    <p><strong>Manager:</strong> <code>TrainingManager</code> at <code>/backend/core/events.py:34-72</code></p>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Constraints</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="field-name">duration</span></td>
+                                <td><span class="field-type">DurationField</span></td>
+                                <td><span class="optional">Optional</span></td>
+                                <td>null=True, blank=True</td>
+                                <td>Training session duration</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">time</span></td>
+                                <td><span class="field-type">TimeField</span></td>
+                                <td><span class="optional">Optional</span></td>
+                                <td>null=True, blank=True</td>
+                                <td>Scheduled time for training</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">sport</span></td>
+                                <td><span class="field-type">CharField</span></td>
+                                <td><span class="required">Required</span></td>
+                                <td>max_length=50, choices</td>
+                                <td>Sport type for training</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">training_data</span></td>
+                                <td><span class="field-type">JSONField</span></td>
+                                <td><span class="optional">Optional</span></td>
+                                <td>default=dict, blank=True</td>
+                                <td>Complex workout structure</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">notes</span></td>
+                                <td><span class="field-type">TextField</span></td>
+                                <td><span class="optional">Optional</span></td>
+                                <td>blank=True</td>
+                                <td>Additional training notes</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="choices">
+                        <div class="choices-title">Sport Choices:</div>
+                        <div class="choice-item">• 'running' → Running</div>
+                        <div class="choice-item">• 'cycling' → Cycling</div>
+                        <div class="choice-item">• 'swimming' → Swimming</div>
+                        <div class="choice-item">• 'strength' → Strength</div>
+                        <div class="choice-item">• 'other' → Other</div>
+                    </div>
+
+                    <h4>Training Data JSON Structure</h4>
+                    <div class="json-structure">
+{
+  <span class="json-key">"warmup"</span>: {
+    <span class="json-key">"name"</span>: <span class="json-string">"Dynamic warm-up"</span>,
+    <span class="json-key">"duration"</span>: <span class="json-number">10</span>,
+    <span class="json-key">"unit"</span>: <span class="json-string">"minutes"</span>,
+    <span class="json-key">"intensity"</span>: <span class="json-number">50</span>,
+    <span class="json-key">"zone_type"</span>: <span class="json-string">"HR"</span>
+  },
+  <span class="json-key">"intervals"</span>: [{
+    <span class="json-key">"name"</span>: <span class="json-string">"HIIT intervals"</span>,
+    <span class="json-key">"repetitions"</span>: <span class="json-number">4</span>,
+    <span class="json-key">"sub_intervals"</span>: [{
+      <span class="json-key">"work"</span>: {
+        <span class="json-key">"name"</span>: <span class="json-string">"High intensity"</span>,
+        <span class="json-key">"type"</span>: <span class="json-string">"time"</span>,
+        <span class="json-key">"duration_or_distance"</span>: <span class="json-number">30</span>,
+        <span class="json-key">"unit"</span>: <span class="json-string">"seconds"</span>,
+        <span class="json-key">"intensity"</span>: <span class="json-number">120</span>,
+        <span class="json-key">"zone_type"</span>: <span class="json-string">"CSS"</span>
+      },
+      <span class="json-key">"rest"</span>: {
+        <span class="json-key">"name"</span>: <span class="json-string">"Active recovery"</span>,
+        <span class="json-key">"duration"</span>: <span class="json-number">90</span>,
+        <span class="json-key">"unit"</span>: <span class="json-string">"seconds"</span>,
+        <span class="json-key">"intensity"</span>: <span class="json-number">40</span>
+      }
+    }]
+  }],
+  <span class="json-key">"cooldown"</span>: {
+    <span class="json-key">"name"</span>: <span class="json-string">"Easy cooldown"</span>
+  }
+}
+                    </div>
+
+                    <div class="validation">
+                        <div class="validation-title">Training Data Validation Constants & Functions:</div>
+                        <p>• <strong>TIME_UNITS:</strong> ['seconds', 'minutes', 'hours'] - constant at line 103</p>
+                        <p>• <strong>DISTANCE_UNITS:</strong> ['meters', 'kilometers', 'miles'] - constant at line 104</p>
+                        <p>• <strong>ZONE_TYPES:</strong> ['HR', 'MAS', 'FPP', 'CSS'] - constant at line 105</p>
+                        <p>• <strong>INTENSITY:</strong> 0-150% validation via <code>_validate_intensity()</code> at line 107</p>
+                        <p>• <strong>Validation Methods:</strong> <code>_validate_unit()</code> at line 112, <code>_validate_zone_type()</code> at line 120, <code>_validate_training_data()</code> at line 125</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="model-section">
+                <h3 class="model-header">Race</h3>
+                <div class="model-content">
+                    <p><strong>Inherits:</strong> Event | <strong>Manager:</strong> RaceManager</p>
+                    <p><strong>File:</strong> <code>/backend/core/events.py:398-495</code> | <strong>Class:</strong> <code>Race</code></p>
+                    <p><strong>Manager:</strong> <code>RaceManager</code> at line 398</p>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Constraints</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="field-name">sport</span></td>
+                                <td><span class="field-type">CharField</span></td>
+                                <td><span class="required">Required</span></td>
+                                <td>max_length=50, choices</td>
+                                <td>Race sport type</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">location</span></td>
+                                <td><span class="field-type">CharField</span></td>
+                                <td><span class="optional">Optional</span></td>
+                                <td>max_length=200, blank=True</td>
+                                <td>Race location</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">distance</span></td>
+                                <td><span class="field-type">FloatField</span></td>
+                                <td><span class="optional">Optional</span></td>
+                                <td>null=True, blank=True, > 0</td>
+                                <td>Race distance in kilometers</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">finish_time</span></td>
+                                <td><span class="field-type">DurationField</span></td>
+                                <td><span class="optional">Optional</span></td>
+                                <td>null=True, blank=True</td>
+                                <td>Actual finish time</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">target_time</span></td>
+                                <td><span class="field-type">DurationField</span></td>
+                                <td><span class="optional">Optional</span></td>
+                                <td>null=True, blank=True</td>
+                                <td>Target finish time</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="choices">
+                        <div class="choices-title">Race Sport Choices:</div>
+                        <div class="choice-item">• 'running' → Running</div>
+                        <div class="choice-item">• 'cycling' → Cycling</div>
+                        <div class="choice-item">• 'swimming' → Swimming</div>
+                        <div class="choice-item">• 'triathlon' → Triathlon</div>
+                        <div class="choice-item">• 'other' → Other</div>
+                    </div>
+
+                    <div class="note">
+                        <span class="note-icon">🏃‍♂️</span><strong>Properties:</strong> <code>is_completed</code> at line 439, <code>pace_per_km</code> at line 442, <code>target_vs_actual</code> at line 457
+                        <p><strong>Methods:</strong> <code>clean()</code> validation at line 426, <code>__str__()</code> at line 491</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="model-section">
+                <h3 class="model-header">CustomEvent</h3>
+                <div class="model-content">
+                    <p><strong>Inherits:</strong> Event | <strong>Manager:</strong> CustomEventManager</p>
+                    <p><strong>File:</strong> <code>/backend/core/events.py:498-559</code> | <strong>Class:</strong> <code>CustomEvent</code></p>
+                    <p><strong>Manager:</strong> <code>CustomEventManager</code> at line 498</p>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Required</th>
+                                <th>Constraints</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="field-name">date_end</span></td>
+                                <td><span class="field-type">DateTimeField</span></td>
+                                <td><span class="required">Required</span></td>
+                                <td>must be > date</td>
+                                <td>Event end date and time</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">location</span></td>
+                                <td><span class="field-type">CharField</span></td>
+                                <td><span class="optional">Optional</span></td>
+                                <td>max_length=200, blank=True</td>
+                                <td>Event location</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">event_color</span></td>
+                                <td><span class="field-type">CharField</span></td>
+                                <td><span class="auto">Auto</span></td>
+                                <td>max_length=20, default='blue'</td>
+                                <td>Calendar display color</td>
+                            </tr>
+                            <tr>
+                                <td><span class="field-name">description</span></td>
+                                <td><span class="field-type">TextField</span></td>
+                                <td><span class="optional">Optional</span></td>
+                                <td>blank=True</td>
+                                <td>Event description</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="choices">
+                        <div class="choices-title">Event Color Choices:</div>
+                        <div class="choice-item">• 'red' → Red</div>
+                        <div class="choice-item">• 'blue' → Blue</div>
+                        <div class="choice-item">• 'green' → Green</div>
+                        <div class="choice-item">• 'yellow' → Yellow</div>
+                        <div class="choice-item">• 'purple' → Purple</div>
+                        <div class="choice-item">• 'orange' → Orange</div>
+                    </div>
+
+                    <div class="note">
+                        <span class="note-icon">📅</span><strong>Properties:</strong> <code>duration_days</code> at line 533, <code>is_multi_day</code> at line 536
+                        <p><strong>Methods:</strong> <code>clean()</code> validation at line 523, <code>__str__()</code> at line 555</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="relationships">
+            <h2>🔗 Model Relationships</h2>
+            
+            <div class="relationship">
+                <div class="relationship-title">Core User Relationships</div>
+                <p>• <strong>User ↔ AthleticProfile:</strong> One-to-One (athletes only)</p>
+                <p>• <strong>User ↔ ProfessionalProfile:</strong> One-to-One (coaches only)</p>
+                <p>• <strong>User ↔ CoachAssignment:</strong> Many-to-Many (through CoachAssignment model)</p>
+            </div>
+
+            <div class="relationship">
+                <div class="relationship-title">Profile-Related Relationships</div>
+                <p>• <strong>AthleticProfile ↔ Achievement:</strong> One-to-Many</p>
+                <p>• <strong>ProfessionalProfile ↔ Certification:</strong> One-to-Many</p>
+                <p>• <strong>ProfessionalProfile ↔ CoachAchievement:</strong> One-to-Many</p>
+            </div>
+
+            <div class="relationship">
+                <div class="relationship-title">Event Relationships</div>
+                <p>• <strong>User ↔ Training:</strong> One-to-Many (athletes only)</p>
+                <p>• <strong>User ↔ Race:</strong> One-to-Many (athletes only)</p>
+                <p>• <strong>User ↔ CustomEvent:</strong> One-to-Many (athletes only)</p>
+            </div>
+        </section>
+
+        <section id="validation">
+            <h2>🛡️ Validation Rules</h2>
+            
+            <div class="validation">
+                <div class="validation-title">User Model Validators</div>
+                <p>• <strong>Phone Number:</strong> <code>validate_phone_number()</code> at <code>/backend/accounts/models.py:208-216</code> - International format validation (9-15 digits)</p>
+                <p>• <strong>MAS:</strong> <code>validate_mas()</code> at <code>/backend/accounts/models.py:218-222</code> - 0-50 km/h range validation</p>
+                <p>• <strong>FPP:</strong> <code>validate_fpp()</code> at <code>/backend/accounts/models.py:225-229</code> - 0-2000 watts range validation</p>
+                <p>• <strong>CSS:</strong> <code>validate_css()</code> at <code>/backend/accounts/models.py:232-236</code> - 0-3600 seconds validation with mm:ss display format</p>
+            </div>
+
+            <div class="validation">
+                <div class="validation-title">Achievement & Certification Validators</div>
+                <p>• <strong>Year Validation:</strong> <code>Achievement.clean()</code> at <code>/backend/accounts/models.py:285</code> and <code>Certification.clean()</code> at line 324 - Must be between 1900 and current year</p>
+                <p>• <strong>Category Choices:</strong> Constants at <code>/backend/accounts/models.py:258</code> - Enforced through Django choices</p>
+                <p>• <strong>Recent Certification:</strong> <code>is_recent</code> property at <code>/backend/accounts/models.py:340</code> - Calculated property (last 5 years)</p>
+            </div>
+
+            <div class="validation">
+                <div class="validation-title">Training Data Validators</div>
+                <p>• <strong>Unit Consistency:</strong> <code>_validate_unit()</code> at <code>/backend/core/events.py:112</code> - Time units for time-based intervals, distance units for distance-based</p>
+                <p>• <strong>Intensity Range:</strong> <code>_validate_intensity()</code> at <code>/backend/core/events.py:107</code> - 0-150% validation</p>
+                <p>• <strong>Zone Types:</strong> <code>_validate_zone_type()</code> at <code>/backend/core/events.py:120</code> - HR, MAS, FPP, CSS validation</p>
+                <p>• <strong>Structure Validation:</strong> <code>_validate_training_data()</code> at <code>/backend/core/events.py:125</code> - Complex nested JSON validation</p>
+            </div>
+
+            <div class="validation">
+                <div class="validation-title">Event Validators</div>
+                <p>• <strong>Race Distance:</strong> <code>Race.clean()</code> at <code>/backend/core/events.py:426</code> - Must be greater than 0 (when provided)</p>
+                <p>• <strong>Date Logic:</strong> <code>CustomEvent.clean()</code> at <code>/backend/core/events.py:523</code> - End date must be after start date for CustomEvents</p>
+                <p>• <strong>Finish Time Validation:</strong> <code>Race.clean()</code> at <code>/backend/core/events.py:426</code> - Prevents unreasonable times compared to target</p>
+            </div>
+        </section>
+
+        <div class="note" style="margin-top: 50px;">
+            <span class="note-icon">🚀</span><strong>Database Summary:</strong> This comprehensive structure supports a full-featured sports training application with user management, flexible training data, event tracking, and coach-athlete relationships while maintaining strict data integrity through extensive validation.
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,677 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Training Builder Data Schema",
+  "description": "Complete specification for training builder data structure across frontend, backend, and storage",
+  "version": "1.0.0",
+
+  "definitions": {
+    "durationUnit": {
+      "type": "string",
+      "enum": ["sec", "min"],
+      "description": "Frontend: 'sec' | 'min', Backend: 'seconds' | 'minutes'"
+    },
+    "distanceUnit": {
+      "type": "string",
+      "enum": ["m", "km"],
+      "description": "Frontend: 'm' | 'km', Backend: 'meters' | 'kilometers'"
+    },
+    "intensityUnit": {
+      "type": "string",
+      "enum": ["heart_rate", "MAS", "FPP", "CSS"],
+      "description": "Frontend: 'heart_rate' | 'MAS' | 'FPP' | 'CSS', Backend zone_type: 'HR' | 'MAS' | 'FPP' | 'CSS'"
+    },
+    "intervalType": {
+      "type": "string",
+      "enum": ["time", "distance"],
+      "description": "Whether interval is measured by time or distance"
+    }
+  },
+
+  "trainingBuilder": {
+    "description": "Root object representing the complete training builder",
+    "type": "object",
+    "required": ["name"],
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "Name of the training session",
+        "example": "5K Speed Intervals"
+      },
+      "components": {
+        "type": "array",
+        "description": "Ordered list of training components (warmup, intervals, rest, cooldown)",
+        "items": {
+          "oneOf": [
+            { "$ref": "#/components/warmup" },
+            { "$ref": "#/components/interval" },
+            { "$ref": "#/components/rest" },
+            { "$ref": "#/components/cooldown" }
+          ]
+        }
+      }
+    }
+  },
+
+  "components": {
+    "warmup": {
+      "type": "object",
+      "required": ["type", "name"],
+      "properties": {
+        "type": {
+          "const": "warmup",
+          "description": "Component type identifier"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the warmup phase",
+          "example": "Easy Jog"
+        },
+        "duration": {
+          "type": ["string", "number"],
+          "description": "Duration value (optional)",
+          "example": "15"
+        },
+        "durationUnit": {
+          "$ref": "#/definitions/durationUnit",
+          "description": "Unit for duration (optional, required if duration is set)",
+          "example": "min"
+        },
+        "intensity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 150,
+          "description": "Intensity percentage (optional)",
+          "example": 60
+        },
+        "intensityUnit": {
+          "$ref": "#/definitions/intensityUnit",
+          "description": "Zone type for intensity (optional)",
+          "example": "heart_rate"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Additional notes (optional)",
+          "example": "Include dynamic stretching"
+        }
+      },
+      "backendMapping": {
+        "structure": "training_data.warmup",
+        "fields": {
+          "name": "name (string, required)",
+          "duration": "duration (number, optional)",
+          "durationUnit": "unit (string: 'seconds' | 'minutes', optional, required with duration)",
+          "intensity": "intensity (number, optional)",
+          "intensityUnit": "zone_type (string: 'HR' | 'MAS' | 'FPP' | 'CSS', optional)"
+        }
+      }
+    },
+
+    "cooldown": {
+      "type": "object",
+      "required": ["type", "name"],
+      "properties": {
+        "type": {
+          "const": "cooldown",
+          "description": "Component type identifier"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the cooldown phase",
+          "example": "Easy Jog"
+        },
+        "duration": {
+          "type": ["string", "number"],
+          "description": "Duration value (optional)",
+          "example": "10"
+        },
+        "durationUnit": {
+          "$ref": "#/definitions/durationUnit",
+          "description": "Unit for duration (optional, required if duration is set)",
+          "example": "min"
+        },
+        "intensity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 150,
+          "description": "Intensity percentage (optional)",
+          "example": 50
+        },
+        "intensityUnit": {
+          "$ref": "#/definitions/intensityUnit",
+          "description": "Zone type for intensity (optional)",
+          "example": "heart_rate"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Additional notes (optional)",
+          "example": "Include static stretching"
+        }
+      },
+      "backendMapping": {
+        "structure": "training_data.cooldown",
+        "fields": {
+          "name": "name (string, required)",
+          "duration": "duration (number, optional)",
+          "durationUnit": "unit (string: 'seconds' | 'minutes', optional, required with duration)",
+          "intensity": "intensity (number, optional)",
+          "intensityUnit": "zone_type (string: 'HR' | 'MAS' | 'FPP' | 'CSS', optional)"
+        }
+      }
+    },
+
+    "rest": {
+      "type": "object",
+      "required": ["type", "name"],
+      "properties": {
+        "type": {
+          "const": "rest",
+          "description": "Component type identifier"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the rest period",
+          "example": "Recovery Walk"
+        },
+        "duration": {
+          "type": ["string", "number"],
+          "description": "Duration value (optional)",
+          "example": "90"
+        },
+        "durationUnit": {
+          "$ref": "#/definitions/durationUnit",
+          "description": "Unit for duration (optional, required if duration is set)",
+          "example": "sec"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Additional notes (optional)",
+          "example": "Walk slowly, focus on breathing"
+        }
+      },
+      "backendMapping": {
+        "structure": "training_data.rest_periods[] (standalone rest)",
+        "fields": {
+          "name": "name (string, required)",
+          "duration": "duration (number, required)",
+          "durationUnit": "unit (string: 'seconds' | 'minutes', required)"
+        }
+      }
+    },
+
+    "interval": {
+      "type": "object",
+      "required": ["type", "name"],
+      "properties": {
+        "type": {
+          "const": "interval",
+          "description": "Component type identifier"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the interval - ALWAYS REQUIRED for both simple and complex intervals",
+          "example": "5K Pace Intervals"
+        },
+        "repetitions": {
+          "type": "number",
+          "minimum": 1,
+          "description": "Number of repetitions - ALWAYS REQUIRED for both simple and complex intervals. For complex intervals, this defines how many times the entire sub-interval sequence is repeated.",
+          "example": 5
+        },
+        "intervalType": {
+          "$ref": "#/definitions/intervalType",
+          "description": "ONLY for simple intervals WITHOUT sub-intervals",
+          "example": "time"
+        },
+        "duration": {
+          "type": ["string", "number"],
+          "description": "ONLY for simple intervals (time-based) WITHOUT sub-intervals",
+          "example": "4"
+        },
+        "durationUnit": {
+          "$ref": "#/definitions/durationUnit",
+          "description": "ONLY for simple intervals (time-based) WITHOUT sub-intervals",
+          "example": "min"
+        },
+        "distance": {
+          "type": ["string", "number"],
+          "description": "ONLY for simple intervals (distance-based) WITHOUT sub-intervals",
+          "example": "400"
+        },
+        "distanceUnit": {
+          "$ref": "#/definitions/distanceUnit",
+          "description": "ONLY for simple intervals (distance-based) WITHOUT sub-intervals",
+          "example": "m"
+        },
+        "intensity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 150,
+          "description": "ONLY for simple intervals WITHOUT sub-intervals",
+          "example": 95
+        },
+        "intensityUnit": {
+          "$ref": "#/definitions/intensityUnit",
+          "description": "ONLY for simple intervals WITHOUT sub-intervals",
+          "example": "MAS"
+        },
+        "children": {
+          "type": "array",
+          "description": "Sub-intervals for complex intervals. When present, parent interval fields (duration, distance, intensity, intervalType) should be IGNORED/CLEARED. The parent 'name' and 'repetitions' define the overall set.",
+          "items": {
+            "oneOf": [
+              { "$ref": "#/components/subIntervalWork" },
+              { "$ref": "#/components/subIntervalRest" }
+            ]
+          },
+          "example": [
+            {
+              "type": "interval",
+              "name": "400m Fast",
+              "intervalType": "distance",
+              "distance": "400",
+              "distanceUnit": "m",
+              "intensity": 95,
+              "intensityUnit": "MAS"
+            },
+            {
+              "type": "rest",
+              "name": "Recovery Jog",
+              "duration": "90",
+              "durationUnit": "sec"
+            }
+          ]
+        },
+        "notes": {
+          "type": "string",
+          "description": "Additional notes (optional for both simple and complex intervals)",
+          "example": "Maintain consistent pace"
+        }
+      },
+      "rules": {
+        "simpleInterval": {
+          "description": "Simple interval WITHOUT children/sub-intervals - A single work effort repeated N times",
+          "requiredFields": ["name", "intervalType", "repetitions"],
+          "conditionalFields": {
+            "when_time_based": ["duration", "durationUnit"],
+            "when_distance_based": ["distance", "distanceUnit"]
+          },
+          "optionalFields": ["intensity", "intensityUnit", "notes"],
+          "forbiddenFields": ["children"],
+          "example": "Run 400m @ 95% MAS, repeated 5 times (with standalone rest blocks between each rep)"
+        },
+        "complexInterval": {
+          "description": "Complex interval WITH children/sub-intervals - A sequence of work/rest phases repeated N times as a set",
+          "requiredFields": ["name", "repetitions", "children"],
+          "optionalFields": ["notes"],
+          "forbiddenFields": ["intervalType", "duration", "durationUnit", "distance", "distanceUnit", "intensity", "intensityUnit"],
+          "parentLevelFields": {
+            "name": "Names the entire set (e.g., 'Main Set', 'Speed Intervals')",
+            "repetitions": "How many times to repeat the ENTIRE work+rest sequence"
+          },
+          "childrenLevelFields": {
+            "work": "Individual work phase details (name, duration/distance, intensity)",
+            "rest": "Individual rest phase details (name, duration)"
+          },
+          "note": "The parent 'name' describes the whole set, parent 'repetitions' defines how many times the sub-interval sequence repeats. All work/rest details are in children.",
+          "example": "Main Set (5 reps) where each rep = [400m Fast @ 95% MAS + 90sec Recovery]"
+        }
+      },
+      "backendMapping": {
+        "simpleInterval": {
+          "structure": "training_data.intervals[]",
+          "fields": {
+            "name": "name (string, required) - describes this interval",
+            "intervalType": "type (string: 'time' | 'distance', required)",
+            "duration/distance": "duration_or_distance (number, required)",
+            "durationUnit/distanceUnit": "unit (string, required)",
+            "repetitions": "repetitions (integer, required, default: 1) - how many times to repeat THIS interval",
+            "intensity": "intensity (number, optional)",
+            "intensityUnit": "zone_type (string: 'HR' | 'MAS' | 'FPP' | 'CSS', optional)"
+          }
+        },
+        "complexInterval": {
+          "structure": "training_data.intervals[]",
+          "fields": {
+            "name": "name (string, required) - describes the entire set",
+            "repetitions": "repetitions (integer, required) - how many times to repeat the ENTIRE sub-interval sequence",
+            "children": "sub_intervals (array, required) - the work/rest sequence that gets repeated"
+          },
+          "note": "When sub_intervals present, type/duration_or_distance/unit/intensity fields should NOT be sent to backend. Only name + repetitions + sub_intervals."
+        }
+      }
+    },
+
+    "subIntervalWork": {
+      "type": "object",
+      "description": "Work phase within a complex interval's sub-intervals. Note: Sub-intervals do NOT have their own 'repetitions' field - they inherit from the parent interval's repetitions.",
+      "required": ["type", "name", "intervalType"],
+      "properties": {
+        "type": {
+          "const": "interval",
+          "description": "Type is 'interval' for work phases"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of this specific work phase (not the parent set)",
+          "example": "400m Fast"
+        },
+        "intervalType": {
+          "$ref": "#/definitions/intervalType",
+          "example": "distance"
+        },
+        "duration": {
+          "type": ["string", "number"],
+          "description": "For time-based work",
+          "example": "2"
+        },
+        "durationUnit": {
+          "$ref": "#/definitions/durationUnit",
+          "example": "min"
+        },
+        "distance": {
+          "type": ["string", "number"],
+          "description": "For distance-based work",
+          "example": "400"
+        },
+        "distanceUnit": {
+          "$ref": "#/definitions/distanceUnit",
+          "example": "m"
+        },
+        "intensity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 150,
+          "example": 95
+        },
+        "intensityUnit": {
+          "$ref": "#/definitions/intensityUnit",
+          "example": "MAS"
+        }
+      },
+      "importantNotes": [
+        "Sub-intervals do NOT have a 'repetitions' field",
+        "The parent interval's 'repetitions' defines how many times the ENTIRE sub-interval sequence repeats",
+        "Example: Parent has repetitions=5, sub-intervals=[work, rest] means: do [work+rest] 5 times"
+      ],
+      "backendMapping": {
+        "structure": "training_data.intervals[].sub_intervals[].work",
+        "fields": {
+          "name": "name (string, required) - describes this work phase",
+          "intervalType": "type (string: 'time' | 'distance', required)",
+          "duration/distance": "duration_or_distance (number, required)",
+          "durationUnit/distanceUnit": "unit (string, required)",
+          "intensity": "intensity (number, optional)",
+          "intensityUnit": "zone_type (string, optional)"
+        },
+        "note": "No 'repetitions' field at sub-interval level - inherited from parent"
+      }
+    },
+
+    "subIntervalRest": {
+      "type": "object",
+      "description": "Rest phase within a complex interval's sub-intervals. Note: Sub-intervals do NOT have their own 'repetitions' field - they inherit from the parent interval's repetitions.",
+      "required": ["type", "name"],
+      "properties": {
+        "type": {
+          "const": "rest",
+          "description": "Type is 'rest' for recovery phases"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of this specific rest phase",
+          "example": "Recovery Jog"
+        },
+        "duration": {
+          "type": ["string", "number"],
+          "description": "Duration value (optional)",
+          "example": "90"
+        },
+        "durationUnit": {
+          "$ref": "#/definitions/durationUnit",
+          "example": "sec"
+        }
+      },
+      "importantNotes": [
+        "Sub-intervals do NOT have a 'repetitions' field",
+        "The parent interval's 'repetitions' defines how many times the ENTIRE sub-interval sequence repeats",
+        "Example: Parent has repetitions=5, sub-intervals=[work, rest] means: do [work+rest] 5 times"
+      ],
+      "backendMapping": {
+        "structure": "training_data.intervals[].sub_intervals[].rest",
+        "fields": {
+          "name": "name (string, required) - describes this rest phase",
+          "duration": "duration (number, required)",
+          "durationUnit": "unit (string, required)"
+        },
+        "note": "No 'repetitions' field at sub-interval level - inherited from parent"
+      }
+    }
+  },
+
+  "examples": {
+    "simpleTraining": {
+      "description": "Simple training with no complex intervals",
+      "frontend": {
+        "name": "Easy Run",
+        "components": [
+          {
+            "id": "warmup-1",
+            "type": "warmup",
+            "name": "Warm Up",
+            "duration": "10",
+            "durationUnit": "min"
+          },
+          {
+            "id": "interval-1",
+            "type": "interval",
+            "name": "Steady Run",
+            "intervalType": "time",
+            "duration": "30",
+            "durationUnit": "min",
+            "intensity": 70,
+            "intensityUnit": "heart_rate",
+            "repetitions": 1
+          },
+          {
+            "id": "cooldown-1",
+            "type": "cooldown",
+            "name": "Cool Down",
+            "duration": "5",
+            "durationUnit": "min"
+          }
+        ]
+      },
+      "backend": {
+        "training_data": {
+          "warmup": {
+            "name": "Warm Up",
+            "duration": 10,
+            "unit": "minutes"
+          },
+          "intervals": [
+            {
+              "name": "Steady Run",
+              "type": "time",
+              "duration_or_distance": 30,
+              "unit": "minutes",
+              "repetitions": 1,
+              "intensity": 70,
+              "zone_type": "HR"
+            }
+          ],
+          "cooldown": {
+            "name": "Cool Down",
+            "duration": 5,
+            "unit": "minutes"
+          }
+        }
+      }
+    },
+
+    "complexTrainingWithSubIntervals": {
+      "description": "Complex training with sub-intervals - CORRECT IMPLEMENTATION",
+      "frontend": {
+        "name": "5K Speed Work",
+        "components": [
+          {
+            "id": "warmup-1",
+            "type": "warmup",
+            "name": "Warm Up",
+            "duration": "15",
+            "durationUnit": "min"
+          },
+          {
+            "id": "interval-1",
+            "type": "interval",
+            "name": "Main Set",
+            "repetitions": 5,
+            "children": [
+              {
+                "id": "work-1",
+                "type": "interval",
+                "name": "400m Fast",
+                "intervalType": "distance",
+                "distance": "400",
+                "distanceUnit": "m",
+                "intensity": 95,
+                "intensityUnit": "MAS"
+              },
+              {
+                "id": "rest-1",
+                "type": "rest",
+                "name": "Recovery Jog",
+                "duration": "90",
+                "durationUnit": "sec"
+              }
+            ],
+            "notes": "Note: Parent interval fields (duration, distance, intensity) are NOT set when children exist"
+          },
+          {
+            "id": "cooldown-1",
+            "type": "cooldown",
+            "name": "Cool Down",
+            "duration": "10",
+            "durationUnit": "min"
+          }
+        ]
+      },
+      "backend": {
+        "training_data": {
+          "warmup": {
+            "name": "Warm Up",
+            "duration": 15,
+            "unit": "minutes"
+          },
+          "intervals": [
+            {
+              "name": "Main Set",
+              "repetitions": 5,
+              "sub_intervals": [
+                {
+                  "work": {
+                    "name": "400m Fast",
+                    "type": "distance",
+                    "duration_or_distance": 400,
+                    "unit": "meters",
+                    "intensity": 95,
+                    "zone_type": "MAS"
+                  },
+                  "rest": {
+                    "name": "Recovery Jog",
+                    "duration": 90,
+                    "unit": "seconds"
+                  }
+                }
+              ]
+            }
+          ],
+          "cooldown": {
+            "name": "Cool Down",
+            "duration": 10,
+            "unit": "minutes"
+          }
+        }
+      },
+      "notes": {
+        "criticalIssue": "When an interval has children/sub_intervals, the parent interval should ONLY have 'name' and 'repetitions'. All other fields (duration, distance, intensity, intensityUnit, intervalType) should be UNDEFINED or CLEARED.",
+        "currentBug": "The current implementation tries to save both parent interval data AND sub-intervals, causing validation errors on the backend.",
+        "dataStructureVisualization": {
+          "complexInterval": {
+            "parent": {
+              "name": "Main Set",
+              "repetitions": 5,
+              "meaning": "Repeat the following sequence 5 times"
+            },
+            "children": [
+              {
+                "work": {
+                  "name": "400m Fast",
+                  "distance": "400",
+                  "distanceUnit": "m",
+                  "intensity": 95,
+                  "intensityUnit": "MAS"
+                }
+              },
+              {
+                "rest": {
+                  "name": "Recovery Jog",
+                  "duration": "90",
+                  "durationUnit": "sec"
+                }
+              }
+            ],
+            "executionFlow": "Do [400m Fast @ 95% MAS + 90sec Recovery] x 5 reps"
+          },
+          "parentFieldsWhenChildrenExist": {
+            "allowed": ["name", "repetitions", "notes"],
+            "forbidden": ["intervalType", "duration", "durationUnit", "distance", "distanceUnit", "intensity", "intensityUnit"],
+            "reason": "When sub-intervals exist, they define the work/rest details. Parent only names the set and controls repetitions."
+          }
+        }
+      }
+    }
+  },
+
+  "dataFlowSummary": {
+    "frontend": {
+      "storage": "TrainingBlock[] type defined in types.ts",
+      "display": "IntervalComponent[] used in IntervalBuilder.tsx",
+      "transformation": "EventModalContainer.tsx maps TrainingBlock to IntervalComponent"
+    },
+    "normalization": {
+      "location": "services/eventNormalization.ts",
+      "function": "mapTrainingBlocksToTrainingData()",
+      "purpose": "Converts frontend TrainingBlock[] to backend training_data JSON"
+    },
+    "backend": {
+      "storage": "Training.training_data (JSONField)",
+      "validation": "Training._validate_training_data() in events.py",
+      "structure": "Expects: { warmup?, intervals[]?, rest_periods[]?, cooldown? }"
+    },
+    "reverseMapping": {
+      "location": "services/eventNormalization.ts",
+      "function": "mapTrainingDataToBlocks()",
+      "purpose": "Converts backend training_data JSON back to frontend TrainingBlock[]"
+    }
+  },
+
+  "keyIssuesIdentified": {
+    "issue1": {
+      "problem": "When interval has children, parent interval still contains duration/distance/intensity fields",
+      "location": "IntervalBuilder.tsx component editor (lines 859-1025)",
+      "fix": "When adding sub-intervals to an interval, CLEAR parent interval fields: duration, durationUnit, distance, distanceUnit, intensity, intensityUnit, intervalType",
+      "implementation": "Already partially implemented in onAddComponent (lines 1087-1093 and 1120-1126), but needs to ensure fields stay cleared"
+    },
+    "issue2": {
+      "problem": "Backend validation expects different structure for intervals with sub_intervals",
+      "location": "backend/core/events.py Training._validate_interval() (lines 242-292)",
+      "behavior": "When sub_intervals exist, backend only expects 'name' and 'repetitions', NOT type/duration_or_distance/unit",
+      "currentStatus": "Frontend normalization handles this (eventNormalization.ts:360-409), but UI might re-add fields"
+    },
+    "issue3": {
+      "problem": "UI might not prevent users from setting parent interval data when children exist",
+      "location": "IntervalBuilder.tsx component editor",
+      "fix": "Conditionally render interval editor fields - if children exist, only show name, repetitions, and children editor"
+    }
+  }
+}
