@@ -288,13 +288,35 @@ export class SecurityHeaders {
    * Generate Content Security Policy header value
    */
   static generateCSP(): string {
+    const apiOrigins = new Set<string>();
+
+    // Always include the primary production API domain
+    apiOrigins.add('https://api.promethia.app');
+
+    // Include the origin from the configured API URL if available
+    const envApiUrl = import.meta.env.VITE_DJANGO_API_URL;
+    if (envApiUrl) {
+      try {
+        apiOrigins.add(new URL(envApiUrl).origin);
+      } catch (error) {
+        console.warn('Invalid VITE_DJANGO_API_URL for CSP configuration:', error);
+      }
+    }
+
+    const connectSrc = [
+      "connect-src 'self'",
+      ...Array.from(apiOrigins),
+      'ws://localhost:*',
+      'http://localhost:*'
+    ].join(' ');
+
     const directives = [
       "default-src 'self'",
       "script-src 'self' 'unsafe-inline' 'unsafe-eval'", // Needed for Vite development
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: https: blob:",
-      "connect-src 'self' https://api.promethia.app ws://localhost:*", // Add your API domains
+      connectSrc,
       "frame-ancestors 'none'",
       "base-uri 'self'",
       "object-src 'none'"
