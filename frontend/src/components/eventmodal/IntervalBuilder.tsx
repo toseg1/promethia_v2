@@ -632,6 +632,7 @@ export const IntervalBuilder = memo(function IntervalBuilder({
         closeOnBackdropClick={true}
         closeOnEscape={true}
         showCloseButton={false}
+        widthVariant="calendar-card"
       >
         {/* Builder Header */}
         <div className="flex items-center justify-between p-4 border-b border-border/20">
@@ -952,6 +953,7 @@ export const IntervalBuilder = memo(function IntervalBuilder({
         closeOnBackdropClick={true}
         closeOnEscape={true}
         showCloseButton={false}
+        widthVariant="calendar-card"
       >
         {editingComponent && (
           <>

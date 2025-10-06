@@ -1,3 +1,5 @@
+import logging
+
 from rest_framework import generics, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -55,14 +57,15 @@ class UserRegistrationView(generics.CreateAPIView):
                 recipient_list=[user.email],
                 html_message=html_message,
                 fail_silently=True,  # Don't fail registration if email fails
+                timeout=settings.EMAIL_TIMEOUT,
             )
         except Exception as e:
             # Log the error but don't fail the registration
-            print(f"Failed to send welcome email to {user.email}: {e}")
+            logger.warning("Failed to send welcome email", extra={"user_email": user.email, "error": str(e)})
 
         return Response(
             APIResponse.success(
-                data={'user': UserSerializer(user).data},
+                data={'user': UserSerializer(user, context={'request': request}).data},
                 message="User registered successfully",
                 status_code=status.HTTP_201_CREATED
             ),
@@ -85,7 +88,7 @@ def login_view(request):
     return Response(
         APIResponse.success(
             data={
-                'user': UserSerializer(user).data,
+                'user': UserSerializer(user, context={'request': request}).data,
                 'tokens': {
                     'access': str(refresh.access_token),
                     'refresh': str(refresh),
@@ -123,7 +126,7 @@ def user_profile_view(request):
     """
     Get user profile endpoint.
     """
-    serializer = UserSerializer(request.user)
+    serializer = UserSerializer(request.user, context={'request': request})
     return Response(
         APIResponse.success(
             data=serializer.data,
@@ -139,9 +142,10 @@ def update_profile_view(request):
     Update user profile endpoint.
     """
     serializer = UserSerializer(
-        request.user, 
-        data=request.data, 
-        partial=request.method == 'PATCH'
+        request.user,
+        data=request.data,
+        partial=request.method == 'PATCH',
+        context={'request': request}
     )
     serializer.is_valid(raise_exception=True)
     serializer.save()
@@ -212,6 +216,7 @@ def password_reset_view(request):
             recipient_list=[email],
             html_message=html_message,
             fail_silently=False,
+            timeout=settings.EMAIL_TIMEOUT,
         )
 
         return Response(
@@ -220,6 +225,7 @@ def password_reset_view(request):
             )
         )
     except Exception as e:
+        logger.exception("Password reset email failed", extra={"user_email": email})
         return Response(
             APIResponse.error(message="Failed to send email. Please try again later."),
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -298,3 +304,4 @@ def refresh_token_view(request):
             APIResponse.error(message="Invalid refresh token"),
             status=status.HTTP_401_UNAUTHORIZED
         )
+logger = logging.getLogger(__name__)

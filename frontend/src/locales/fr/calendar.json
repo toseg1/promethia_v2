@@ -284,11 +284,11 @@
       "editTraining": "Modofier l'Entraînement",
       "editRace": "Modifier la Course"
     },
-    "deleteTrainingTitle": "Supprimer cet évènement ?",
+    "deleteTrainingTitle": "Supprimer cet événement ?",
     "deleteTrainingDescription": "La suppression de cet entraînement mettra immédiatement à jour votre calendrier Promethia.",
     "deleteTrainingConfirm": "Suppression de l'Entraînement",
     "deleteTrainingProgress": "Suppression…",
-    "deleteRaceTitle": "Supprimer cet évènement ?",
+    "deleteRaceTitle": "Supprimer cet événement ?",
     "deleteRaceDescription": "La suppression de cette course mettra immédiatement à jour votre calendrier Promethia.",
     "deleteRaceConfirm": "Suppresion de la Course",
     "deleteRaceProgress": "Suppression…",

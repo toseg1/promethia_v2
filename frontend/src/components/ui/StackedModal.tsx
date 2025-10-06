@@ -15,6 +15,7 @@ interface StackedModalProps {
   showCloseButton?: boolean;
   className?: string;
   maxHeight?: string;
+  widthVariant?: 'default' | 'calendar-card';
 }
 
 const sizeClasses = {
@@ -37,7 +38,8 @@ export function StackedModal({
   closeOnEscape = true,
   showCloseButton = true,
   className = '',
-  maxHeight
+  maxHeight,
+  widthVariant = 'default'
 }: StackedModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   const { 
@@ -129,16 +131,27 @@ export function StackedModal({
 
   // Calculate modal sizing based on level and size prop
   // Consistent width across all levels but leave space for backdrop clicks
-  const getModalSizing = () => {
-    // Ensure there's always backdrop click space - use 88% instead of 92% 
+  const horizontalPadding = widthVariant === 'calendar-card' ? 16 : 24;
+
+  const modalSizing = (() => {
+    if (widthVariant === 'calendar-card') {
+      return {
+        widthClass: '',
+        maxWidthClass: 'max-w-[512px]',
+        widthStyle: {
+          width: 'min(512px, calc(100vw - 32px))'
+        }
+      };
+    }
+
+    // Ensure there's always backdrop click space - use 88% instead of 92%
     // This leaves 6% on each side (12% total) for backdrop clicking
     return {
-      width: 'w-[88%]',  // Reduced from 92% to ensure backdrop click areas
-      maxWidth: sizeClasses[size]  // Desktop: max 600px for lg size
+      widthClass: 'w-[88%]',
+      maxWidthClass: sizeClasses[size],
+      widthStyle: {}
     };
-  };
-
-  const modalSizing = getModalSizing();
+  })();
 
   return (
     <div
@@ -155,8 +168,8 @@ export function StackedModal({
         zIndex,
         paddingTop: 'var(--header-height, 64px)',
         paddingBottom: 'var(--footer-height, 84px)',
-        paddingLeft: '24px',  // Increased from 16px to ensure backdrop click area
-        paddingRight: '24px', // Increased from 16px to ensure backdrop click area
+        paddingLeft: `${horizontalPadding}px`,
+        paddingRight: `${horizontalPadding}px`,
       }}
       onClick={handleBackdropClick}
       data-modal-backdrop
@@ -178,7 +191,7 @@ export function StackedModal({
       {/* Modal container */}
       <div
         ref={modalRef}
-        className={`relative bg-white rounded-lg shadow-2xl overflow-hidden transition-all duration-300 ${modalSizing.width} ${modalSizing.maxWidth} ${
+        className={`relative bg-white rounded-lg shadow-2xl overflow-hidden transition-all duration-300 ${modalSizing.widthClass} ${modalSizing.maxWidthClass} ${
           hasOverlay 
             ? 'transform scale-95 filter blur-[1px] opacity-70' 
             : 'transform scale-100 filter blur-0 opacity-100'
@@ -188,6 +201,7 @@ export function StackedModal({
             : ''
         } my-4 ${className}`}
         style={{
+          ...modalSizing.widthStyle,
           maxHeight: maxHeight || '85vh', // Mobile: max-height 85vh
           ...(!isTopmost && hasOverlay ? {
             transform: 'scale(0.95)',

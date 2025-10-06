@@ -2,6 +2,7 @@
 
 import { ApiResponse, PaginatedResponse } from '../types';
 import { createSecureRequest, tokenStorage } from '../utils/secureStorage';
+import { notifyBackendUnreachable } from '../utils/backendWakeupEmitter';
 
 export interface RequestConfig {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
@@ -180,6 +181,10 @@ class ApiClient {
       const isNetworkError = errorMessage.includes('Failed to fetch') ||
                             errorMessage.includes('Network request failed') ||
                             errorMessage.includes('timeout');
+
+      if (isNetworkError) {
+        notifyBackendUnreachable();
+      }
 
       // Retry on network errors (not on auth errors)
       if (isNetworkError && attemptNumber < maxRetries && !isAuthEndpoint) {

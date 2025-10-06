@@ -273,6 +273,15 @@ LOGGING = {
     },
 }
 
+# Suppress console logging in production while keeping verbose logging in dev
+if DEBUG:
+    LOGGING['root']['handlers'] = ['console']
+    LOGGING['loggers']['django']['handlers'] = ['console']
+else:
+    LOGGING['handlers'].pop('console', None)
+    LOGGING['root']['handlers'] = ['file']
+    LOGGING['loggers']['django']['handlers'] = ['file']
+
 # Email settings
 EMAIL_BACKEND = env('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
 EMAIL_HOST = env('EMAIL_HOST', default='')
@@ -281,6 +290,7 @@ EMAIL_USE_TLS = env('EMAIL_USE_TLS', default=True)
 EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
 DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='noreply@example.com')
+EMAIL_TIMEOUT = env.int('EMAIL_TIMEOUT', default=10)
 
 # Frontend URL for password reset links
 FRONTEND_URL = env('FRONTEND_URL', default='http://localhost:3000')

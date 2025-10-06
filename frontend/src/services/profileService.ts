@@ -110,17 +110,40 @@ function parseOptionalInt(value?: string): number | undefined {
   return Number.isNaN(parsed) ? undefined : parsed;
 }
 
-function parseCssToSeconds(value?: string): number | undefined {
-  if (!value) {
+function parsePerformanceNumber(value?: string): number | null | undefined {
+  if (value === undefined || value === null) {
     return undefined;
   }
 
-  if (!value.includes(':')) {
-    const numeric = Number(value);
+  const trimmed = value.trim();
+  if (trimmed === '') {
+    return null;
+  }
+
+  const parsed = Number(trimmed);
+  if (Number.isNaN(parsed)) {
+    return undefined;
+  }
+
+  return parsed;
+}
+
+function parseCssToSeconds(value?: string): number | undefined {
+  if (value === undefined || value === null) {
+    return undefined;
+  }
+
+  const trimmed = value.trim();
+  if (trimmed === '') {
+    return undefined;
+  }
+
+  if (!trimmed.includes(':')) {
+    const numeric = Number(trimmed);
     return Number.isNaN(numeric) ? undefined : numeric;
   }
 
-  const [minutes, seconds] = value.split(':').map(part => Number(part));
+  const [minutes, seconds] = trimmed.split(':').map(part => Number(part));
   if (Number.isNaN(minutes) || Number.isNaN(seconds)) {
     return undefined;
   }
@@ -201,18 +224,14 @@ class ProfileService {
   async updatePerformanceMetrics(userId: string, metrics: PerformanceMetrics): Promise<UserProfileBundle> {
     const payload: Record<string, unknown> = {};
 
-    if (metrics.mas) {
-      const masValue = Number(metrics.mas);
-      if (!Number.isNaN(masValue)) {
-        payload.mas = masValue;
-      }
+    const masValue = parsePerformanceNumber(metrics.mas);
+    if (masValue !== undefined) {
+      payload.mas = masValue;
     }
 
-    if (metrics.fpp) {
-      const fppValue = Number(metrics.fpp);
-      if (!Number.isNaN(fppValue)) {
-        payload.fpp = fppValue;
-      }
+    const fppValue = parsePerformanceNumber(metrics.fpp);
+    if (fppValue !== undefined) {
+      payload.fpp = fppValue;
     }
 
     if (metrics.css !== undefined) {

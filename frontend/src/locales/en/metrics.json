@@ -55,7 +55,9 @@
       "cssFromProfile": "Loaded from your profile (mm:ss per 100m). Adjustments here only affect the calculator.",
       "cssFormat": "Format: mm:ss (e.g., 1:45 per 100m). This field is used for calculator scenarios only.",
       "valueFromProfile": "Loaded from your profile. Tweak this number to explore scenarios without saving changes.",
-      "enterValue": "Typical range: {{range}}. Enter your value to start calculations."
+      "enterValue": "Typical range: {{range}}. Enter your value to start calculations.",
+      "enterCss": "Enter your CSS (mm:ss)",
+      "enterMetric": "Enter your {{name}} ({{unit}})"
     }
   },
 

@@ -484,6 +484,7 @@ export const EnhancedIntervalBuilder = memo(function EnhancedIntervalBuilder({
       closeOnBackdropClick={true}
       closeOnEscape={true}
       showCloseButton={false}
+      widthVariant="calendar-card"
     >
         {/* Header */}
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-border/20 bg-gradient-to-r from-primary/5 to-primary/10">

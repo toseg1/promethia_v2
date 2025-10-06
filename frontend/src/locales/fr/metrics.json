@@ -55,7 +55,9 @@
       "cssFromProfile": "Chargé à partir de votre profil (mm:ss par 100 m). Les réglages effectués ici n'affectent que le calculateur.",
       "cssFormat": "Format : mm:ss (par exemple, 1:45 pour 100 m). Ce champ est utilisé uniquement pour les scénarios de calculatrice.",
       "valueFromProfile": "Chargé à partir de votre profil. Modifiez ce chiffre pour explorer différents scénarios sans enregistrer les modifications.",
-      "enterValue": "Plage typique: {{range}}. Entrez votre valeur pour lancer les calculs."
+      "enterValue": "Plage typique: {{range}}. Entrez votre valeur pour lancer les calculs.",
+      "enterCss": "Entrer votre VNC (mm:ss)",
+      "enterMetric": "Entrer votre {{name}} ({{unit}})"
     }
   },
 
@@ -66,7 +68,7 @@
     "trainingZones": "Zones d'Entraînement (Basées sur VMA)",
     "enterVMA": "Entrer la VMA en km/h",
     "enterDistance": "Entrer la distance",
-    "enterPercentage": "Entrer le pourcentage"
+    "enterPercentage": "Entrer votre pourcentage"
   },
 
   "ui": {
@@ -75,7 +77,7 @@
     "selectMetricType": "Sélectionnez le Type de Métrique",
     "calculationResults": "Résultats de Calcul",
     "current":"Actuelle",
-    "add":"Ajoute ta",
+    "add":"Ajouter votre",
     "profile":"depuis Profil",
     "settings":"Settings",
     "enter":"Entrer",

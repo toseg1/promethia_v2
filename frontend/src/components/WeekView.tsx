@@ -174,14 +174,7 @@ const getEventIcon = (event: Event) => {
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    {events.length > 0 && (
-                      <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full font-medium">
-                        {t('weekView.eventCount', { count: events.length })}
-                      </span>
-                    )}
-                    <ChevronRight size={16} className="text-muted-foreground" />
-                  </div>
+              
                 </div>
 
                 {/* Events */}

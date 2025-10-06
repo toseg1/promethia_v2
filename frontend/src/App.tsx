@@ -35,13 +35,14 @@ import { ErrorBoundary } from './components/error/ErrorBoundary';
 import { ModalErrorBoundary } from './components/error/ModalErrorBoundary';
 import { NavigationErrorBoundary } from './components/error/NavigationErrorBoundary';
 import { AsyncErrorHandler } from './components/error/AsyncErrorHandler';
-import { AuthProvider, AppStateProvider, ModalStackProvider, LanguageProvider, useAuth, useAppState } from './contexts';
+import { AuthProvider, AppStateProvider, ModalStackProvider, LanguageProvider, BackendWakeupProvider, useAuth, useAppState } from './contexts';
 import { errorLogger } from './services/errorLogger';
 import { eventService } from './services';
 import { initializeSecuritySystems } from './utils/security';
 import { queryClient, queryKeys, useOptimisticMutation } from './hooks';
 import type { EventData } from './components/eventmodal/types';
 import type { UpdateCalendarEventPayload } from './services/eventService';
+import { BackendWakeupOverlay } from './components/ui/BackendWakeupOverlay';
 
 // Suspense wrapper component for lazy-loaded routes
 function SuspenseWrapper({ children, isPending }: { children: React.ReactNode; isPending?: boolean }) {
@@ -589,15 +590,18 @@ export default function App() {
         errorLogger.logAsyncError(error, context || 'App level async error');
       }}>
         <LanguageProvider>
-          <AuthProvider>
-            <AppStateProvider>
-              <ModalStackProvider>
-                <AppContent />
-                {/* Query Devtools - only renders in development */}
-                <QueryDevtools />
-              </ModalStackProvider>
-            </AppStateProvider>
-          </AuthProvider>
+          <BackendWakeupProvider>
+            <AuthProvider>
+              <AppStateProvider>
+                <ModalStackProvider>
+                  <AppContent />
+                  <BackendWakeupOverlay />
+                  {/* Query Devtools - only renders in development */}
+                  <QueryDevtools />
+                </ModalStackProvider>
+              </AppStateProvider>
+            </AuthProvider>
+          </BackendWakeupProvider>
         </LanguageProvider>
       </AsyncErrorHandler>
     </ErrorBoundary>

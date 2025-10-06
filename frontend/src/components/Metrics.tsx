@@ -641,10 +641,10 @@ export function Metrics({ user, onNavigate }: MetricsProps) {
   const IconComponent = currentConfig.icon;
   const hasProfileValue = Boolean(currentConfig.profileValue);
   const metricPlaceholder = currentConfig.profileValue
-    ? undefined
+? undefined
     : metricType === 'css'
-      ? 'Enter your CSS (mm:ss)'
-      : `Enter your ${currentConfig.name} (${currentConfig.unit})`;
+      ? t('calculator.help.enterCss')
+      : t('calculator.help.enterMetric', { name: currentConfig.name, unit: currentConfig.unit })
 
   return (
     <div className="p-4 md:p-6 max-w-7xl mx-auto">

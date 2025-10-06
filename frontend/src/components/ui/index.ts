@@ -3,6 +3,7 @@
 // Loading states and skeleton components
 export * from './LoadingState';
 export * from './SkeletonLoader';
+export * from './BackendWakeupOverlay';
 
 // shadcn/ui components (if any additional exports needed)
 // Add other UI components here as needed

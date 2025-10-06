@@ -226,6 +226,7 @@ export function EventModalContainer({ isOpen, onClose, onSave, selectedDate, use
       closeOnBackdropClick={true}
       closeOnEscape={true}
       showCloseButton={false}
+      widthVariant="calendar-card"
     >
       <div>
         {/* Remove header as it's handled by StackedModal */}

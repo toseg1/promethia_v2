@@ -3,22 +3,68 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from .models import (
-    User, AthleticProfile, ProfessionalProfile, Achievement, 
+    User, AthleticProfile, ProfessionalProfile, Achievement,
     Certification, CoachAchievement, CoachAssignment,
     css_display, css_parse
 )
 
 
-class UserSerializer(serializers.ModelSerializer):
-    """
-    User serializer for general user data.
-    """
+class ProfileImageUrlMixin:
+    """Utility mixin to normalize profile image URLs across serializers."""
+
+    def _build_profile_image_url(self, instance):
+        image = getattr(instance, 'profile_image', None)
+        if not image:
+            return None
+
+        try:
+            url = image.url
+        except Exception:
+            return None
+
+        request = getattr(self, 'context', {}).get('request')
+        if request and url and not url.startswith(('http://', 'https://')):
+            return request.build_absolute_uri(url)
+        return url
+
+    def _inject_profile_image(self, data, instance):
+        image_url = self._build_profile_image_url(instance)
+        data['profile_image'] = image_url
+
+        meta = getattr(getattr(self, 'Meta', None), 'fields', [])
+        if isinstance(meta, (list, tuple)) and 'profile_image_url' in meta:
+            data['profile_image_url'] = image_url
+
+        return data
+
+
+class UserSerializer(ProfileImageUrlMixin, serializers.ModelSerializer):
+    """User serializer that normalizes profile image URLs."""
+    profile_image_url = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'first_name', 'last_name', 
-                 'phone_number', 'date_of_birth', 'profile_image', 
-                 'is_verified', 'date_joined')
+        fields = (
+            'id',
+            'username',
+            'email',
+            'first_name',
+            'last_name',
+            'phone_number',
+            'date_of_birth',
+            'profile_image',
+            'profile_image_url',
+            'is_verified',
+            'date_joined',
+        )
         read_only_fields = ('id', 'date_joined', 'is_verified')
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        return self._inject_profile_image(data, instance)
+
+    def get_profile_image_url(self, instance):
+        return self._build_profile_image_url(instance)
 
 
 
@@ -302,7 +348,7 @@ class UserLoginSerializer(serializers.Serializer):
         return attrs
 
 
-class UserProfileSerializer(serializers.ModelSerializer):
+class UserProfileSerializer(ProfileImageUrlMixin, serializers.ModelSerializer):
     """Full user profile with related data"""
     
     full_name = serializers.ReadOnlyField()
@@ -313,24 +359,33 @@ class UserProfileSerializer(serializers.ModelSerializer):
     professional_profile = ProfessionalProfileSerializer(read_only=True)
     coaching_summary = serializers.SerializerMethodField()
     css_time = serializers.CharField(write_only=True, required=False, allow_blank=True)
+    profile_image_url = serializers.SerializerMethodField(read_only=True)
     
     class Meta:
         model = User
         fields = [
             'id', 'username', 'email', 'first_name', 'last_name', 'full_name',
             'user_type', 'country_number', 'phone_number', 'full_phone_number',
-            'date_of_birth', 'age', 'profile_image', 'coach_id', 'mas', 'fpp',
+            'date_of_birth', 'age', 'profile_image', 'profile_image_url', 'coach_id', 'mas', 'fpp',
             'css', 'css_display', 'css_time', 'is_verified', 'created_at',
             'updated_at', 'athletic_profile', 'professional_profile', 'coaching_summary'
         ]
         read_only_fields = [
             'id', 'username', 'coach_id', 'full_name', 'age', 'full_phone_number',
             'css_display', 'is_verified', 'created_at', 'updated_at',
-            'athletic_profile', 'professional_profile', 'coaching_summary'
+            'athletic_profile', 'professional_profile', 'coaching_summary',
+            'profile_image_url'
         ]
 
     def get_coaching_summary(self, obj):
         return obj.get_coaching_summary()
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        return self._inject_profile_image(data, instance)
+
+    def get_profile_image_url(self, instance):
+        return self._build_profile_image_url(instance)
 
     def update(self, instance, validated_data):
         # Handle CSS time format conversion
@@ -344,7 +399,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
 
-class UserListSerializer(serializers.ModelSerializer):
+class UserListSerializer(ProfileImageUrlMixin, serializers.ModelSerializer):
     """Minimal user data for lists"""
     
     full_name = serializers.ReadOnlyField()
@@ -355,6 +410,10 @@ class UserListSerializer(serializers.ModelSerializer):
             'id', 'username', 'email', 'first_name', 'last_name', 
             'full_name', 'user_type', 'profile_image', 'coach_id'
         ]
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        return self._inject_profile_image(data, instance)
 
 
 class AchievementSummarySerializer(serializers.ModelSerializer):
@@ -378,7 +437,7 @@ class AthleticProfileSummarySerializer(serializers.ModelSerializer):
         ]
 
 
-class CoachAthleteListSerializer(serializers.ModelSerializer):
+class CoachAthleteListSerializer(ProfileImageUrlMixin, serializers.ModelSerializer):
     """Detailed athlete data for coach dashboards"""
 
     full_name = serializers.ReadOnlyField()
@@ -395,6 +454,10 @@ class CoachAthleteListSerializer(serializers.ModelSerializer):
             'mas', 'fpp', 'css', 'css_display',
             'athletic_profile'
         ]
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        return self._inject_profile_image(data, instance)
 
 
 class UserUpdateSerializer(serializers.ModelSerializer):

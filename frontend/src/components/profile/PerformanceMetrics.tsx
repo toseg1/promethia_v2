@@ -17,6 +17,12 @@ export const PerformanceMetrics = memo(function PerformanceMetrics({
   onUpdateMetric
 }: PerformanceMetricsProps) {
   const { t } = useTranslation('profile');
+  const masValue = metrics.mas?.trim() ?? '';
+  const fppValue = metrics.fpp?.trim() ?? '';
+  const cssValue = metrics.css?.trim() ?? '';
+  const masHasValue = masValue !== '';
+  const fppHasValue = fppValue !== '';
+  const cssHasValue = cssValue !== '';
 
   return (
     <div className="bg-white p-4 md:p-6 rounded-xl border border-border/20 shadow-sm">
@@ -58,9 +64,13 @@ export const PerformanceMetrics = memo(function PerformanceMetrics({
               <span className="text-sm text-muted-foreground">{t('performanceMetrics.kmh')}</span>
             </div>
           ) : (
-            <div className="text-2xl font-bold text-foreground">
-              {metrics.mas} <span className="text-sm font-normal text-muted-foreground">{t('performanceMetrics.kmh')}</span>
-            </div>
+            masHasValue ? (
+              <div className="text-2xl font-bold text-foreground">
+                {masValue} <span className="text-sm font-normal text-muted-foreground">{t('performanceMetrics.kmh')}</span>
+              </div>
+            ) : (
+              <div className="text-sm text-muted-foreground">{t('common:notSet')}</div>
+            )
           )}
         </div>
 
@@ -94,9 +104,13 @@ export const PerformanceMetrics = memo(function PerformanceMetrics({
               <span className="text-sm text-muted-foreground">{t('performanceMetrics.watts')}</span>
             </div>
           ) : (
-            <div className="text-2xl font-bold text-foreground">
-              {metrics.fpp} <span className="text-sm font-normal text-muted-foreground">{t('performanceMetrics.watts')}</span>
-            </div>
+            fppHasValue ? (
+              <div className="text-2xl font-bold text-foreground">
+                {fppValue} <span className="text-sm font-normal text-muted-foreground">{t('performanceMetrics.watts')}</span>
+              </div>
+            ) : (
+              <div className="text-sm text-muted-foreground">{t('common:notSet')}</div>
+            )
           )}
         </div>
 
@@ -131,9 +145,13 @@ export const PerformanceMetrics = memo(function PerformanceMetrics({
               <span className="text-sm text-muted-foreground">{t('performanceMetrics.per100m')}</span>
             </div>
           ) : (
-            <div className="text-2xl font-bold text-foreground">
-              {metrics.css} <span className="text-sm font-normal text-muted-foreground">{t('performanceMetrics.per100m')}</span>
-            </div>
+            cssHasValue ? (
+              <div className="text-2xl font-bold text-foreground">
+                {cssValue} <span className="text-sm font-normal text-muted-foreground">{t('performanceMetrics.per100m')}</span>
+              </div>
+            ) : (
+              <div className="text-sm text-muted-foreground">{t('common:notSet')}</div>
+            )
           )}
         </div>
       </div>

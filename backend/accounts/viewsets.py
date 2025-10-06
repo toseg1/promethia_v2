@@ -132,7 +132,7 @@ class UserViewSet(viewsets.ModelViewSet):
             refresh = RefreshToken.for_user(user)
             
             return Response({
-                'user': UserProfileSerializer(user).data,
+                'user': UserProfileSerializer(user, context={'request': request}).data,
                 'tokens': {
                     'refresh': str(refresh),
                     'access': str(refresh.access_token),
@@ -156,7 +156,7 @@ class UserViewSet(viewsets.ModelViewSet):
             refresh = RefreshToken.for_user(user)
             
             return Response({
-                'user': UserProfileSerializer(user).data,
+                'user': UserProfileSerializer(user, context={'request': request}).data,
                 'tokens': {
                     'refresh': str(refresh),
                     'access': str(refresh.access_token),
@@ -433,11 +433,17 @@ class UserViewSet(viewsets.ModelViewSet):
         user.profile_image = profile_image
         user.save()
         
+        profile_image_url = None
+        if user.profile_image:
+            profile_image_url = user.profile_image.url
+            if request and profile_image_url and not profile_image_url.startswith(('http://', 'https://')):
+                profile_image_url = request.build_absolute_uri(profile_image_url)
+
         return Response({
             'success': True,
             'message': 'Profile image updated successfully',
             'data': {
-                'profile_image_url': user.profile_image.url if user.profile_image else None
+                'profile_image_url': profile_image_url
             }
         }, status=status.HTTP_200_OK)
     
@@ -523,6 +529,7 @@ class UserViewSet(viewsets.ModelViewSet):
                     from_email=settings.DEFAULT_FROM_EMAIL,
                     recipient_list=[email],
                     fail_silently=False,
+                    timeout=settings.EMAIL_TIMEOUT,
                 )
             else:
                 # In development, just log the reset link

@@ -65,6 +65,16 @@
   "analytics": "Analytics",
   "myCoach": "My Promethia Coach",
   "deviceSync": "Device Sync",
+  "backendWakeup": {
+    "badge": "Wake-up Sequence",
+    "title": "Warming up the servers",
+    "description": "The backend server is waking up so we can fetch your data. This may take a few seconds.",
+    "statusChecking": "Checking service status...",
+    "statusFinalCheck": "Final wake-up check in progress...",
+    "statusReadyCheck": "Almost there... validating the connection",
+    "retry": "Retry now",
+    "errorDetails": "Technical detail: {{message}}"
+  },
   "sports": {
     "triathlon": "Triathlon",
     "running": "Running",
