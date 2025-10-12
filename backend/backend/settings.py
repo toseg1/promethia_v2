@@ -53,6 +53,8 @@ THIRD_PARTY_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'django_filters',
+    'cloudinary_storage',
+    'cloudinary',
 ]
 
 LOCAL_APPS = [
@@ -290,7 +292,6 @@ EMAIL_USE_TLS = env('EMAIL_USE_TLS', default=True)
 EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
 DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='noreply@example.com')
-EMAIL_TIMEOUT = env.int('EMAIL_TIMEOUT', default=10)
 
 # Frontend URL for password reset links
 FRONTEND_URL = env('FRONTEND_URL', default='http://localhost:3000')
@@ -310,16 +311,24 @@ if USE_CLOUDINARY:
     import cloudinary
     import cloudinary.uploader
     import cloudinary.api
-    
+
     cloudinary.config(
         cloud_name=env('CLOUDINARY_CLOUD_NAME'),
         api_key=env('CLOUDINARY_API_KEY'),
         api_secret=env('CLOUDINARY_API_SECRET'),
         secure=True
     )
-    
-    # Use Cloudinary for media files in production
-    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+    # Use Cloudinary for media files in production (Django 4.2+ STORAGES setting)
+    STORAGES = {
+        "default": {
+            "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
+
     CLOUDINARY_STORAGE = {
         'CLOUD_NAME': env('CLOUDINARY_CLOUD_NAME'),
         'API_KEY': env('CLOUDINARY_API_KEY'),

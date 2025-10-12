@@ -114,8 +114,7 @@ export function validateRaceFields(
   dateStart: string,
   time: string,
   location: string,
-  distance: string,
-  dateEnd?: string
+  distance: string
 ): FieldErrors {
   const errors: FieldErrors = {};
 
@@ -132,12 +131,7 @@ export function validateRaceFields(
     }
   }
 
-  // Date end validation (if provided, must be after start date)
-  if (dateEnd && dateEnd.trim() && dateStart && dateStart.trim()) {
-    if (new Date(dateEnd) < new Date(dateStart)) {
-      errors.dateEnd = i18n.t('calendar:validation.date.afterStart');
-    }
-  }
+  // No end date validation for races - races are single-day events
 
   return errors;
 }
@@ -162,10 +156,16 @@ export function validateCustomEventFields(
     errors.customEventColor = i18n.t('calendar:validation.custom.colorRequired');
   }
 
-  // Date end validation (if provided, must be after start date)
+  // Date end validation (if provided, must be after or equal to start date)
   if (dateEnd && dateEnd.trim() && dateStart && dateStart.trim()) {
-    if (new Date(dateEnd) < new Date(dateStart)) {
-      errors.dateEnd = i18n.t('calendar:validation.date.afterStart');
+    const endDate = new Date(dateEnd);
+    const startDate = new Date(dateStart);
+    
+    // Only validate if both dates are valid
+    if (!isNaN(endDate.getTime()) && !isNaN(startDate.getTime())) {
+      if (endDate < startDate) {
+        errors.dateEnd = i18n.t('calendar:validation.date.afterStart');
+      }
     }
   }
 
@@ -306,8 +306,7 @@ export function validateEventForm(
       formData.dateStart || '',
       formData.time || '',
       formData.location || '',
-      formData.distance || '',
-      formData.dateEnd
+      formData.distance || ''
     ));
   } else if (eventType === 'custom') {
     Object.assign(errors, validateCustomEventFields(

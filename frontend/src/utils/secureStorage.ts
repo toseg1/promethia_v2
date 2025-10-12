@@ -1,5 +1,7 @@
 // Secure Token Storage and Management
 
+import { logger } from './logger';
+
 interface TokenData {
   token: string;
   refreshToken?: string;
@@ -72,7 +74,7 @@ export class SecureTokenStorage {
       localStorage.setItem(this.USER_KEY, tokenData.userId);
 
     } catch (error) {
-      console.warn('Failed to store authentication tokens:', error);
+      logger.warn('Failed to store authentication tokens:', error);
     }
   }
   
@@ -93,21 +95,21 @@ export class SecureTokenStorage {
       try {
         tokenData = JSON.parse(tokenDataJson);
       } catch (parseError) {
-        console.warn('Failed to parse token JSON:', parseError);
+        logger.warn('Failed to parse token JSON:', parseError);
         this.clearTokens();
         return null;
       }
 
       // Validate required fields
       if (!tokenData.token || !tokenData.userId) {
-        console.warn('Token data missing required fields');
+        logger.warn('Token data missing required fields');
         this.clearTokens();
         return null;
       }
 
       // Check if token is expired
       if (tokenData.expiresAt && Date.now() > tokenData.expiresAt) {
-        console.log('Token expired, clearing storage');
+        logger.debug('Token expired, clearing storage');
         this.clearTokens();
         return null;
       }
@@ -115,7 +117,7 @@ export class SecureTokenStorage {
       return tokenData;
 
     } catch (error) {
-      console.warn('Failed to retrieve authentication tokens:', error);
+      logger.warn('Failed to retrieve authentication tokens:', error);
       this.clearTokens(); // Clear corrupted data
       return null;
     }
@@ -202,7 +204,7 @@ export class SecureTokenStorage {
       });
 
     } catch (error) {
-      console.warn('Failed to clear authentication tokens:', error);
+      logger.warn('Failed to clear authentication tokens:', error);
     }
   }
   
@@ -223,9 +225,9 @@ export class SecureTokenStorage {
         }
       });
       
-      console.log('Forced clear of all authentication storage completed');
+      logger.debug('Forced clear of all authentication storage completed');
     } catch (error) {
-      console.warn('Failed to force clear storage:', error);
+      logger.warn('Failed to force clear storage:', error);
     }
   }
   
@@ -252,7 +254,7 @@ export class SecureTokenStorage {
     try {
       localStorage.setItem(this.REMEMBERED_USERNAME_KEY, username);
     } catch (error) {
-      console.warn('Failed to store remembered username:', error);
+      logger.warn('Failed to store remembered username:', error);
     }
   }
 
@@ -263,7 +265,7 @@ export class SecureTokenStorage {
     try {
       return localStorage.getItem(this.REMEMBERED_USERNAME_KEY);
     } catch (error) {
-      console.warn('Failed to retrieve remembered username:', error);
+      logger.warn('Failed to retrieve remembered username:', error);
       return null;
     }
   }
@@ -275,7 +277,7 @@ export class SecureTokenStorage {
     try {
       localStorage.removeItem(this.REMEMBERED_USERNAME_KEY);
     } catch (error) {
-      console.warn('Failed to clear remembered username:', error);
+      logger.warn('Failed to clear remembered username:', error);
     }
   }
 }
@@ -299,7 +301,7 @@ export class SecurityHeaders {
       try {
         apiOrigins.add(new URL(envApiUrl).origin);
       } catch (error) {
-        console.warn('Invalid VITE_DJANGO_API_URL for CSP configuration:', error);
+        logger.warn('Invalid VITE_DJANGO_API_URL for CSP configuration:', error);
       }
     }
 
@@ -400,10 +402,10 @@ export function initializeSecurity(): void {
   try {
     const tokens = tokenStorage.getTokens();
     if (tokens) {
-      console.log('Authentication tokens loaded successfully');
+      logger.debug('Authentication tokens loaded successfully');
     }
   } catch (error) {
-    console.warn('Corrupted tokens detected on startup, clearing storage');
+    logger.warn('Corrupted tokens detected on startup, clearing storage');
     tokenStorage.forceClearAllStorage();
   }
   
@@ -412,7 +414,7 @@ export function initializeSecurity(): void {
     if (event.reason?.message?.includes('Unauthorized') || 
         event.reason?.status === 401) {
       // Auto-logout on auth errors
-      console.log('Authentication error detected, clearing tokens');
+      logger.debug('Authentication error detected, clearing tokens');
       tokenStorage.clearTokens();
       window.location.reload();
     }
@@ -420,7 +422,7 @@ export function initializeSecurity(): void {
     // Handle JSON parse errors in authentication
     if (event.reason?.message?.includes('JSON.parse') && 
         event.reason?.message?.includes('token')) {
-      console.warn('JSON parse error in authentication, clearing corrupted tokens');
+      logger.warn('JSON parse error in authentication, clearing corrupted tokens');
       tokenStorage.forceClearAllStorage();
       window.location.reload();
     }
@@ -430,7 +432,7 @@ export function initializeSecurity(): void {
   window.addEventListener('error', (event) => {
     if (event.message?.includes('JSON.parse') &&
         event.message?.includes('token')) {
-      console.warn('Token parsing error detected, clearing storage');
+      logger.warn('Token parsing error detected, clearing storage');
       tokenStorage.forceClearAllStorage();
       window.location.reload();
     }

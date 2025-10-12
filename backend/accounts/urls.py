@@ -30,8 +30,6 @@ urlpatterns = [
     path('profile/', views.user_profile_view, name='profile'),
     path('profile/update/', views.update_profile_view, name='update_profile'),
     path('password/change/', views.change_password_view, name='change_password'),
-    path('password/reset/', views.password_reset_view, name='password_reset'),
-    path('password/reset/confirm/', views.password_reset_confirm_view, name='password_reset_confirm'),
     path('token/refresh/', views.refresh_token_view, name='refresh_token'),
 ]
 

@@ -248,45 +248,6 @@ export function CustomEventCard({ event, onClose, onEdit, onDelete, showAthlete 
         >
           {/* Event Overview */}
           <div className="grid grid-cols-2 gap-4 mb-6">
-            {/* All Day Event */}
-            {event.isAllDay && (
-              <div className="flex items-center gap-3 col-span-2">
-                <div className="p-2 bg-primary/10 rounded-lg">
-                  <Calendar size={18} className="text-primary" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">{t('eventCards.allDayEvent')}</p>
-                  <p className="font-semibold text-foreground">{t('eventCards.fullDayDetail')}</p>
-                </div>
-              </div>
-            )}
-
-            {/* Time or Time Range */}
-            {!event.isAllDay && formatTimeRange() && (
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-primary/10 rounded-lg">
-                  <Clock size={18} className="text-primary" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">{t(event.startTime && event.endTime ? 'eventCards.fields.timeRange' : 'eventCards.fields.time')}</p>
-                  <p className="font-semibold text-foreground">{formatTimeRange()}</p>
-                </div>
-              </div>
-            )}
-
-            {/* Duration */}
-            {event.duration && (
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-chart-1/10 rounded-lg">
-                  <Timer size={18} className="text-chart-1" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">{t('eventCards.fields.duration')}</p>
-                  <p className="font-semibold text-foreground">{event.duration}</p>
-                </div>
-              </div>
-            )}
-
             {/* Athlete */}
             {event.athlete && showAthlete && (
               <div className="flex items-center gap-3">

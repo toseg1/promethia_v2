@@ -1,6 +1,7 @@
 // Error logging service for Promethia
 // This service handles error reporting, logging, and analytics
 import { AuthError, ComponentErrorContext, AsyncOperationContext, ErrorLoggerProps } from '../types';
+import { logger } from '../utils/logger';
 
 interface ErrorContext {
   userId?: string;
@@ -87,12 +88,10 @@ class ErrorLogger {
 
     // Log to console in development
     if (import.meta.env.DEV) {
-      console.group(`🚨 Error Report - ${severity.toUpperCase()}`);
-      console.error('Error:', error);
-      console.log('Type:', type);
-      console.log('Context:', errorReport.context);
-      console.log('Breadcrumbs:', errorReport.breadcrumbs);
-      console.groupEnd();
+      logger.error(`🚨 Error Report - ${severity.toUpperCase()}`, error);
+      logger.debug('Type:', type);
+      logger.debug('Context:', errorReport.context);
+      logger.debug('Breadcrumbs:', errorReport.breadcrumbs);
     }
 
     // Send to error tracking service in production
@@ -159,9 +158,9 @@ class ErrorLogger {
       //   body: JSON.stringify(errorReport)
       // });
       
-      console.log('Error would be sent to monitoring service:', errorReport);
+      logger.info('Error would be sent to monitoring service:', errorReport);
     } catch (sendError) {
-      console.error('Failed to send error report:', sendError);
+      logger.error('Failed to send error report:', sendError as Error);
     }
   }
 
@@ -186,7 +185,7 @@ class ErrorLogger {
       const recentErrors = errors.slice(-5);
       localStorage.setItem('promethia_errors', JSON.stringify(recentErrors));
     } catch (storageError) {
-      console.warn('Could not store error locally:', storageError);
+      logger.warn('Could not store error locally:', storageError);
     }
   }
 
@@ -227,7 +226,7 @@ class ErrorLogger {
     try {
       localStorage.removeItem('promethia_errors');
     } catch (error) {
-      console.warn('Could not clear stored errors:', error);
+      logger.warn('Could not clear stored errors:', error);
     }
   }
 }

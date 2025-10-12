@@ -4,6 +4,7 @@ import {
   TrainingTemplate,
   TrainingEvent,
   customEventColors,
+  EventData,
 } from '../types';
 import { getSavedTrainings, SavedTraining } from '../../../services/savedTrainingService';
 
@@ -217,7 +218,15 @@ export function useEventModalData(isOpen: boolean, selectedDate?: Date, event?: 
       const normalizedDate = normalizeDateValue(event?.date) || (selectedDate ? formatDateForInput(selectedDate) : '');
       const normalizedStartDate = normalizeDateValue(event?.dateStart) || normalizedDate;
       const normalizedEndDate = normalizeDateValue(event?.dateEnd);
-      const normalizedTime = normalizeTimeValue(event?.time, event?.date);
+      const rawTimeValue = (() => {
+        const candidate = event?.time;
+        if (candidate && candidate.trim()) {
+          return candidate;
+        }
+        const fallback = (event as EventData | undefined)?.startTime;
+        return fallback && fallback.trim() ? fallback : undefined;
+      })();
+      const normalizedTime = normalizeTimeValue(rawTimeValue, event?.date);
 
       setDate(normalizedDate);
       setTime(normalizedTime);
@@ -230,7 +239,12 @@ export function useEventModalData(isOpen: boolean, selectedDate?: Date, event?: 
       setDistance(event?.distance || '');
       setTimeObjective(event?.timeObjective || '');
       setDateStart(normalizedStartDate);
-      setDateEnd(normalizedEndDate || '');
+      // Only set dateEnd for custom events, not for races
+      if (normalizeEventType(event?.type) === 'custom') {
+        setDateEnd(normalizedEndDate || '');
+      } else {
+        setDateEnd(''); // Clear dateEnd for races and training events
+      }
       setRaceCategory(event?.raceCategory || '');
       setCustomEventColor(normalizeCustomEventColor(event?.customEventColor || (event as any)?.color));
 

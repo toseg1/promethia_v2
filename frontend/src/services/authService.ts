@@ -430,7 +430,7 @@ class AuthService {
    */
   async requestPasswordReset(email: string): Promise<{ success: boolean; message: string }> {
     try {
-      const response = await apiClient.post('/password/reset/', {
+      const response = await apiClient.post('/users/request_password_reset/', {
         email: email
       });
 
@@ -449,12 +449,12 @@ class AuthService {
   /**
    * Confirm password reset with token
    */
-  async confirmPasswordReset(combinedToken: string, newPassword: string): Promise<{ success: boolean; message: string }> {
+  async confirmPasswordReset(uid: string, token: string, newPassword: string): Promise<{ success: boolean; message: string }> {
     try {
-      const response = await apiClient.post('/password/reset/confirm/', {
-        token: combinedToken,
-        new_password: newPassword,
-        confirm_password: newPassword
+      const response = await apiClient.post('/users/confirm_password_reset/', {
+        uid: uid,
+        token: token,
+        new_password: newPassword
       });
 
       return {

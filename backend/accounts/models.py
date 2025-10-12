@@ -225,7 +225,12 @@ class User(AbstractUser):
     
     # Optional fields
     date_of_birth = models.DateField(null=True, blank=True)
-    profile_image = models.ImageField(upload_to='profiles/', null=True, blank=True)
+    profile_image = models.ImageField(
+        upload_to='profiles/',
+        null=True,
+        blank=True,
+        help_text='Profile picture - stored in Cloudinary when USE_CLOUDINARY=True'
+    )
     
     # Unique Coach ID for both athletes and coaches
     coach_id = models.CharField(

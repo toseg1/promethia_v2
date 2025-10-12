@@ -64,7 +64,12 @@ class ApiClient {
     const url = this.buildUrl(endpoint, config.params);
     const timeout = config.timeout || this.config.timeout;
     const maxRetries = 3;
-    const isAuthEndpoint = endpoint.includes('/login') || endpoint.includes('/register') || endpoint.includes('/refresh');
+    const isAuthEndpoint = endpoint.includes('/login') ||
+                          endpoint.includes('/register') ||
+                          endpoint.includes('/refresh') ||
+                          endpoint.includes('password-reset') ||
+                          endpoint.includes('request-password-reset') ||
+                          endpoint.includes('confirm-password-reset');
 
     // Handle FormData vs JSON differently
     const isFormData = config.body instanceof FormData;

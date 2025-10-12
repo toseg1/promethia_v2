@@ -20,6 +20,7 @@ interface BaseEvent {
   sport?: string;
   athlete?: string;
   athleteName?: string;
+  athleteId?: string;
   color?: string;
   customEventColor?: string;
   notes?: string;
@@ -92,7 +93,7 @@ export function EventDetailsModal({ event, isOpen, onClose, onEdit, onDelete, vi
   };
 
   const normalizedRole = viewerRole?.toLowerCase().trim();
-  const showAthlete = normalizedRole ? normalizedRole === 'athlete' : true;
+  const showAthlete = normalizedRole ? normalizedRole === 'coach' : true;
 
   const handleDelete = async () => {
     if (!onDelete) {

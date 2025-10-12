@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback, useState } from 'react';
 import { X } from 'lucide-react';
 import { useModalStack } from '../../contexts/ModalStackContext';
 
@@ -42,6 +42,12 @@ export function StackedModal({
   widthVariant = 'default'
 }: StackedModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
+  const scrollContentRef = useRef<HTMLDivElement>(null);
+  const [dragOffset, setDragOffset] = useState(0);
+  const dragStateRef = useRef({
+    startY: 0,
+    dragging: false,
+  });
   const { 
     registerModal, 
     unregisterModal, 
@@ -117,6 +123,28 @@ export function StackedModal({
   const isTopmost = isModalTopmost(id);
   const hasOverlay = hasOverlayModals(id);
   
+  // Disable inner scrolling while dragging the sheet
+  useEffect(() => {
+    const scrollElement = scrollContentRef.current;
+    if (!scrollElement) {
+      return;
+    }
+
+    if (dragOffset > 0) {
+      scrollElement.style.overflowY = 'hidden';
+    } else {
+      scrollElement.style.overflowY = '';
+    }
+  }, [dragOffset]);
+
+  // Reset drag state when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      setDragOffset(0);
+      dragStateRef.current.dragging = false;
+    }
+  }, [isOpen]);
+
   // Z-index hierarchy: Base modal 1050, Layer 2: 1060, Layer 3: 1070
   const getZIndex = () => {
     switch (level) {
@@ -153,6 +181,67 @@ export function StackedModal({
     };
   })();
 
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    if (!scrollContentRef.current) {
+      return;
+    }
+
+    const scrollable = scrollContentRef.current;
+    const firstTouch = e.touches[0];
+
+    // Only start drag when scrolled to the top
+    if (scrollable.scrollTop <= 0) {
+      dragStateRef.current.startY = firstTouch.clientY;
+      dragStateRef.current.dragging = true;
+    } else {
+      dragStateRef.current.dragging = false;
+    }
+  }, []);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (!dragStateRef.current.dragging) {
+      return;
+    }
+
+    const currentY = e.touches[0].clientY;
+    const delta = currentY - dragStateRef.current.startY;
+
+    if (delta > 0) {
+      e.preventDefault();
+      // Limit the drag distance to keep things tidy
+      setDragOffset(Math.min(delta, 280));
+    } else {
+      setDragOffset(0);
+    }
+  }, []);
+
+  const handleTouchEnd = useCallback(() => {
+    if (!dragStateRef.current.dragging) {
+      setDragOffset(0);
+      return;
+    }
+
+    const threshold = 120;
+    if (dragOffset > threshold) {
+      closeModal(id);
+    } else {
+      setDragOffset(0);
+    }
+
+    dragStateRef.current.dragging = false;
+  }, [closeModal, dragOffset, id]);
+
+  const modalStyle: React.CSSProperties = {
+    ...modalSizing.widthStyle,
+    maxHeight: maxHeight || '85vh',
+    filter: !isTopmost && hasOverlay ? 'blur(1px)' : undefined,
+    opacity: !isTopmost && hasOverlay ? 0.7 : undefined,
+  };
+
+  const baseScale = !isTopmost && hasOverlay ? 0.95 : 1;
+  const translateY = dragOffset > 0 ? dragOffset : 0;
+  modalStyle.transform = `translateY(${translateY}px) scale(${baseScale})`;
+
   return (
     <div
       className={`fixed inset-0 flex items-center justify-center transition-all duration-300 ${
@@ -170,6 +259,7 @@ export function StackedModal({
         paddingBottom: 'var(--footer-height, 84px)',
         paddingLeft: `${horizontalPadding}px`,
         paddingRight: `${horizontalPadding}px`,
+        touchAction: 'pan-y',
       }}
       onClick={handleBackdropClick}
       data-modal-backdrop
@@ -192,23 +282,13 @@ export function StackedModal({
       <div
         ref={modalRef}
         className={`relative bg-white rounded-lg shadow-2xl overflow-hidden transition-all duration-300 ${modalSizing.widthClass} ${modalSizing.maxWidthClass} ${
-          hasOverlay 
-            ? 'transform scale-95 filter blur-[1px] opacity-70' 
-            : 'transform scale-100 filter blur-0 opacity-100'
-        } ${
-          isTopmost 
-            ? 'transform scale-100 filter blur-0 opacity-100' 
-            : ''
+          !isTopmost && hasOverlay ? 'filter blur-[1px] opacity-70' : 'filter blur-0 opacity-100'
         } my-4 ${className}`}
-        style={{
-          ...modalSizing.widthStyle,
-          maxHeight: maxHeight || '85vh', // Mobile: max-height 85vh
-          ...(!isTopmost && hasOverlay ? {
-            transform: 'scale(0.95)',
-            filter: 'blur(1px)',
-            opacity: 0.7
-          } : {})
-        }}
+        style={modalStyle}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onTouchCancel={handleTouchEnd}
         onClick={(e) => {
           e.stopPropagation(); // Prevent backdrop click when clicking modal content
         }}
@@ -236,6 +316,7 @@ export function StackedModal({
         {/* Content area */}
         <div 
           className="overflow-y-auto"
+          ref={scrollContentRef}
           style={{
             maxHeight: title || showCloseButton 
               ? 'calc(85vh - 100px)'  // Account for modal header

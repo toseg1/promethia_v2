@@ -10,8 +10,8 @@
  * - Event-based token update notifications
  * - Subscriber pattern for components
  */
-
 import { AuthTokens } from './authService';
+import { logger } from '../utils/logger';
 
 type RefreshFunction = () => Promise<AuthTokens>;
 type SubscriberCallback = (tokens: AuthTokens | null) => void;
@@ -59,7 +59,7 @@ export class TokenRefreshManager {
   async refresh(): Promise<AuthTokens> {
     // If refresh already in progress, return existing promise
     if (this.refreshPromise) {
-      console.log('⏳ Token refresh already in progress, waiting...');
+      logger.debug('⏳ Token refresh already in progress, waiting...');
       return this.refreshPromise;
     }
 
@@ -73,12 +73,12 @@ export class TokenRefreshManager {
     const MIN_REFRESH_INTERVAL = 5000; // 5 seconds
 
     if (timeSinceLastRefresh < MIN_REFRESH_INTERVAL && this.state.failureCount === 0) {
-      console.warn('⚠️ Token refresh rate limited (too soon after last refresh)');
+      logger.warn('⚠️ Token refresh rate limited (too soon after last refresh)');
       throw new Error('Token refresh rate limited');
     }
 
     // Start new refresh
-    console.log('🔄 Starting token refresh...');
+    logger.debug('🔄 Starting token refresh...');
     this.state.isRefreshing = true;
 
     this.refreshPromise = this.performRefresh();
@@ -90,7 +90,7 @@ export class TokenRefreshManager {
       this.state.failureCount = 0;
       this.state.lastRefreshTime = Date.now();
 
-      console.log('✅ Token refresh successful');
+      logger.debug('✅ Token refresh successful');
 
       // Notify all subscribers
       this.notifySubscribers(tokens);
@@ -103,7 +103,7 @@ export class TokenRefreshManager {
       // Track failures
       this.state.failureCount++;
 
-      console.error(`❌ Token refresh failed (attempt ${this.state.failureCount}):`, error);
+      logger.error(`❌ Token refresh failed (attempt ${this.state.failureCount}):`, error);
 
       // Notify subscribers of failure
       this.notifySubscribers(null);
@@ -146,7 +146,7 @@ export class TokenRefreshManager {
       try {
         callback(tokens);
       } catch (error) {
-        console.error('Error in token refresh subscriber:', error);
+        logger.error('Error in token refresh subscriber:', error);
       }
     });
   }
@@ -155,7 +155,7 @@ export class TokenRefreshManager {
    * Queue a request to be executed after refresh completes
    */
   queueRequest(request: QueuedRequest): void {
-    console.log('📥 Queuing request until token refresh completes...');
+    logger.debug('📥 Queuing request until token refresh completes...');
     this.requestQueue.push(request);
   }
 
@@ -165,7 +165,7 @@ export class TokenRefreshManager {
   private processQueue(): void {
     if (this.requestQueue.length === 0) return;
 
-    console.log(`📤 Processing ${this.requestQueue.length} queued requests...`);
+    logger.debug(`📤 Processing ${this.requestQueue.length} queued requests...`);
 
     const queue = [...this.requestQueue];
     this.requestQueue = [];
@@ -174,7 +174,7 @@ export class TokenRefreshManager {
       try {
         request();
       } catch (error) {
-        console.error('Error processing queued request:', error);
+        logger.error('Error processing queued request:', error);
       }
     });
   }

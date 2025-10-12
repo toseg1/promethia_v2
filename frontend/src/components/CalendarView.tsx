@@ -12,11 +12,11 @@ import { useTranslation } from 'react-i18next';
 import { EventModal } from './EventModal';
 import { CalendarGrid } from './CalendarGrid';
 import { WeekView } from './WeekView';
-import { EventDetailsModal, CalendarEvent, TrainingEventDetails } from './EventDetailsModal';
+import { EventDetailsModal, CalendarEvent, TrainingEventDetails, RaceEventDetails } from './EventDetailsModal';
 import { LoadingOverlay } from './ui/SkeletonLoader';
 import { User, TrainingEvent } from '../types';
 import { queryClient, queryKeys, useQuery, useCalendarEvents, useConnectedAthletes, useOptimisticMutation } from '../hooks';
-import { eventService, trainingService } from '../services';
+import { eventService, trainingService, raceService, customEventService } from '../services';
 import { mapTrainingDataToBlocks } from '../services/eventNormalization';
 import type { UpdateCalendarEventPayload } from '../services/eventService';
 import { parseLocalDate } from '../utils/dateUtils';
@@ -86,6 +86,47 @@ function parseDurationMinutes(duration?: string | null): number | undefined {
 
   const numeric = Number(duration);
   return Number.isNaN(numeric) ? undefined : numeric;
+}
+
+function formatDurationToHHMM(duration?: string | null): string | undefined {
+  if (!duration) {
+    return undefined;
+  }
+
+  const minutes = parseDurationMinutes(duration);
+  if (minutes === undefined || Number.isNaN(minutes)) {
+    return undefined;
+  }
+
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = Math.max(0, minutes - hours * 60);
+  const paddedHours = hours.toString().padStart(2, '0');
+  const paddedMinutes = remainingMinutes.toString().padStart(2, '0');
+
+  return `${paddedHours}:${paddedMinutes}`;
+}
+
+function extractTimeFromDateTime(dateInput?: string | Date | null): string | undefined {
+  if (!dateInput) {
+    return undefined;
+  }
+
+  let date: Date | null = null;
+
+  if (dateInput instanceof Date) {
+    date = dateInput;
+  } else if (typeof dateInput === 'string' && dateInput.trim()) {
+    const parsed = new Date(dateInput);
+    date = Number.isNaN(parsed.getTime()) ? null : parsed;
+  }
+
+  if (!date) {
+    return undefined;
+  }
+
+  const hours = date.getHours().toString().padStart(2, '0');
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  return `${hours}:${minutes}`;
 }
 
 export const CalendarView = memo(function CalendarView({ user, userRole, onEditEvent, initialAthleteFilter }: CalendarViewProps) {
@@ -192,27 +233,34 @@ export const CalendarView = memo(function CalendarView({ user, userRole, onEditE
       if (!oldEvents) return oldEvents;
 
       const events = oldEvents as any[];
+      const hasId = newEvent && newEvent.id !== undefined && newEvent.id !== null;
+      const normalizedId = hasId ? newEvent.id.toString() : undefined;
 
-      if (newEvent.id) {
-        // Update existing event
-        return events.map(event =>
-          event.id === newEvent.id
-            ? { ...event, ...newEvent, __optimistic: true }
-            : event
-        );
-      } else {
-        // Add new event with temporary ID
-        const tempEvent = {
-          ...newEvent,
-          id: `temp-${Date.now()}`,
-          __optimistic: true
-        };
-        return [...events, tempEvent];
+      if (normalizedId) {
+        const normalizedEvent = { ...newEvent, id: normalizedId };
+        return events.map(event => {
+          if (event && event.id !== undefined && event.id !== null) {
+            return event.id.toString() === normalizedId
+              ? { ...event, ...normalizedEvent, id: normalizedId, __optimistic: true }
+              : event;
+          }
+          return event;
+        });
       }
+
+      // Add new event with temporary ID
+      const tempEvent = {
+        ...newEvent,
+        id: `temp-${Date.now()}`,
+        __optimistic: true
+      };
+      return [...events, tempEvent];
     },
     onSuccess: () => {
       setIsEventModalOpen(false);
       setSelectedDate(null);
+      console.log('🔄 [CalendarView] Refetching calendar events after save...');
+      void refetchCalendarEvents();
       if (process.env.NODE_ENV === 'development') {
         console.log('✅ Event saved successfully with optimistic update');
       }
@@ -233,12 +281,20 @@ export const CalendarView = memo(function CalendarView({ user, userRole, onEditE
     optimisticUpdater: (oldEvents, { eventId }) => {
       if (!oldEvents) return oldEvents;
       const events = oldEvents as any[];
-      return events.filter(event => event.id !== eventId);
+      const targetId = eventId.toString();
+      return events.filter(event => {
+        if (event && event.id !== undefined && event.id !== null) {
+          return event.id.toString() !== targetId;
+        }
+        return true;
+      });
     },
     onSuccess: () => {
       setIsEventDetailsOpen(false);
       setSelectedEvent(null);
       setSelectedDisplayEvent(null);
+      console.log('🔄 [CalendarView] Refetching calendar events after delete...');
+      void refetchCalendarEvents();
       if (process.env.NODE_ENV === 'development') {
         console.log('✅ Event deleted successfully with optimistic update');
       }
@@ -395,6 +451,7 @@ export const CalendarView = memo(function CalendarView({ user, userRole, onEditE
       notes: event.notes,
       athlete: event.athlete,
       athleteName: event.athlete,
+      athleteId: event.athleteId,
       sport: event.sport,
       dateEnd: event.endDate ? event.endDate.toISOString().split('T')[0] : undefined,
       color: event.color,
@@ -435,12 +492,108 @@ export const CalendarView = memo(function CalendarView({ user, userRole, onEditE
             sport: training.sport || baseDetails.sport,
             athlete: training.athlete_name || baseDetails.athlete || baseDetails.athleteName,
             athleteName: training.athlete_name || baseDetails.athlete || baseDetails.athleteName,
+            athleteId: training.athlete ? String(training.athlete) : baseDetails.athleteId,
             trainingName: training.training_name || training.training_data?.name || baseDetails.trainingName
           };
 
           openModalWithEvent(trainingDetails);
         } catch (error) {
           console.error('Failed to load training event details', error);
+          openModalWithEvent(baseDetails);
+        } finally {
+          setIsEventLoading(false);
+        }
+      })();
+      return;
+    }
+
+    if (event.type === 'race') {
+      setIsEventLoading(true);
+      (async () => {
+        try {
+          const race = await raceService.getRaceById(event.sourceId);
+          const raceDate = parseLocalDate(race.date) || baseDetails.date;
+          const raceDateISO = typeof race.date === 'string' && race.date.includes('T')
+            ? race.date.split('T')[0]
+            : baseDetails.dateStart;
+          const raceTime = extractTimeFromDateTime(race.date) ?? baseDetails.time;
+          const fallbackDuration =
+            typeof baseDetails.duration === 'string' ? baseDetails.duration : undefined;
+
+          const raceDetails: RaceEventDetails = {
+            id: String(race.id ?? baseDetails.id),
+            type: 'race',
+            title: race.title ?? baseDetails.title,
+            date: raceDate ?? baseDetails.date,
+            time: raceTime,
+            startTime: raceTime,
+            endTime: baseDetails.endTime,
+            dateStart: raceDateISO ?? baseDetails.dateStart,
+            dateEnd: baseDetails.dateEnd,
+            location: race.location ?? baseDetails.location,
+            description: race.description ?? baseDetails.description,
+            raceDistance: race.distance ?? baseDetails.distance,
+            distance: race.distance ?? baseDetails.distance,
+            timeObjective: formatDurationToHHMM(race.target_time),
+            duration: formatDurationToHHMM(race.finish_time) ?? fallbackDuration,
+            sport: race.sport ?? baseDetails.sport,
+            athlete: race.athlete_name ?? baseDetails.athlete,
+            athleteName: race.athlete_name ?? baseDetails.athleteName,
+            athleteId: race.athlete ? String(race.athlete) : baseDetails.athleteId,
+            notes: baseDetails.notes,
+            color: baseDetails.color,
+          };
+
+          openModalWithEvent(raceDetails);
+        } catch (error) {
+          console.error('Failed to load race event details', error);
+          openModalWithEvent(baseDetails);
+        } finally {
+          setIsEventLoading(false);
+        }
+      })();
+      return;
+    }
+
+    if (event.type === 'custom') {
+      console.log('🎯 [CalendarView] Custom event clicked, sourceId:', event.sourceId);
+      setIsEventLoading(true);
+      (async () => {
+        try {
+          console.log('📞 [CalendarView] Calling customEventService.getCustomEventById...');
+          const customEvent = await customEventService.getCustomEventById(event.sourceId);
+          console.log('📦 [CalendarView] Received custom event data:', customEvent);
+          const customDate = parseLocalDate(customEvent.date) || baseDetails.date;
+          const customDateStartISO = typeof customEvent.date === 'string' && customEvent.date.includes('T')
+            ? customEvent.date.split('T')[0]
+            : baseDetails.dateStart;
+          const customDateEndISO = customEvent.date_end && typeof customEvent.date_end === 'string' && customEvent.date_end.includes('T')
+            ? customEvent.date_end.split('T')[0]
+            : (customEvent.date_end || baseDetails.dateEnd);
+
+          const customDetails: CalendarEvent = {
+            id: String(customEvent.id ?? baseDetails.id),
+            type: 'custom',
+            title: customEvent.title ?? baseDetails.title,
+            date: customDate,
+            dateStart: customDateStartISO ?? baseDetails.dateStart,
+            dateEnd: customDateEndISO ?? baseDetails.dateEnd,
+            location: customEvent.location ?? baseDetails.location,
+            description: customEvent.description ?? baseDetails.description,
+            customEventColor: customEvent.event_color ?? baseDetails.customEventColor,
+            color: customEvent.event_color ?? baseDetails.color,
+            athlete: customEvent.athlete_name ?? baseDetails.athlete,
+            athleteName: customEvent.athlete_name ?? baseDetails.athleteName,
+            athleteId: customEvent.athlete ? String(customEvent.athlete) : baseDetails.athleteId,
+            notes: baseDetails.notes,
+            sport: baseDetails.sport,
+            time: baseDetails.time,
+          };
+
+          console.log('✨ [CalendarView] Opening modal with custom event details:', customDetails);
+          openModalWithEvent(customDetails);
+        } catch (error) {
+          console.error('Failed to load custom event details', error);
           openModalWithEvent(baseDetails);
         } finally {
           setIsEventLoading(false);
@@ -673,9 +826,12 @@ export const CalendarView = memo(function CalendarView({ user, userRole, onEditE
         isOpen={isEventDetailsOpen}
         viewerRole={userRole}
         onClose={() => {
+          console.log('🔄 [CalendarView] EventDetailsModal closed, refetching calendar...');
           setIsEventDetailsOpen(false);
           setSelectedEvent(null);
           setSelectedDisplayEvent(null);
+          // Refetch calendar events when details modal closes to show any updates
+          void refetchCalendarEvents();
         }}
         onEdit={(event) => {
           if (onEditEvent) {

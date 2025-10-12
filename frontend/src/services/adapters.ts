@@ -284,7 +284,7 @@ export function mapUserFromApi(backendUser: any): User {
 
   const firstName = backendUser.first_name ?? backendUser.user?.first_name ?? '';
   const lastName = backendUser.last_name ?? backendUser.user?.last_name ?? '';
-  const profileImageRaw = backendUser.profile_image ?? backendUser.user?.profile_image;
+  const profileImageRaw = backendUser.profile_image_url ?? backendUser.profile_image ?? backendUser.user?.profile_image_url ?? backendUser.user?.profile_image;
   const masRaw = backendUser.mas ?? backendUser.user?.mas;
   const fppRaw = backendUser.fpp ?? backendUser.user?.fpp;
   const cssRaw = backendUser.css ?? backendUser.user?.css;

@@ -141,7 +141,15 @@ export function useEventModalActions({
 
     const trimmedTimeInput = time?.trim();
     const normalizedTimeForDate = trimmedTimeInput ? trimmedTimeInput.slice(0, 5) : undefined;
+
+    const existingTimeRaw = existingEvent?.time ?? (existingEvent as any)?.startTime;
+    const existingTime = typeof existingTimeRaw === 'string' ? existingTimeRaw.trim() : '';
+    const existingTimeForDate = existingTime ? existingTime.slice(0, 5) : undefined;
+
+    const fallbackTimeForDate = normalizedTimeForDate ?? existingTimeForDate;
     const sanitizedTime = normalizedTimeForDate ? ensureSeconds(normalizedTimeForDate) : undefined;
+    const fallbackSanitizedTime = fallbackTimeForDate ? ensureSeconds(fallbackTimeForDate) : undefined;
+    const finalTimeValue = sanitizedTime ?? fallbackSanitizedTime;
     const sanitizedDuration = duration?.trim() ? duration : undefined;
     const sanitizedLocation = location?.trim() ? location : undefined;
     const sanitizedAthlete = selectedAthlete?.trim() ? selectedAthlete : undefined;
@@ -164,7 +172,7 @@ export function useEventModalActions({
       return sanitizedDateStart;
     })();
 
-    const eventDate = combineDateAndTimeLocal(baseDate, normalizedTimeForDate) ?? baseDate;
+    const eventDate = combineDateAndTimeLocal(baseDate, fallbackTimeForDate) ?? baseDate;
 
     const eventData: EventData = {
       id: existingEvent?.id,
@@ -172,7 +180,7 @@ export function useEventModalActions({
       sport: eventType !== 'custom' ? selectedSport : undefined,
       title: title || `${eventType} session`,
       date: eventDate,
-      time: sanitizedTime,
+      time: finalTimeValue,
       duration: eventType === 'training' ? sanitizedDuration : undefined,
       location: eventType !== 'training' ? sanitizedLocation : undefined,
       description: trimmedDescription || undefined,

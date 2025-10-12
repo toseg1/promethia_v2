@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate
 from django.db import transaction
 from datetime import datetime, timedelta
 from django.utils import timezone
+import logging
 
 from .models import (
     User, AthleticProfile, ProfessionalProfile, Achievement,
@@ -57,7 +58,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         """Set permissions based on action"""
-        if self.action in ['register', 'login']:
+        if self.action in ['register', 'login', 'request_password_reset', 'confirm_password_reset']:
             return [AllowAny()]
         elif self.action in ['destroy']:
             return []  # No delete permission
@@ -481,76 +482,87 @@ class UserViewSet(viewsets.ModelViewSet):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-    @action(detail=False, methods=['post'], permission_classes=[AllowAny])
+    @action(detail=False, methods=['post'], permission_classes=[AllowAny], authentication_classes=[])
     def request_password_reset(self, request):
         """Request password reset token"""
         from django.contrib.auth.tokens import default_token_generator
         from django.utils.encoding import force_bytes
         from django.utils.http import urlsafe_base64_encode
         from django.core.mail import send_mail
+        from django.template.loader import render_to_string
+        from django.utils.html import strip_tags
         from django.conf import settings
-        
+        import logging
+
+        logger = logging.getLogger(__name__)
         email = request.data.get('email')
+
         if not email:
             return Response(
                 {'success': False, 'message': 'Email is required'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        
+
         try:
             user = User.objects.get(email=email)
-            
+
             # Generate password reset token
             token = default_token_generator.make_token(user)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
-            
+
             # Create reset link
             reset_link = f"{settings.FRONTEND_URL}/reset-password/{uid}/{token}/"
-            
-            # Send email (in production)
-            if not settings.DEBUG:
+
+            # Prepare email context
+            context = {
+                'user': user,
+                'reset_link': reset_link,
+                'site_name': 'Promethia',
+            }
+
+            # Render email
+            html_message = render_to_string('emails/password_reset.html', context)
+            plain_message = strip_tags(html_message)
+
+            # Send email
+            try:
+                # In development, log the reset link
+                if settings.DEBUG:
+                    logger.info("Password reset link generated for %s: %s", email, reset_link)
+
+                # Always attempt to send email (will use console backend in DEBUG mode)
                 send_mail(
-                    subject="Password Reset Request",
-                    message=f"""
-                    Hi {user.first_name},
-                    
-                    You requested a password reset for your account.
-                    Click the link below to reset your password:
-                    
-                    {reset_link}
-                    
-                    This link will expire in 24 hours.
-                    
-                    If you didn't request this reset, please ignore this email.
-                    
-                    Best regards,
-                    The Promethia Team
-                    """,
+                    subject='Reset Your Promethia Password',
+                    message=plain_message,
                     from_email=settings.DEFAULT_FROM_EMAIL,
                     recipient_list=[email],
-                    fail_silently=False,
-                    timeout=settings.EMAIL_TIMEOUT,
+                    html_message=html_message,
+                    fail_silently=True,  # Don't fail the request if email fails
                 )
-            else:
-                # In development, just log the reset link
-                print(f"Password reset link for {email}: {reset_link}")
-            
-            return Response({
-                'success': True,
-                'message': f'Password reset email sent to {email}',
-                'data': {
-                    'reset_link': reset_link if settings.DEBUG else None  # Only in development
-                }
-            })
-        
+
+                return Response({
+                    'success': True,
+                    'message': f'Password reset email sent to {email}',
+                    'data': {
+                        'reset_link': reset_link if settings.DEBUG else None  # Only in development
+                    }
+                })
+            except Exception as e:
+                # Log the error but still return success (security best practice)
+                logger.warning("Failed to send password reset email", extra={"user_email": email, "error": str(e)})
+                return Response({
+                    'success': True,
+                    'message': f'Password reset email sent to {email}'
+                })
+
         except User.DoesNotExist:
-            # Don't reveal whether email exists or not
+            # Don't reveal whether email exists or not (security best practice)
             return Response({
                 'success': True,
                 'message': f'Password reset email sent to {email}'
             })
     
-    @action(detail=False, methods=['post'], permission_classes=[AllowAny])
+    @action(detail=False, methods=['post'], permission_classes=[AllowAny], authentication_classes=[])
     def confirm_password_reset(self, request):
         """Confirm password reset with token"""
         from django.contrib.auth.tokens import default_token_generator
@@ -952,3 +964,4 @@ class CoachAssignmentViewSet(viewsets.ReadOnlyModelViewSet):
         return CoachAssignment.objects.filter(
             models.Q(coach=user) | models.Q(mentee=user)
         ).select_related('coach', 'mentee')
+logger = logging.getLogger(__name__)

@@ -151,6 +151,24 @@ export function EventModalContainer({ isOpen, onClose, onSave, selectedDate, use
 
   // Validate form before submission
   const validateForm = (): boolean => {
+    // Debug: Log the form data being validated
+    console.log('🔍 Validating form data:', {
+      eventType,
+      title,
+      selectedSport,
+      selectedAthlete,
+      userRole,
+      date,
+      duration,
+      time,
+      dateStart,
+      dateEnd,
+      location,
+      distance,
+      timeObjective,
+      customEventColor
+    });
+
     const validation = validateEventForm(eventType, {
       title,
       selectedSport,
@@ -168,6 +186,7 @@ export function EventModalContainer({ isOpen, onClose, onSave, selectedDate, use
     });
 
     if (!validation.isValid) {
+      console.log('❌ Validation failed with errors:', validation.errors);
       setFieldErrors(validation.errors);
       return false;
     }

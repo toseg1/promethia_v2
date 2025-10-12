@@ -6,6 +6,7 @@ import { authService } from '../services/authService';
 import { queryClient } from '../hooks';
 import { useActivityTracker } from '../hooks/useActivityTracker';
 import { ProfileCache } from '../utils/profileCache';
+import { logger } from '../utils/logger';
 
 // AuthContext interface - enhanced with authentication state tracking
 interface AuthContextType {
@@ -74,19 +75,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
         // Skip auto-login if on password reset confirm page
         const pathParts = window.location.pathname.split('/');
         if (pathParts[1] === 'reset-password' && pathParts[2] && pathParts[3]) {
-          console.log('🔓 On password reset page, skipping auto-login');
+          logger.debug('🔓 On password reset page, skipping auto-login');
           setIsInitializing(false);
           return;
         }
 
         // Check if tokens exist in storage
         if (authService.isAuthenticated()) {
-          console.log('🔐 Found existing authentication tokens');
+          logger.debug('🔐 Found existing authentication tokens');
 
           // PHASE 3.2: Try to load cached profile FIRST for instant UI
           const cachedProfile = ProfileCache.get();
           if (cachedProfile) {
-            console.log('⚡ Loading profile from cache (instant)');
+            logger.debug('⚡ Loading profile from cache (instant)');
             setUser(cachedProfile);
             setCurrentRole(cachedProfile.role);
             setIsInitializing(false); // Stop loading spinner immediately
@@ -106,10 +107,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
                 // Update UI with fresh data (silent update if cached was shown)
                 setUser(storedUser);
                 setCurrentRole(storedUser.role);
-                console.log('✅ Authentication restored successfully for user:', storedUser.username);
+                logger.info('✅ Authentication restored successfully for user:', storedUser.username);
               }
             } catch (error) {
-              console.error('Failed to fetch user data:', error);
+              logger.error('Failed to fetch user data:', error);
 
               // Only logout on auth errors, not network errors
               if (error.message?.includes('401') || error.message?.includes('403')) {
@@ -117,22 +118,22 @@ export function AuthProvider({ children }: AuthProviderProps) {
                 ProfileCache.clear(); // PHASE 3.2: Clear cache on logout
                 setUser(null);
               } else {
-                console.warn('Network error during session restore, keeping tokens for retry');
+                logger.warn('Network error during session restore, keeping tokens for retry');
                 // Keep cached profile if we have it
               }
             }
           } else {
             // Token refresh failed
-            console.log('⚠️ Token refresh failed during initialization');
+            logger.info('⚠️ Token refresh failed during initialization');
             ProfileCache.clear(); // PHASE 3.2: Clear cache on auth failure
             setUser(null);
           }
         } else {
-          console.log('🔓 No existing authentication found');
+          logger.debug('🔓 No existing authentication found');
           ProfileCache.clear(); // PHASE 3.2: Ensure cache is clear
         }
       } catch (error) {
-        console.error('Auth initialization error:', error);
+        logger.error('Auth initialization error:', error);
       } finally {
         // Only set to false if we didn't already set it (from cache)
         setIsInitializing(false);
@@ -149,9 +150,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     debounceMs: 5 * 60 * 1000, // Check at most once per 5 minutes
     refreshThresholdMs: 10 * 60 * 1000, // Refresh when <10 minutes remaining
     onActivity: () => {
-      if (process.env.NODE_ENV === 'development') {
-        console.log('👆 User activity detected');
-      }
+      logger.debug('👆 User activity detected');
     }
   });
 
@@ -163,7 +162,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       if (authService.isAuthenticated()) {
         const token = authService.getStoredToken();
         if (!token) {
-          console.log('⚠️ Session expired due to missing token - logging out');
+          logger.info('⚠️ Session expired due to missing token - logging out');
           await handleLogout();
         }
       }
@@ -184,18 +183,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const handleAuthError = (error: AuthError) => {
     setAuthError(error);
-    console.error('Authentication error:', error);
+    logger.error('Authentication error:', error);
   };
 
   const handleLogout = async () => {
     try {
       await authService.logout();
     } catch (error) {
-      console.warn('Logout service call failed:', error);
+      logger.warn('Logout service call failed:', error);
     }
 
     // Clear ALL cached queries on logout
-    console.log('🧹 Clearing all cached data on logout...');
+    logger.info('🧹 Clearing all cached data on logout...');
     queryClient.clear();
 
     // PHASE 3.2: Clear profile cache on logout
@@ -206,9 +205,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setCurrentRole('athlete');
     setAuthError(null);
 
-    if (process.env.NODE_ENV === 'development') {
-      console.log('✅ Cache cleared and user logged out');
-    }
+    logger.debug('✅ Cache cleared and user logged out');
   };
 
   const handleRoleSwitch = () => {
@@ -217,7 +214,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setCurrentView('dashboard');
 
     // Invalidate role-specific data
-    console.log(`🔄 Role switched to ${newRole}, invalidating role-specific caches...`);
+    logger.info(`🔄 Role switched to ${newRole}, invalidating role-specific caches...`);
     queryClient.invalidateEntity('dashboard');
     queryClient.invalidateEntity('calendar');
     queryClient.invalidateEntity('training');
@@ -322,9 +319,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
   };
 
   // Password reset confirm function - validates token and sets new password
-  const handlePasswordResetConfirm = async (token: string, password: string): Promise<void> => {
+  const handlePasswordResetConfirm = async (combinedToken: string, password: string): Promise<void> => {
     try {
-      const confirmResponse = await authService.confirmPasswordReset(token, password);
+      // Split the combined token into uid and token (format: "uid-token")
+      const [uid, token] = combinedToken.split('-', 2);
+
+      if (!uid || !token) {
+        throw new Error('Invalid reset token format');
+      }
+
+      const confirmResponse = await authService.confirmPasswordReset(uid, token, password);
 
       if (!confirmResponse.success) {
         throw new Error(confirmResponse.message);
@@ -428,4 +432,3 @@ export function AuthProvider({ children }: AuthProviderProps) {
     </AuthContext.Provider>
   );
 }
-

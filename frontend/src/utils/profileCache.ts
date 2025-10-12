@@ -15,8 +15,8 @@
  * - Same-origin policy protection
  * - Cache cleared on logout
  */
-
 import { User } from '../types';
+import { logger } from './logger';
 
 interface CachedProfile {
   user: User;
@@ -42,11 +42,9 @@ export class ProfileCache {
 
       localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
 
-      if (process.env.NODE_ENV === 'development') {
-        console.log('💾 Profile cached:', user.username);
-      }
+      logger.debug('💾 Profile cached:', user.username);
     } catch (error) {
-      console.warn('Failed to cache profile:', error);
+      logger.warn('Failed to cache profile:', error);
       // Non-critical - app still works without cache
     }
   }
@@ -67,7 +65,7 @@ export class ProfileCache {
 
       // Validate cache version
       if (parsed.version !== CACHE_VERSION) {
-        console.log('⚠️ Profile cache version mismatch, clearing...');
+        logger.debug('⚠️ Profile cache version mismatch, clearing...');
         this.clear();
         return null;
       }
@@ -75,25 +73,23 @@ export class ProfileCache {
       // Check TTL
       const age = Date.now() - parsed.cachedAt;
       if (age > CACHE_TTL) {
-        console.log('⚠️ Profile cache expired, clearing...');
+        logger.debug('⚠️ Profile cache expired, clearing...');
         this.clear();
         return null;
       }
 
       // Validate required fields
       if (!parsed.user || !parsed.user.id || !parsed.user.username) {
-        console.warn('⚠️ Invalid profile cache data, clearing...');
+        logger.warn('⚠️ Invalid profile cache data, clearing...');
         this.clear();
         return null;
       }
 
-      if (process.env.NODE_ENV === 'development') {
-        console.log('⚡ Profile loaded from cache:', parsed.user.username);
-      }
+      logger.debug('⚡ Profile loaded from cache:', parsed.user.username);
 
       return parsed.user;
     } catch (error) {
-      console.warn('Failed to read profile cache:', error);
+      logger.warn('Failed to read profile cache:', error);
       this.clear(); // Clear corrupted cache
       return null;
     }
@@ -106,11 +102,9 @@ export class ProfileCache {
     try {
       localStorage.removeItem(CACHE_KEY);
 
-      if (process.env.NODE_ENV === 'development') {
-        console.log('🧹 Profile cache cleared');
-      }
+      logger.debug('🧹 Profile cache cleared');
     } catch (error) {
-      console.warn('Failed to clear profile cache:', error);
+      logger.warn('Failed to clear profile cache:', error);
     }
   }
 

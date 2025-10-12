@@ -1,20 +1,22 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import './utils/silenceConsole'
 import './index.css'
 import './styles/globals.css'
 import { initializeSecurity } from './utils/secureStorage'
+import { logger } from './utils/logger'
 
-console.log('🚀 Debugging App component loading...')
+logger.debug('🚀 Debugging App component loading...')
 
 // Initialize security settings
 initializeSecurity()
 
 // Test App component with error handling
 function AppTest() {
-  console.log('✅ AppTest rendering - testing App import')
+  logger.debug('✅ AppTest rendering - testing App import')
   
   try {
-    console.log('📦 Attempting to import App...')
+    logger.debug('📦 Attempting to import App...')
     
     // Dynamic import with error handling
     const [AppComponent, setAppComponent] = React.useState<any>(null)
@@ -27,7 +29,7 @@ function AppTest() {
       const loadComponent = async () => {
         try {
           if (import.meta.env.DEV && preview === 'event-cards') {
-            console.log('🧩 Loading EventCardPreview...')
+            logger.debug('🧩 Loading EventCardPreview...')
             const module = await import('./dev/EventCardPreview')
             setAppComponent(() => module.EventCardPreview || module.default)
           } else {
@@ -35,7 +37,7 @@ function AppTest() {
             setAppComponent(() => module.default)
           }
         } catch (err: unknown) {
-          console.error('❌ Failed to load entry component:', err)
+          logger.error('❌ Failed to load entry component:', err)
           setError(err instanceof Error ? err.message : 'Unknown error')
         }
       }
@@ -80,7 +82,7 @@ function AppTest() {
     return <AppComponent />
     
   } catch (error: unknown) {
-    console.error('❌ Critical error in AppTest:', error)
+    logger.error('❌ Critical error in AppTest:', error)
     return (
       <div style={{ 
         padding: '40px', 

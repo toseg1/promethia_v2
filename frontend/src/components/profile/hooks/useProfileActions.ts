@@ -12,6 +12,7 @@ import {
   Certification,
   Achievement,
 } from '../types';
+import { logger } from '../../../utils/logger';
 
 interface UseProfileActionsProps {
   userId: string;
@@ -113,30 +114,30 @@ export function useProfileActions({
   };
 
   const ensureProfessionalProfileId = async (): Promise<string> => {
-    console.log('🔍 ensureProfessionalProfileId - Current professionalProfileId:', professionalProfileId);
+    logger.debug('🔍 ensureProfessionalProfileId - Current professionalProfileId:', professionalProfileId);
     
     if (isPositiveIntegerString(professionalProfileId)) {
-      console.log('✅ Using existing professional profile ID:', professionalProfileId);
+      logger.debug('✅ Using existing professional profile ID:', professionalProfileId);
       return professionalProfileId;
     }
 
-    console.log('🔄 Creating new professional profile for user:', userId);
+    logger.debug('🔄 Creating new professional profile for user:', userId);
     try {
       const summary = await profileService.upsertProfessionalProfile(userId, null, {});
-      console.log('📋 Professional profile upsert response:', summary);
+      logger.debug('📋 Professional profile upsert response:', summary);
       
       const nextId = isPositiveIntegerString(summary.id) ? summary.id : null;
       setProfessionalProfileId(nextId);
 
       if (!nextId) {
-        console.error('❌ Failed to create professional profile - invalid ID:', summary);
+        logger.error('❌ Failed to create professional profile - invalid ID:', summary);
         throw new Error('Unable to create professional profile.');
       }
 
-      console.log('✅ Created professional profile with ID:', nextId);
+      logger.debug('✅ Created professional profile with ID:', nextId);
       return nextId;
     } catch (error) {
-      console.error('❌ Error creating professional profile:', error);
+      logger.error('❌ Error creating professional profile:', error);
       throw error;
     }
   };
@@ -163,7 +164,7 @@ export function useProfileActions({
       }));
       setCoaches(updatedCoaches);
     } catch (error) {
-      console.error('Failed to refresh coaches list:', error);
+      logger.error('Failed to refresh coaches list:', error);
     }
   };
 
@@ -184,7 +185,7 @@ export function useProfileActions({
 
       toast.success('Profile updated successfully!');
     } catch (error) {
-      console.error('Failed to save profile:', error);
+      logger.error('Failed to save profile:', error);
       const message = error instanceof Error ? error.message : 'Failed to save profile';
       toast.error(`Error saving profile: ${message}`);
     }
@@ -246,14 +247,14 @@ export function useProfileActions({
 
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to disconnect coach';
-      console.error('Error removing coach:', error);
+      logger.error('Error removing coach:', error);
       toast.error(message);
 
       // Refresh coaches list to ensure UI is in sync with backend
       try {
         await refreshCoaches();
       } catch (refreshError) {
-        console.error('Failed to refresh coaches after error:', refreshError);
+        logger.error('Failed to refresh coaches after error:', refreshError);
       }
 
       throw error;
@@ -277,11 +278,11 @@ export function useProfileActions({
   };
 
   const handleSaveCertification = async (certification: Certification): Promise<Certification> => {
-    console.log('🎓 handleSaveCertification - Starting with certification:', certification);
+    logger.debug('🎓 handleSaveCertification - Starting with certification:', certification);
     
     try {
       if (!certification.title || !certification.issuer || !certification.sport) {
-        console.error('❌ Certification validation failed - missing required fields:', {
+        logger.error('❌ Certification validation failed - missing required fields:', {
           title: certification.title,
           issuer: certification.issuer,
           sport: certification.sport
@@ -290,9 +291,9 @@ export function useProfileActions({
         throw new Error('Missing certification fields');
       }
 
-      console.log('🔄 Getting professional profile ID...');
+      logger.debug('🔄 Getting professional profile ID...');
       const profileId = await ensureProfessionalProfileId();
-      console.log('✅ Professional profile ID obtained:', profileId);
+      logger.debug('✅ Professional profile ID obtained:', profileId);
       
       const payload: CertificationPayload = {
         sport: certification.sport,
@@ -301,18 +302,18 @@ export function useProfileActions({
         year: certification.year,
       };
 
-      console.log('📋 Certification payload prepared:', payload);
+      logger.debug('📋 Certification payload prepared:', payload);
 
       let saved;
       if (!certification.isCustom && certification.id && !certification.id.startsWith('temp-')) {
-        console.log('🔄 Updating existing certification with ID:', certification.id);
+        logger.debug('🔄 Updating existing certification with ID:', certification.id);
         saved = await profileService.updateCertification(certification.id, payload);
       } else {
-        console.log('🔄 Creating new certification with profile ID:', profileId);
+        logger.debug('🔄 Creating new certification with profile ID:', profileId);
         saved = await profileService.createCertification(profileId, payload);
       }
 
-      console.log('📥 Raw certification response from backend:', saved);
+      logger.debug('📥 Raw certification response from backend:', saved);
 
       const normalized = mapCertificationResponseToUi(saved);
       const normalizedCertification = {
@@ -320,18 +321,18 @@ export function useProfileActions({
         isCustom: certification.isCustom ?? normalized.isCustom,
       };
 
-      console.log('🔄 Normalized certification for UI:', normalizedCertification);
+      logger.debug('🔄 Normalized certification for UI:', normalizedCertification);
 
       setProfessionalDetails(prev => ({
         ...prev,
         certifications: [...prev.certifications.filter(cert => cert.id !== certification.id), normalizedCertification],
       }));
 
-      console.log('✅ Certification saved and state updated successfully');
+      logger.debug('✅ Certification saved and state updated successfully');
       toast.success('Certification saved successfully!');
       return normalizedCertification;
     } catch (error) {
-      console.error('❌ handleSaveCertification - Detailed error:', error);
+      logger.error('❌ handleSaveCertification - Detailed error:', error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
       toast.error(`Failed to save certification: ${errorMessage}`);
       throw error;
@@ -348,16 +349,16 @@ export function useProfileActions({
   };
 
   const handleRemoveCertification = async (id: string): Promise<boolean> => {
-    console.log('🗑️ handleRemoveCertification - Starting deletion for ID:', id);
+    logger.debug('🗑️ handleRemoveCertification - Starting deletion for ID:', id);
     
     try {
       // Delete from backend first (linked to Professional Profile)
       if (!id.startsWith('temp-')) {
-        console.log('🔄 Deleting certification from backend (linked to Professional Profile)');
+        logger.debug('🔄 Deleting certification from backend (linked to Professional Profile)');
         await profileService.deleteCertification(id);
-        console.log('✅ Backend deletion successful for certification ID:', id);
+        logger.debug('✅ Backend deletion successful for certification ID:', id);
       } else {
-        console.log('⚠️ Skipping backend deletion for temporary certification ID:', id);
+        logger.debug('⚠️ Skipping backend deletion for temporary certification ID:', id);
       }
       
       // Remove from local state after successful backend deletion
@@ -366,11 +367,11 @@ export function useProfileActions({
         certifications: prev.certifications.filter(cert => cert.id !== id),
       }));
       
-      console.log('✅ Certification removed from UI state successfully');
+      logger.debug('✅ Certification removed from UI state successfully');
       toast.success('Certification deleted successfully!');
       return true;
     } catch (error) {
-      console.error('❌ handleRemoveCertification - Detailed error:', error);
+      logger.error('❌ handleRemoveCertification - Detailed error:', error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
       toast.error(`Failed to delete certification: ${errorMessage}`);
       return false;
@@ -393,11 +394,11 @@ export function useProfileActions({
   };
 
   const handleSaveAchievement = async (achievement: Achievement, roleOverride?: string): Promise<Achievement> => {
-    console.log('🏆 handleSaveAchievement - Starting with achievement:', achievement);
+    logger.debug('🏆 handleSaveAchievement - Starting with achievement:', achievement);
     
     try {
       if (!achievement.title || !achievement.category) {
-        console.error('❌ Achievement validation failed - missing required fields:', {
+        logger.error('❌ Achievement validation failed - missing required fields:', {
           title: achievement.title,
           category: achievement.category
         });
@@ -406,7 +407,7 @@ export function useProfileActions({
       }
 
       const role = roleOverride ?? currentRole;
-      console.log('🔄 Using role for achievement save:', role);
+      logger.debug('🔄 Using role for achievement save:', role);
       
       const payload: AchievementPayload = {
         title: achievement.title,
@@ -415,50 +416,50 @@ export function useProfileActions({
         year: achievement.year,
       };
 
-      console.log('📋 Achievement payload prepared:', payload);
+      logger.debug('📋 Achievement payload prepared:', payload);
 
       let saved;
       if (role === 'coach') {
-        console.log('🔄 Processing as coach achievement...');
+        logger.debug('🔄 Processing as coach achievement...');
         const profileId = await ensureProfessionalProfileId();
-        console.log('✅ Professional profile ID obtained for coach:', profileId);
+        logger.debug('✅ Professional profile ID obtained for coach:', profileId);
         
         if (achievement.id && !achievement.id.startsWith('temp-')) {
-          console.log('🔄 Updating existing coach achievement with ID:', achievement.id);
+          logger.debug('🔄 Updating existing coach achievement with ID:', achievement.id);
           saved = await profileService.updateCoachAchievement(achievement.id, payload);
         } else {
-          console.log('🔄 Creating new coach achievement with profile ID:', profileId);
+          logger.debug('🔄 Creating new coach achievement with profile ID:', profileId);
           saved = await profileService.createCoachAchievement(profileId, payload);
         }
       } else {
-        console.log('🔄 Processing as athlete achievement...');
+        logger.debug('🔄 Processing as athlete achievement...');
         const profileId = await ensureAthleticProfileId();
-        console.log('✅ Athletic profile ID obtained for athlete:', profileId);
+        logger.debug('✅ Athletic profile ID obtained for athlete:', profileId);
         
         if (achievement.id && !achievement.id.startsWith('temp-')) {
-          console.log('🔄 Updating existing athlete achievement with ID:', achievement.id);
+          logger.debug('🔄 Updating existing athlete achievement with ID:', achievement.id);
           saved = await profileService.updateAchievement(achievement.id, payload);
         } else {
-          console.log('🔄 Creating new athlete achievement with profile ID:', profileId);
+          logger.debug('🔄 Creating new athlete achievement with profile ID:', profileId);
           saved = await profileService.createAchievement(profileId, payload);
         }
       }
 
-      console.log('📥 Raw achievement response from backend:', saved);
+      logger.debug('📥 Raw achievement response from backend:', saved);
 
       const normalized = mapAchievementResponseToUi(saved);
-      console.log('🔄 Normalized achievement for UI:', normalized);
+      logger.debug('🔄 Normalized achievement for UI:', normalized);
 
       setProfessionalDetails(prev => ({
         ...prev,
         achievements: [...prev.achievements.filter(item => item.id !== achievement.id), normalized],
       }));
 
-      console.log('✅ Achievement saved and state updated successfully');
+      logger.debug('✅ Achievement saved and state updated successfully');
       toast.success('Achievement saved successfully!');
       return normalized;
     } catch (error) {
-      console.error('❌ handleSaveAchievement - Detailed error:', error);
+      logger.error('❌ handleSaveAchievement - Detailed error:', error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
       toast.error(`Failed to save achievement: ${errorMessage}`);
       throw error;
@@ -475,7 +476,7 @@ export function useProfileActions({
   };
 
   const handleRemoveAchievement = async (id: string, roleOverride?: string) => {
-    console.log('🗑️ handleRemoveAchievement - Starting deletion for ID:', id);
+    logger.debug('🗑️ handleRemoveAchievement - Starting deletion for ID:', id);
     
     // Get current professional details and find the achievement to delete
     let currentAchievements: Achievement[] = [];
@@ -484,29 +485,29 @@ export function useProfileActions({
     setProfessionalDetails(prev => {
       currentAchievements = prev.achievements;
       achievementToDelete = prev.achievements.find(ach => ach.id === id);
-      console.log('🔍 Current professionalDetails.achievements:', prev.achievements);
-      console.log('🎯 Achievement to delete:', achievementToDelete);
+      logger.debug('🔍 Current professionalDetails.achievements:', prev.achievements);
+      logger.debug('🎯 Achievement to delete:', achievementToDelete);
       return prev; // Don't change the state, just access it
     });
     
     try {
       const role = roleOverride ?? currentRole;
-      console.log('🔄 Using role for achievement deletion:', role);
-      console.log('📋 Available achievement IDs in state:', currentAchievements.map(a => a.id));
+      logger.debug('🔄 Using role for achievement deletion:', role);
+      logger.debug('📋 Available achievement IDs in state:', currentAchievements.map(a => a.id));
       
       // Delete from backend first (linked to Professional Profile)
       if (!id.startsWith('temp-')) {
         if (role === 'coach') {
-          console.log('🔄 Deleting coach achievement from backend (linked to Professional Profile)');
+          logger.debug('🔄 Deleting coach achievement from backend (linked to Professional Profile)');
           await profileService.deleteCoachAchievement(id);
-          console.log('✅ Backend deletion successful for coach achievement ID:', id);
+          logger.debug('✅ Backend deletion successful for coach achievement ID:', id);
         } else {
-          console.log('🔄 Deleting athlete achievement from backend (linked to Professional Profile)');
+          logger.debug('🔄 Deleting athlete achievement from backend (linked to Professional Profile)');
           await profileService.deleteAchievement(id);
-          console.log('✅ Backend deletion successful for athlete achievement ID:', id);
+          logger.debug('✅ Backend deletion successful for athlete achievement ID:', id);
         }
       } else {
-        console.log('⚠️ Skipping backend deletion for temporary achievement ID:', id);
+        logger.debug('⚠️ Skipping backend deletion for temporary achievement ID:', id);
       }
 
       // Remove from local state after successful backend deletion
@@ -515,11 +516,11 @@ export function useProfileActions({
         achievements: prev.achievements.filter(item => item.id !== id),
       }));
       
-      console.log('✅ Achievement removed from UI state successfully');
+      logger.debug('✅ Achievement removed from UI state successfully');
       toast.success('Achievement deleted successfully!');
     } catch (error) {
-      console.error('❌ handleRemoveAchievement - Detailed error:', error);
-      console.log('🔍 Error details:', {
+      logger.error('❌ handleRemoveAchievement - Detailed error:', error);
+      logger.debug('🔍 Error details:', {
         errorType: typeof error,
         errorMessage: error instanceof Error ? error.message : 'Unknown',
         achievementId: id,
@@ -549,7 +550,7 @@ export function useProfileActions({
             sportsInvolved: summary.sportsInvolved,
           }));
         } catch (error) {
-          console.error('Failed to save sports selection:', error);
+          logger.error('Failed to save sports selection:', error);
           toast.error('Failed to save sports selection.');
         }
       })();
@@ -597,7 +598,7 @@ export function useProfileActions({
 
       toast.success('Professional details saved successfully!');
     } catch (error) {
-      console.error('Failed to save professional details:', error);
+      logger.error('Failed to save professional details:', error);
       const message = error instanceof Error ? error.message : 'Failed to save professional details';
       toast.error(`Error saving professional details: ${message}`);
     }
@@ -619,7 +620,7 @@ export function useProfileActions({
         }
       }
     } catch (error) {
-      console.error('Failed to save years of experience:', error);
+      logger.error('Failed to save years of experience:', error);
       throw error;
     }
   };
@@ -640,7 +641,7 @@ export function useProfileActions({
         }
       }
     } catch (error) {
-      console.error('Failed to save about section:', error);
+      logger.error('Failed to save about section:', error);
       throw error;
     }
   };
@@ -657,7 +658,7 @@ export function useProfileActions({
         sportsInvolved: summary.sportsInvolved,
       }));
     } catch (error) {
-      console.error('Failed to save sports involved:', error);
+      logger.error('Failed to save sports involved:', error);
       throw error;
     }
   };

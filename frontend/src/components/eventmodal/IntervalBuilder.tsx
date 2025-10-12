@@ -688,8 +688,8 @@ export const IntervalBuilder = memo(function IntervalBuilder({
                     const colors = getComponentColor(type);
                     const getPositionHint = (type: string) => {
                       switch (type) {
-                        case 'warmup': return t('intervalBuilder.addedFirst');
-                        case 'cooldown': return t('intervalBuilder.addedLast');
+                        case 'warmup': return '';
+                        case 'cooldown': return '';
                         default: return '';
                       }
                     };
@@ -907,7 +907,7 @@ export const IntervalBuilder = memo(function IntervalBuilder({
                 {intervalComponents.length === 0 && (
                   <div className="text-center py-8 text-muted-foreground">
                     <Target size={24} className="mx-auto mb-2 opacity-50" />
-                    <p className="text-sm">{t('intervalBuilder.addComponentsPrompt')}</p>
+                    <p className="text-sm">{t('intervalBuilder.addComponentsMessage')}</p>
                   </div>
                 )}
               </div>

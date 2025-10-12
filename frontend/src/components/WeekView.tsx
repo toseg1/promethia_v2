@@ -200,7 +200,7 @@ const getEventIcon = (event: Event) => {
                               <h4 className="font-semibold text-foreground truncate text-sm" style={{ fontFamily: 'var(--font-primary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                                 {event.title}
                               </h4>
-                              {event.time && (
+                              {event.time && event.type !== 'custom' && (
                                 <span className="text-xs text-muted-foreground font-medium whitespace-nowrap">
                                   {formatTime(event.time)}
                                 </span>
@@ -295,8 +295,8 @@ const getEventIcon = (event: Event) => {
                       </div>
                       <span className="font-medium truncate text-xs">{event.title}</span>
                     </div>
-                    
-                    {event.time && (
+
+                    {event.time && event.type !== 'custom' && (
                       <div className="text-xs opacity-90">
                         {formatTime(event.time)}
                         {event.duration && (

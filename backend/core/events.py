@@ -1,12 +1,14 @@
 """Event models for the sports training application"""
 import json
 import re
+import logging
 from datetime import datetime, time, timedelta
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
+logger = logging.getLogger(__name__)
 
 
 class EventManager(models.Manager):
@@ -187,8 +189,8 @@ class Training(Event):
         """Validate the complex training data JSON structure"""
         data = self.training_data
 
-        print(f"\n🔍 VALIDATING training_data:")
-        print(f"  Full data: {json.dumps(data, indent=2)}")
+        logger.debug(f"\n🔍 VALIDATING training_data:")
+        logger.debug(f"  Full data: {json.dumps(data, indent=2)}")
 
         # Validate warmup
         if 'warmup' in data:
@@ -196,12 +198,12 @@ class Training(Event):
 
         # Validate intervals
         if 'intervals' in data:
-            print(f"  📊 Found {len(data['intervals'])} intervals to validate")
+            logger.debug(f"  📊 Found {len(data['intervals'])} intervals to validate")
             if not isinstance(data['intervals'], list):
                 raise ValidationError('Intervals must be a list.')
             
             for i, interval in enumerate(data['intervals']):
-                print(f"    Interval {i}: {json.dumps(interval, indent=4)}")
+                logger.debug(f"    Interval {i}: {json.dumps(interval, indent=4)}")
                 self._validate_interval(interval, f'intervals[{i}]')
         
         # Validate rest periods

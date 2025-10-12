@@ -15,6 +15,7 @@ import {
 } from './adapters';
 import { formatPhoneForBackend } from '../utils/phoneUtils';
 import { ApiResponse } from '../types';
+import { logger } from '../utils/logger';
 
 export interface ProfileUpdateData {
   firstName?: string;
@@ -354,21 +355,21 @@ class ProfileService {
   }
 
   async deleteAchievement(achievementId: string): Promise<void> {
-    console.log('🔗 profileService.deleteAchievement - Deleting athlete achievement ID:', achievementId);
+    logger.debug('🔗 profileService.deleteAchievement - Deleting athlete achievement ID:', achievementId);
     const response = await apiClient.delete(`/achievements/${achievementId}/`);
-    console.log('📡 Delete athlete achievement API response:', response);
+    logger.debug('📡 Delete athlete achievement API response:', response);
     
     if (!response.success) {
       const message = response.error?.message ?? 'Failed to delete achievement';
-      console.error('❌ Athlete achievement deletion failed:', message);
+      logger.error('❌ Athlete achievement deletion failed:', message);
       throw new Error(message);
     }
     
-    console.log('✅ Athlete achievement deleted successfully via API');
+    logger.debug('✅ Athlete achievement deleted successfully via API');
   }
 
   async createCoachAchievement(profileId: string, payload: AchievementPayload): Promise<ProfileAchievement> {
-    console.log('🔗 profileService.createCoachAchievement - Profile ID:', profileId, 'Payload:', payload);
+    logger.debug('🔗 profileService.createCoachAchievement - Profile ID:', profileId, 'Payload:', payload);
     
     const profileKey = Number(profileId);
     if (!Number.isInteger(profileKey) || profileKey <= 0) {
@@ -376,16 +377,16 @@ class ProfileService {
     }
 
     const mappedPayload = this.mapAchievementPayload(profileKey, payload);
-    console.log('📋 Mapped payload for coach achievement:', mappedPayload);
+    logger.debug('📋 Mapped payload for coach achievement:', mappedPayload);
     
     const response = await apiClient.post('/coach-achievements/', mappedPayload);
-    console.log('📡 Create coach achievement API response:', response);
+    logger.debug('📡 Create coach achievement API response:', response);
     
     const data = ensureSuccess(response, 'Failed to create coach achievement');
-    console.log('✅ Raw coach achievement data from backend:', data);
+    logger.debug('✅ Raw coach achievement data from backend:', data);
     
     const mapped = mapProfileAchievementFromApi(data);
-    console.log('🔄 Mapped coach achievement for frontend:', mapped);
+    logger.debug('🔄 Mapped coach achievement for frontend:', mapped);
     
     return mapped;
   }
@@ -404,17 +405,17 @@ class ProfileService {
   }
 
   async deleteCoachAchievement(achievementId: string): Promise<void> {
-    console.log('🔗 profileService.deleteCoachAchievement - Deleting coach achievement ID:', achievementId);
+    logger.debug('🔗 profileService.deleteCoachAchievement - Deleting coach achievement ID:', achievementId);
     const response = await apiClient.delete(`/coach-achievements/${achievementId}/`);
-    console.log('📡 Delete coach achievement API response:', response);
+    logger.debug('📡 Delete coach achievement API response:', response);
     
     if (!response.success) {
       const message = response.error?.message ?? 'Failed to delete coach achievement';
-      console.error('❌ Coach achievement deletion failed:', message);
+      logger.error('❌ Coach achievement deletion failed:', message);
       throw new Error(message);
     }
     
-    console.log('✅ Coach achievement deleted successfully via API');
+    logger.debug('✅ Coach achievement deleted successfully via API');
   }
 
   async createCertification(profileId: string, payload: CertificationPayload): Promise<ProfileCertification> {
@@ -448,17 +449,17 @@ class ProfileService {
   }
 
   async deleteCertification(certificationId: string): Promise<void> {
-    console.log('🔗 profileService.deleteCertification - Deleting certification ID:', certificationId);
+    logger.debug('🔗 profileService.deleteCertification - Deleting certification ID:', certificationId);
     const response = await apiClient.delete(`/certifications/${certificationId}/`);
-    console.log('📡 Delete certification API response:', response);
+    logger.debug('📡 Delete certification API response:', response);
     
     if (!response.success) {
       const message = response.error?.message ?? 'Failed to delete certification';
-      console.error('❌ Certification deletion failed:', message);
+      logger.error('❌ Certification deletion failed:', message);
       throw new Error(message);
     }
     
-    console.log('✅ Certification deleted successfully via API');
+    logger.debug('✅ Certification deleted successfully via API');
   }
 
   async uploadProfileImage(userId: string, imageFile: File): Promise<UserProfileBundle> {

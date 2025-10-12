@@ -136,8 +136,10 @@ function buildRaceUpdatePayload(event: EventData): Record<string, unknown> {
     payload.location = event.location.trim();
   }
 
-  if (typeof event.distance === 'string') {
-    payload.distance = event.distance.trim() || null;
+  if (typeof event.distance === 'string' && event.distance.trim()) {
+    payload.distance = event.distance.trim();
+  } else {
+    payload.distance = null;
   }
 
   if (typeof event.description === 'string') {
@@ -149,6 +151,9 @@ function buildRaceUpdatePayload(event: EventData): Record<string, unknown> {
   } else {
     payload.target_time = null;
   }
+
+  // Also ensure finish_time is set to null if not provided
+  payload.finish_time = null;
 
   if (event.athlete) {
     payload.athlete = event.athlete;

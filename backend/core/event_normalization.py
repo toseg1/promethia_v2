@@ -8,6 +8,7 @@ from datetime import datetime, time as time_cls, timedelta
 from typing import Any, Dict, List, Optional
 
 from django.utils import timezone
+import logging
 
 
 DurationInput = Optional[str]
@@ -245,18 +246,18 @@ def normalize_training_blocks(blocks: Optional[List[Dict[str, Any]]]) -> Dict[st
             if has_children:
                 # Complex interval with sub-intervals
                 sub_intervals = []
-                print(f"🔍 Processing complex interval '{name}' with {len(children)} children")
+                logger.debug(f"🔍 Processing complex interval '{name}' with {len(children)} children")
                 for child in children:
                     child_type = (child.get('type') or '').lower()
-                    print(f"  👶 Child: type={child_type}, name={child.get('name')}, intervalType={child.get('intervalType')}")
+                    logger.debug(f"  👶 Child: type={child_type}, name={child.get('name')}, intervalType={child.get('intervalType')}")
 
                     if child_type == 'interval':
                         # Work phase
                         child_interval_type = child.get('intervalType') or 'time'
-                        print(f"    📊 Work phase: intervalType={child_interval_type}")
+                        logger.debug(f"    📊 Work phase: intervalType={child_interval_type}")
                         child_duration_value = child.get('duration') if child_interval_type == 'time' else child.get('distance')
                         child_duration_numeric = _safe_positive_number(child_duration_value)
-                        print(f"    📏 Value: {child_duration_value} → {child_duration_numeric}")
+                        logger.debug(f"    📏 Value: {child_duration_value} → {child_duration_numeric}")
 
                         if child_duration_numeric:
                             child_unit = map_duration_unit(child.get('durationUnit')) if child_interval_type == 'time' else map_distance_unit(child.get('distanceUnit'))
@@ -301,10 +302,10 @@ def normalize_training_blocks(blocks: Optional[List[Dict[str, Any]]]) -> Dict[st
                         'repetitions': _ensure_positive_int(block.get('repetitions'), default=1),
                         'sub_intervals': sub_intervals,
                     }
-                    print(f"  ✅ Created complex interval payload with keys: {list(payload.keys())}")
+                    logger.debug(f"  ✅ Created complex interval payload with keys: {list(payload.keys())}")
                     intervals.append(payload)
                 else:
-                    print(f"  ⚠️ No sub_intervals created - skipping interval '{name}'")
+                    logger.warning(f"  ⚠️ No sub_intervals created - skipping interval '{name}'")
             else:
                 # Simple interval without children
                 interval_type = block.get('intervalType') or 'time'
@@ -400,8 +401,8 @@ def normalize_event_payload(data: Dict[str, Any]) -> NormalizedEventPayload:
         duration_value = parse_minutes_duration(data.get('duration'))
         training_data = normalize_training_blocks(data.get('trainingBlocks'))
 
-        print(f"\n📦 NORMALIZED training_data:")
-        print(f"  {json.dumps(training_data, indent=2)}")
+        logger.debug(f"\n📦 NORMALIZED training_data:")
+        logger.debug(f"  {json.dumps(training_data, indent=2)}")
 
         description_value = data.get('description') or data.get('notes')
 
@@ -415,7 +416,7 @@ def normalize_event_payload(data: Dict[str, Any]) -> NormalizedEventPayload:
             'notes': (description_value.strip() if isinstance(description_value, str) and description_value.strip() else ''),
         }
 
-        print(f"\n✅ Created payload with training_data containing {len(training_data.get('intervals', []))} intervals")
+        logger.debug(f"\n✅ Created payload with training_data containing {len(training_data.get('intervals', []))} intervals")
 
         return NormalizedEventPayload(
             event_type='training',
@@ -479,3 +480,4 @@ def normalize_event_payload(data: Dict[str, Any]) -> NormalizedEventPayload:
         )
 
     raise ValueError('Unsupported event type provided.')
+logger = logging.getLogger(__name__)

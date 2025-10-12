@@ -21,6 +21,9 @@ export default defineConfig(({ mode }) => ({
   optimizeDeps: {
     force: true,
   },
+  esbuild: {
+    pure: ['console.log', 'console.debug', 'console.info'],
+  },
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
     alias: {
@@ -87,9 +90,14 @@ export default defineConfig(({ mode }) => ({
         },
       },
     },
-    minify: true,
     sourcemap: mode !== 'production',
     chunkSizeWarningLimit: 1000,
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        pure_funcs: ['console.log', 'console.debug', 'console.info'],
+      },
+    },
   },
   server: {
     port: 3000,

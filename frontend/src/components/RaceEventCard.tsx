@@ -311,20 +311,7 @@ export function RaceEventCard({ event, onClose, onEdit, onDelete, showAthlete = 
             )}
           </div>
 
-          {/* Date Range (for multi-day races) */}
-          {formatDateRangeLabel() && (
-            <div className="mb-6 p-4 bg-blue-50/50 rounded-xl border border-blue-200/50">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-blue-500/10 rounded-lg">
-                  <Calendar size={18} className="text-blue-600" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">{t('eventCards.racePeriod')}</p>
-                  <p className="font-semibold text-foreground">{formatDateRangeLabel()}</p>
-                </div>
-              </div>
-            </div>
-          )}
+          
 
           {/* Race Details */}
           <div className="grid grid-cols-1 gap-4 mb-6">

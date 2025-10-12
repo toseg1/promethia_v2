@@ -1,5 +1,7 @@
 // Services Index - Centralized exports for all service modules
 
+import { logger } from '../utils/logger';
+
 // API Client
 export { apiClient, ApiClient } from './apiClient';
 export type { RequestConfig, ApiClientConfig } from './apiClient';
@@ -30,6 +32,14 @@ export type {
   TrainingStats
 } from './trainingService';
 
+// Race Service
+export { raceService, RaceService } from './raceService';
+export type { RaceEventResponse } from './raceService';
+
+// Custom Event Service
+export { customEventService, CustomEventService } from './customEventService';
+export type { CustomEventResponse } from './customEventService';
+
 // Calendar/Event Service
 export * as eventService from './eventService';
 
@@ -41,7 +51,7 @@ export function initializeServices(): void {
   // Set up any cross-service dependencies or configurations
   // This could include setting up interceptors, error handlers, etc.
   
-  console.info('🔧 Services initialized');
+  logger.info('🔧 Services initialized');
 }
 
 // Service health check utility
@@ -50,7 +60,7 @@ export async function checkServicesHealth(): Promise<boolean> {
     // Could ping API endpoints or check service availability
     return true;
   } catch (error) {
-    console.error('Services health check failed:', error);
+    logger.error('Services health check failed:', error);
     return false;
   }
 }
