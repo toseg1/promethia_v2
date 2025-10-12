@@ -46,14 +46,23 @@ export function StackedModal({
   const [dragOffset, setDragOffset] = useState(0);
   const dragStateRef = useRef({
     startY: 0,
+    startX: 0,
     dragging: false,
+    isDraggingVertically: false,
   });
-  const { 
-    registerModal, 
-    unregisterModal, 
-    closeModal, 
-    isModalTopmost, 
-    hasOverlayModals 
+
+  // Store onClose in a ref to avoid re-registering when it changes
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
+  const {
+    registerModal,
+    unregisterModal,
+    closeModal,
+    isModalTopmost,
+    hasOverlayModals
   } = useModalStack();
 
   // Register/unregister modal with stack
@@ -62,7 +71,7 @@ export function StackedModal({
       registerModal({
         id,
         level,
-        onClose,
+        onClose: () => onCloseRef.current(),
         closeOnBackdropClick,
         closeOnEscape
       });
@@ -71,7 +80,7 @@ export function StackedModal({
     }
 
     return () => unregisterModal(id);
-  }, [isOpen, id, level, onClose, closeOnBackdropClick, closeOnEscape, registerModal, unregisterModal]);
+  }, [isOpen, id, level, closeOnBackdropClick, closeOnEscape, registerModal, unregisterModal]);
 
   // Handle backdrop clicks with proper event delegation
   useEffect(() => {
@@ -81,18 +90,18 @@ export function StackedModal({
       const target = e.target as HTMLElement;
       const modalBackdrop = target.closest(`[data-modal-id="${id}"]`);
       const modalContent = target.closest('.relative.bg-white');
-      
+
       // Only close if click is on this modal's backdrop but not on modal content
       if (modalBackdrop?.getAttribute('data-modal-id') === id && !modalContent) {
         e.preventDefault();
         e.stopPropagation();
-        onClose();
+        onCloseRef.current();
       }
     };
 
     document.addEventListener('mousedown', handleDocumentClick, true);
     return () => document.removeEventListener('mousedown', handleDocumentClick, true);
-  }, [isOpen, closeOnBackdropClick, id, onClose]);
+  }, [isOpen, closeOnBackdropClick, id]);
 
   // Fallback backdrop click handler for direct clicks
   const handleBackdropClick = useCallback((e: React.MouseEvent) => {
@@ -100,9 +109,9 @@ export function StackedModal({
     if (e.target === e.currentTarget && closeOnBackdropClick) {
       e.preventDefault();
       e.stopPropagation();
-      onClose();
+      onCloseRef.current();
     }
-  }, [closeOnBackdropClick, onClose]);
+  }, [closeOnBackdropClick]);
 
   // Prevent scroll on body when modal is open
   useEffect(() => {
@@ -118,15 +127,15 @@ export function StackedModal({
     }
   }, [isOpen]);
 
-  if (!isOpen) return null;
-
-  const isTopmost = isModalTopmost(id);
-  const hasOverlay = hasOverlayModals(id);
-  
   // Disable inner scrolling while dragging the sheet
   useEffect(() => {
     const scrollElement = scrollContentRef.current;
     if (!scrollElement) {
+      return;
+    }
+
+    if (!isOpen) {
+      scrollElement.style.overflowY = '';
       return;
     }
 
@@ -135,15 +144,103 @@ export function StackedModal({
     } else {
       scrollElement.style.overflowY = '';
     }
-  }, [dragOffset]);
+  }, [dragOffset, isOpen]);
 
   // Reset drag state when modal closes
   useEffect(() => {
     if (!isOpen) {
       setDragOffset(0);
       dragStateRef.current.dragging = false;
+      dragStateRef.current.isDraggingVertically = false;
     }
   }, [isOpen]);
+
+  // Touch handlers must be defined before the early return to avoid hook order issues
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    if (!scrollContentRef.current) {
+      return;
+    }
+
+    const scrollable = scrollContentRef.current;
+    const firstTouch = e.touches[0];
+
+    // Record initial touch position
+    dragStateRef.current.startY = firstTouch.clientY;
+    dragStateRef.current.startX = firstTouch.clientX;
+
+    // Only start drag when scrolled to the top
+    if (scrollable.scrollTop <= 0) {
+      dragStateRef.current.dragging = true;
+      dragStateRef.current.isDraggingVertically = false; // Will be determined on move
+    } else {
+      dragStateRef.current.dragging = false;
+      dragStateRef.current.isDraggingVertically = false;
+    }
+  }, []);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (!dragStateRef.current.dragging) {
+      return;
+    }
+
+    const currentY = e.touches[0].clientY;
+    const currentX = e.touches[0].clientX;
+    const deltaY = currentY - dragStateRef.current.startY;
+    const deltaX = currentX - dragStateRef.current.startX;
+
+    // Determine drag direction on first significant movement
+    if (!dragStateRef.current.isDraggingVertically && (Math.abs(deltaY) > 5 || Math.abs(deltaX) > 5)) {
+      // If horizontal movement is greater than vertical, it's a horizontal swipe
+      if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        // Horizontal swipe detected - cancel dragging
+        dragStateRef.current.dragging = false;
+        dragStateRef.current.isDraggingVertically = false;
+        setDragOffset(0);
+        return;
+      } else {
+        // Vertical swipe confirmed
+        dragStateRef.current.isDraggingVertically = true;
+      }
+    }
+
+    // Only allow vertical dragging if it's been confirmed as vertical
+    if (dragStateRef.current.isDraggingVertically) {
+      if (deltaY > 0) {
+        e.preventDefault();
+        // Limit the drag distance to keep things tidy
+        setDragOffset(Math.min(deltaY, 280));
+      } else {
+        setDragOffset(0);
+      }
+    }
+  }, []);
+
+  const handleTouchEnd = useCallback(() => {
+    if (!dragStateRef.current.dragging && !dragStateRef.current.isDraggingVertically) {
+      setDragOffset(0);
+      return;
+    }
+
+    // Only process close action if it was a vertical drag
+    if (dragStateRef.current.isDraggingVertically) {
+      const threshold = 120;
+      if (dragOffset > threshold) {
+        closeModal(id);
+      } else {
+        setDragOffset(0);
+      }
+    }
+
+    // Reset drag state
+    dragStateRef.current.dragging = false;
+    dragStateRef.current.isDraggingVertically = false;
+    setDragOffset(0);
+  }, [closeModal, dragOffset, id]);
+
+  if (!isOpen) return null;
+
+  const isTopmost = isModalTopmost(id);
+  const hasOverlay = hasOverlayModals(id);
 
   // Z-index hierarchy: Base modal 1050, Layer 2: 1060, Layer 3: 1070
   const getZIndex = () => {
@@ -154,7 +251,7 @@ export function StackedModal({
       default: return 1050 + (level * 10);  // Fallback for higher levels
     }
   };
-  
+
   const zIndex = getZIndex();
 
   // Calculate modal sizing based on level and size prop
@@ -180,56 +277,6 @@ export function StackedModal({
       widthStyle: {}
     };
   })();
-
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    if (!scrollContentRef.current) {
-      return;
-    }
-
-    const scrollable = scrollContentRef.current;
-    const firstTouch = e.touches[0];
-
-    // Only start drag when scrolled to the top
-    if (scrollable.scrollTop <= 0) {
-      dragStateRef.current.startY = firstTouch.clientY;
-      dragStateRef.current.dragging = true;
-    } else {
-      dragStateRef.current.dragging = false;
-    }
-  }, []);
-
-  const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    if (!dragStateRef.current.dragging) {
-      return;
-    }
-
-    const currentY = e.touches[0].clientY;
-    const delta = currentY - dragStateRef.current.startY;
-
-    if (delta > 0) {
-      e.preventDefault();
-      // Limit the drag distance to keep things tidy
-      setDragOffset(Math.min(delta, 280));
-    } else {
-      setDragOffset(0);
-    }
-  }, []);
-
-  const handleTouchEnd = useCallback(() => {
-    if (!dragStateRef.current.dragging) {
-      setDragOffset(0);
-      return;
-    }
-
-    const threshold = 120;
-    if (dragOffset > threshold) {
-      closeModal(id);
-    } else {
-      setDragOffset(0);
-    }
-
-    dragStateRef.current.dragging = false;
-  }, [closeModal, dragOffset, id]);
 
   const modalStyle: React.CSSProperties = {
     ...modalSizing.widthStyle,
@@ -284,7 +331,11 @@ export function StackedModal({
         className={`relative bg-white rounded-lg shadow-2xl overflow-hidden transition-all duration-300 ${modalSizing.widthClass} ${modalSizing.maxWidthClass} ${
           !isTopmost && hasOverlay ? 'filter blur-[1px] opacity-70' : 'filter blur-0 opacity-100'
         } my-4 ${className}`}
-        style={modalStyle}
+        style={{
+          ...modalStyle,
+          overscrollBehavior: 'contain',
+          touchAction: 'pan-y',
+        }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -314,13 +365,15 @@ export function StackedModal({
         )}
 
         {/* Content area */}
-        <div 
-          className="overflow-y-auto"
+        <div
+          className="overflow-y-auto overflow-x-hidden"
           ref={scrollContentRef}
           style={{
-            maxHeight: title || showCloseButton 
+            maxHeight: title || showCloseButton
               ? 'calc(85vh - 100px)'  // Account for modal header
-              : '85vh'
+              : '85vh',
+            overscrollBehavior: 'contain',
+            touchAction: 'pan-y',
           }}
         >
           {children}

@@ -268,12 +268,17 @@ class TrainingListSerializer(serializers.ModelSerializer):
     athlete_name = serializers.CharField(source='athlete.get_full_name', read_only=True)
     is_upcoming = serializers.ReadOnlyField()
     is_today = serializers.ReadOnlyField()
+    training_data = serializers.JSONField(required=False, allow_null=True)
+    notes = serializers.CharField(required=False, allow_blank=True)
+    created_at = serializers.DateTimeField(read_only=True)
+    updated_at = serializers.DateTimeField(read_only=True)
     
     class Meta:
         model = Training
         fields = [
             'id', 'title', 'athlete', 'athlete_name', 'date', 'time', 'sport',
-            'duration', 'is_upcoming', 'is_today'
+            'duration', 'is_upcoming', 'is_today', 'training_data', 'notes',
+            'created_at', 'updated_at'
         ]
 
 

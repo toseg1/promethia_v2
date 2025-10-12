@@ -272,6 +272,11 @@ LOGGING = {
             'level': 'INFO',
             'propagate': False,
         },
+        'django.server': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
     },
 }
 
@@ -279,10 +284,17 @@ LOGGING = {
 if DEBUG:
     LOGGING['root']['handlers'] = ['console']
     LOGGING['loggers']['django']['handlers'] = ['console']
+    LOGGING['loggers']['django.server']['handlers'] = ['console']
+    LOGGING['loggers']['django.server']['level'] = 'INFO'
 else:
+    # In production: suppress request logs, only log to file, and raise level to WARNING
     LOGGING['handlers'].pop('console', None)
     LOGGING['root']['handlers'] = ['file']
+    LOGGING['root']['level'] = 'WARNING'
     LOGGING['loggers']['django']['handlers'] = ['file']
+    LOGGING['loggers']['django']['level'] = 'WARNING'
+    LOGGING['loggers']['django.server']['handlers'] = []  # Completely suppress server logs
+    LOGGING['loggers']['django.server']['level'] = 'ERROR'  # Only log errors
 
 # Email settings
 EMAIL_BACKEND = env('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')

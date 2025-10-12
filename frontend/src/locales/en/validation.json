@@ -22,7 +22,7 @@
   "name": {
     "required": "{{fieldName}} is required",
     "tooShort": "{{fieldName}} must be at least 2 characters",
-    "invalidChars": "{{fieldName}} contains invalid characters"
+    "invalidChars": "{{fieldName}} can only contain letters, spaces, hyphens, and apostrophes"
   },
 
   "username": {

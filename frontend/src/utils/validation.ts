@@ -121,25 +121,27 @@ export function validatePhone(phone: string): { isValid: boolean; sanitized: str
 
 /**
  * Name validation (first name, last name)
+ * Supports international characters including accented letters (é, ñ, ü, etc.)
  */
 export function validateName(name: string, fieldName: string): { isValid: boolean; sanitized: string; error?: string } {
   const sanitized = sanitizeText(name, 50);
-  
+
   if (!sanitized) {
     return { isValid: false, sanitized: '', error: i18n.t('validation:name.required', { fieldName }) };
   }
-  
+
   if (sanitized.length < 2) {
     return { isValid: false, sanitized, error: i18n.t('validation:name.tooShort', { fieldName }) };
   }
-  
-  // Allow letters, spaces, hyphens, apostrophes
-  const nameRegex = /^[a-zA-Z\s\-']+$/;
-  
+
+  // Allow Unicode letters, spaces, hyphens, apostrophes
+  // \p{L} matches any Unicode letter (supports é, ñ, ü, ç, etc.)
+  const nameRegex = /^[\p{L}\s\-']+$/u;
+
   if (!nameRegex.test(sanitized)) {
     return { isValid: false, sanitized, error: i18n.t('validation:name.invalidChars', { fieldName }) };
   }
-  
+
   return { isValid: true, sanitized };
 }
 

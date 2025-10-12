@@ -8,6 +8,7 @@ import {
   DashboardSummary
 } from '../types';
 import { apiClient } from './apiClient';
+import { mapTrainingDataToBlocks } from './eventNormalization';
 
 const API_ORIGIN = apiClient.getBaseOrigin();
 
@@ -397,7 +398,6 @@ export function mapTrainingEventFromApi(item: any): TrainingEvent {
   console.log('📥 Raw training event from API:', JSON.stringify(item, null, 2));
   if (item.training_data) {
     // Use the reverse mapper to convert training_data to TrainingBlock[]
-    const { mapTrainingDataToBlocks } = require('./eventNormalization');
     trainingBlocks = mapTrainingDataToBlocks(item.training_data);
   } else {
     console.warn('⚠️ No training_data in API response!');
