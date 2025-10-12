@@ -488,9 +488,6 @@ class UserViewSet(viewsets.ModelViewSet):
         from django.contrib.auth.tokens import default_token_generator
         from django.utils.encoding import force_bytes
         from django.utils.http import urlsafe_base64_encode
-        from django.core.mail import send_mail
-        from django.template.loader import render_to_string
-        from django.utils.html import strip_tags
         from django.conf import settings
         import logging
 
@@ -513,50 +510,50 @@ class UserViewSet(viewsets.ModelViewSet):
             # Create reset link
             reset_link = f"{settings.FRONTEND_URL}/reset-password/{uid}/{token}/"
 
-            # Prepare email context
-            context = {
-                'user': user,
-                'reset_link': reset_link,
-                'site_name': 'Promethia',
-            }
+            # In development, log the reset link and send email synchronously
+            if settings.DEBUG:
+                logger.info("Password reset link generated for %s: %s", email, reset_link)
+                # Send synchronously in dev (console backend is fast)
+                from django.core.mail import send_mail
+                from django.template.loader import render_to_string
+                from django.utils.html import strip_tags
 
-            # Render email
-            html_message = render_to_string('emails/password_reset.html', context)
-            plain_message = strip_tags(html_message)
+                context = {
+                    'user': user,
+                    'reset_link': reset_link,
+                    'site_name': 'Promethia',
+                }
+                html_message = render_to_string('emails/password_reset.html', context)
+                plain_message = strip_tags(html_message)
 
-            # Send email
-            try:
-                # In development, log the reset link
-                if settings.DEBUG:
-                    logger.info("Password reset link generated for %s: %s", email, reset_link)
-
-                # Always attempt to send email (will use console backend in DEBUG mode)
                 send_mail(
                     subject='Reset Your Promethia Password',
                     message=plain_message,
                     from_email=settings.DEFAULT_FROM_EMAIL,
                     recipient_list=[email],
                     html_message=html_message,
-                    fail_silently=True,  # Don't fail the request if email fails
+                    fail_silently=True,
+                )
+            else:
+                # In production, send email asynchronously using Celery
+                from accounts.tasks import send_password_reset_email
+                send_password_reset_email.delay(
+                    user_email=email,
+                    reset_link=reset_link,
+                    user_first_name=user.first_name or ''
                 )
 
-                return Response({
-                    'success': True,
-                    'message': f'Password reset email sent to {email}',
-                    'data': {
-                        'reset_link': reset_link if settings.DEBUG else None  # Only in development
-                    }
-                })
-            except Exception as e:
-                # Log the error but still return success (security best practice)
-                logger.warning("Failed to send password reset email", extra={"user_email": email, "error": str(e)})
-                return Response({
-                    'success': True,
-                    'message': f'Password reset email sent to {email}'
-                })
+            return Response({
+                'success': True,
+                'message': f'Password reset email sent to {email}',
+                'data': {
+                    'reset_link': reset_link if settings.DEBUG else None  # Only in development
+                }
+            })
 
         except User.DoesNotExist:
             # Don't reveal whether email exists or not (security best practice)
+            # In production, we still don't send any email, just return success
             return Response({
                 'success': True,
                 'message': f'Password reset email sent to {email}'

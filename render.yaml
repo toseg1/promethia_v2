@@ -5,7 +5,7 @@ services:
     runtime: python
     plan: starter
     buildCommand: "./backend/build.sh"
-    startCommand: "cd backend && gunicorn backend.wsgi:application"
+    startCommand: "cd backend && gunicorn backend.wsgi:application --timeout 120 --workers 2 --threads 4 --worker-class gthread"
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.0
@@ -47,8 +47,53 @@ services:
         sync: false
       - key: DEFAULT_FROM_EMAIL
         sync: false
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: promethia-redis
+          property: connectionString
     domains:
       - api.promethia.app
+
+  # Celery Worker Service
+  - type: worker
+    name: promethia-celery
+    runtime: python
+    plan: starter
+    buildCommand: "./backend/build.sh"
+    startCommand: "cd backend && celery -A backend worker --loglevel=info"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: DEBUG
+        value: False
+      - key: SECRET_KEY
+        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: promethia-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: promethia-redis
+          property: connectionString
+      - key: EMAIL_BACKEND
+        value: django.core.mail.backends.smtp.EmailBackend
+      - key: EMAIL_HOST
+        sync: false
+      - key: EMAIL_PORT
+        value: 587
+      - key: EMAIL_USE_TLS
+        value: True
+      - key: EMAIL_HOST_USER
+        sync: false
+      - key: EMAIL_HOST_PASSWORD
+        sync: false
+      - key: DEFAULT_FROM_EMAIL
+        sync: false
+      - key: FRONTEND_URL
+        value: https://promethia.app
 
   # Frontend Service
   - type: web
@@ -75,3 +120,10 @@ databases:
     plan: starter
     databaseName: promethia_production
     user: promethia_user
+
+# Redis for Celery
+- type: redis
+  name: promethia-redis
+  plan: starter
+  maxmemoryPolicy: noeviction
+  ipAllowList: []
