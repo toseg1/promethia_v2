@@ -126,9 +126,7 @@ class UserViewSet(viewsets.ModelViewSet):
         POST /api/users/register/
         """
         from django.conf import settings
-        from django.core.mail import send_mail
-        from django.template.loader import render_to_string
-        from django.utils.html import strip_tags
+        from .email_utils import send_welcome_email
 
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
@@ -137,32 +135,9 @@ class UserViewSet(viewsets.ModelViewSet):
             # Generate tokens
             refresh = RefreshToken.for_user(user)
 
-            # Send welcome email synchronously
-            try:
-                login_url = f"{settings.FRONTEND_URL}/"
-
-                context = {
-                    'user': user,
-                    'login_url': login_url,
-                    'site_name': 'Promethia',
-                }
-
-                html_message = render_to_string('emails/welcome.html', context)
-                plain_message = strip_tags(html_message)
-
-                send_mail(
-                    subject='Welcome to Promethia!',
-                    message=plain_message,
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[user.email],
-                    html_message=html_message,
-                    fail_silently=False,
-                )
-
-                logger.info(f"Welcome email sent successfully to {user.email}")
-            except Exception as e:
-                # Log error but don't prevent registration from completing
-                logger.error(f"Failed to send welcome email to {user.email}: {str(e)}", exc_info=True)
+            # Send welcome email asynchronously (non-blocking)
+            login_url = f"{settings.FRONTEND_URL}/"
+            send_welcome_email(user, login_url)
 
             return Response({
                 'user': UserProfileSerializer(user, context={'request': request}).data,
@@ -542,35 +517,12 @@ class UserViewSet(viewsets.ModelViewSet):
             # Create reset link
             reset_link = f"{settings.FRONTEND_URL}/reset-password/{uid}/{token}/"
 
-            # Send password reset email synchronously (simple and reliable)
+            # Send password reset email asynchronously (non-blocking)
             if settings.DEBUG:
                 logger.info("Password reset link generated for %s: %s", email, reset_link)
 
-            try:
-                from django.core.mail import send_mail
-                from django.template.loader import render_to_string
-                from django.utils.html import strip_tags
-
-                context = {
-                    'user': user,
-                    'reset_link': reset_link,
-                    'site_name': 'Promethia',
-                }
-                html_message = render_to_string('emails/password_reset.html', context)
-                plain_message = strip_tags(html_message)
-
-                send_mail(
-                    subject='Reset Your Promethia Password',
-                    message=plain_message,
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[email],
-                    html_message=html_message,
-                    fail_silently=False,  # Raise exception if email fails
-                )
-                logger.info(f"Password reset email sent successfully to {email}")
-            except Exception as e:
-                logger.error(f"Failed to send password reset email to {email}: {str(e)}", exc_info=True)
-                # Continue anyway - don't reveal to user whether email exists
+            from .email_utils import send_password_reset_email
+            send_password_reset_email(user, reset_link)
 
             # Always return success (security best practice - don't reveal if user exists)
             return Response({
