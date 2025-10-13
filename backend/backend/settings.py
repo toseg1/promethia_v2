@@ -36,7 +36,7 @@ if RENDER_EXTERNAL_HOSTNAME:
 
 # Add custom domain
 if not DEBUG:
-    ALLOWED_HOSTS.extend(['promethia.app', 'www.promethia.app', 'api.promethia.app'])
+    ALLOWED_HOSTS.extend(['promethia.app', 'www.promethia.app', 'promethia.onrender.com'])
 
 # Application definition
 DJANGO_APPS = [
@@ -301,6 +301,7 @@ EMAIL_BACKEND = env('EMAIL_BACKEND', default='django.core.mail.backends.console.
 EMAIL_HOST = env('EMAIL_HOST', default='')
 EMAIL_PORT = env('EMAIL_PORT', default=587)
 EMAIL_USE_TLS = env('EMAIL_USE_TLS', default=True)
+EMAIL_USE_SSL = env('EMAIL_USE_SSL', default=False)  # For port 465 (SSL) instead of 587 (TLS)
 EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
 DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='noreply@example.com')
@@ -308,14 +309,6 @@ EMAIL_TIMEOUT = 10  # 10 seconds timeout for SMTP connections
 
 # Frontend URL for password reset links
 FRONTEND_URL = env('FRONTEND_URL', default='http://localhost:3000')
-
-# Celery Configuration (Optional)
-CELERY_BROKER_URL = env('REDIS_URL', default='redis://localhost:6379/0')
-CELERY_RESULT_BACKEND = env('REDIS_URL', default='redis://localhost:6379/0')
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = TIME_ZONE
 
 # Cloudinary Configuration (for production file storage)
 USE_CLOUDINARY = env.bool('USE_CLOUDINARY', default=False)

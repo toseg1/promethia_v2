@@ -125,13 +125,45 @@ class UserViewSet(viewsets.ModelViewSet):
         User registration endpoint.
         POST /api/users/register/
         """
+        from django.conf import settings
+        from django.core.mail import send_mail
+        from django.template.loader import render_to_string
+        from django.utils.html import strip_tags
+
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            
+
             # Generate tokens
             refresh = RefreshToken.for_user(user)
-            
+
+            # Send welcome email synchronously
+            try:
+                login_url = f"{settings.FRONTEND_URL}/"
+
+                context = {
+                    'user': user,
+                    'login_url': login_url,
+                    'site_name': 'Promethia',
+                }
+
+                html_message = render_to_string('emails/welcome.html', context)
+                plain_message = strip_tags(html_message)
+
+                send_mail(
+                    subject='Welcome to Promethia!',
+                    message=plain_message,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[user.email],
+                    html_message=html_message,
+                    fail_silently=False,
+                )
+
+                logger.info(f"Welcome email sent successfully to {user.email}")
+            except Exception as e:
+                # Log error but don't prevent registration from completing
+                logger.error(f"Failed to send welcome email to {user.email}: {str(e)}", exc_info=True)
+
             return Response({
                 'user': UserProfileSerializer(user, context={'request': request}).data,
                 'tokens': {
@@ -140,7 +172,7 @@ class UserViewSet(viewsets.ModelViewSet):
                 },
                 'message': 'Registration successful!'
             }, status=status.HTTP_201_CREATED)
-        
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=['post'], permission_classes=[AllowAny])
@@ -510,10 +542,11 @@ class UserViewSet(viewsets.ModelViewSet):
             # Create reset link
             reset_link = f"{settings.FRONTEND_URL}/reset-password/{uid}/{token}/"
 
-            # In development, log the reset link and send email synchronously
+            # Send password reset email synchronously (simple and reliable)
             if settings.DEBUG:
                 logger.info("Password reset link generated for %s: %s", email, reset_link)
-                # Send synchronously in dev (console backend is fast)
+
+            try:
                 from django.core.mail import send_mail
                 from django.template.loader import render_to_string
                 from django.utils.html import strip_tags
@@ -532,20 +565,17 @@ class UserViewSet(viewsets.ModelViewSet):
                     from_email=settings.DEFAULT_FROM_EMAIL,
                     recipient_list=[email],
                     html_message=html_message,
-                    fail_silently=True,
+                    fail_silently=False,  # Raise exception if email fails
                 )
-            else:
-                # In production, send email asynchronously using Celery
-                from accounts.tasks import send_password_reset_email
-                send_password_reset_email.delay(
-                    user_email=email,
-                    reset_link=reset_link,
-                    user_first_name=user.first_name or ''
-                )
+                logger.info(f"Password reset email sent successfully to {email}")
+            except Exception as e:
+                logger.error(f"Failed to send password reset email to {email}: {str(e)}", exc_info=True)
+                # Continue anyway - don't reveal to user whether email exists
 
+            # Always return success (security best practice - don't reveal if user exists)
             return Response({
                 'success': True,
-                'message': f'Password reset email sent to {email}',
+                'message': f'If an account exists for {email}, a password reset email has been sent.',
                 'data': {
                     'reset_link': reset_link if settings.DEBUG else None  # Only in development
                 }
@@ -553,10 +583,18 @@ class UserViewSet(viewsets.ModelViewSet):
 
         except User.DoesNotExist:
             # Don't reveal whether email exists or not (security best practice)
-            # In production, we still don't send any email, just return success
+            logger.info(f"Password reset requested for non-existent email: {email}")
             return Response({
                 'success': True,
-                'message': f'Password reset email sent to {email}'
+                'message': f'If an account exists for {email}, a password reset email has been sent.'
+            })
+        except Exception as e:
+            # Catch any unexpected errors and log them
+            logger.error(f"Unexpected error in password reset: {str(e)}", exc_info=True)
+            # Still return success to not reveal system errors to potential attackers
+            return Response({
+                'success': True,
+                'message': f'If an account exists for {email}, a password reset email has been sent.'
             })
     
     @action(detail=False, methods=['post'], permission_classes=[AllowAny], authentication_classes=[])
