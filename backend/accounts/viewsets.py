@@ -489,6 +489,56 @@ class UserViewSet(viewsets.ModelViewSet):
             status=status.HTTP_400_BAD_REQUEST
         )
 
+    @action(detail=False, methods=['get'], permission_classes=[AllowAny], authentication_classes=[])
+    def test_email(self, request):
+        """
+        Test email configuration endpoint (for debugging only)
+        GET /api/users/test_email/
+        """
+        from django.conf import settings
+        from django.core.mail import send_mail
+        import logging
+
+        logger = logging.getLogger(__name__)
+
+        # Only allow in DEBUG mode or specific test parameter
+        if not settings.DEBUG and request.GET.get('secret') != 'test123':
+            return Response({'error': 'Not allowed'}, status=status.HTTP_403_FORBIDDEN)
+
+        test_email = request.GET.get('email', settings.EMAIL_HOST_USER)
+
+        try:
+            # Test synchronous email (not threaded)
+            send_mail(
+                subject='[TEST] Promethia Email Test',
+                message='This is a test email. If you received this, email is working!',
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[test_email],
+                fail_silently=False,
+            )
+
+            logger.info(f"Test email sent successfully to {test_email}")
+
+            return Response({
+                'success': True,
+                'message': f'Test email sent to {test_email}',
+                'config': {
+                    'EMAIL_BACKEND': settings.EMAIL_BACKEND,
+                    'EMAIL_HOST': settings.EMAIL_HOST,
+                    'EMAIL_PORT': settings.EMAIL_PORT,
+                    'EMAIL_USE_TLS': settings.EMAIL_USE_TLS,
+                    'DEFAULT_FROM_EMAIL': settings.DEFAULT_FROM_EMAIL,
+                }
+            })
+
+        except Exception as e:
+            logger.error(f"Test email failed: {str(e)}", exc_info=True)
+            return Response({
+                'success': False,
+                'error': str(e),
+                'type': type(e).__name__
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     @action(detail=False, methods=['post'], permission_classes=[AllowAny], authentication_classes=[])
     def request_password_reset(self, request):
         """Request password reset token"""

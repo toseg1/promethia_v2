@@ -150,14 +150,21 @@ class AuthService {
    */
   async signup(userData: SignupData): Promise<LoginResponse> {
     try {
-      // Get country dial code for the backend
+      // Get country dial code for the backend - complete mapping from PhoneInput
       const countryDialCodes: Record<string, string> = {
         'FR': '+33', 'US': '+1', 'GB': '+44', 'DE': '+49', 'ES': '+34',
         'IT': '+39', 'CA': '+1', 'AU': '+61', 'JP': '+81', 'KR': '+82',
         'CN': '+86', 'IN': '+91', 'BR': '+55', 'MX': '+52', 'AR': '+54',
         'CL': '+56', 'CO': '+57', 'PE': '+51', 'VE': '+58', 'ZA': '+27',
         'EG': '+20', 'NG': '+234', 'KE': '+254', 'MA': '+212', 'TN': '+216',
-        'RU': '+7', 'TR': '+90', 'SA': '+966', 'AE': '+971', 'IL': '+972'
+        'RU': '+7', 'TR': '+90', 'SA': '+966', 'AE': '+971', 'IL': '+972',
+        'TH': '+66', 'VN': '+84', 'MY': '+60', 'SG': '+65', 'PH': '+63',
+        'ID': '+62', 'NZ': '+64', 'FI': '+358', 'SE': '+46', 'NO': '+47',
+        'DK': '+45', 'NL': '+31', 'BE': '+32', 'CH': '+41', 'AT': '+43',
+        'PL': '+48', 'CZ': '+420', 'HU': '+36', 'RO': '+40', 'BG': '+359',
+        'HR': '+385', 'SI': '+386', 'SK': '+421', 'LT': '+370', 'LV': '+371',
+        'EE': '+372', 'IE': '+353', 'PT': '+351', 'GR': '+30', 'CY': '+357',
+        'MT': '+356', 'IS': '+354', 'LU': '+352'
       };
       
       const countryCode = countryDialCodes[userData.countryCode] || '+33';

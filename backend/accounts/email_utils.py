@@ -3,6 +3,8 @@ Email utility functions for sending emails asynchronously without blocking reque
 """
 import threading
 import logging
+import time
+from concurrent.futures import ThreadPoolExecutor
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
@@ -10,13 +12,16 @@ from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
+# Thread pool for email sending (survives worker lifecycle)
+_email_executor = ThreadPoolExecutor(max_workers=3, thread_name_prefix='email_')
+
 
 def send_email_async(subject, template_name, context, recipient_email):
     """
-    Send email asynchronously in a background thread.
+    Send email asynchronously using ThreadPoolExecutor.
 
-    This allows the API to respond immediately while the email is sent in the background.
-    The user doesn't have to wait for email delivery.
+    This works better with Gunicorn than regular threading.Thread because
+    the executor keeps threads alive even when the worker finishes the request.
 
     Args:
         subject: Email subject line
@@ -27,11 +32,13 @@ def send_email_async(subject, template_name, context, recipient_email):
     def send_email_task():
         """Internal function that runs in background thread"""
         try:
+            logger.info(f"[EMAIL START] Sending '{subject}' to {recipient_email}")
+
             # Render email template
             html_message = render_to_string(template_name, context)
             plain_message = strip_tags(html_message)
 
-            # Send email
+            # Send email with explicit timeout
             send_mail(
                 subject=subject,
                 message=plain_message,
@@ -39,19 +46,28 @@ def send_email_async(subject, template_name, context, recipient_email):
                 recipient_list=[recipient_email],
                 html_message=html_message,
                 fail_silently=False,
+                timeout=15,  # 15 second timeout
             )
 
-            logger.info(f"Email '{subject}' sent successfully to {recipient_email}")
+            logger.info(f"[EMAIL SUCCESS] '{subject}' sent to {recipient_email}")
 
         except Exception as e:
-            # Log error but don't crash - email sending is non-critical
-            logger.error(f"Failed to send email '{subject}' to {recipient_email}: {str(e)}", exc_info=True)
+            # Log error with full details
+            logger.error(
+                f"[EMAIL FAILED] '{subject}' to {recipient_email}: {str(e)}",
+                exc_info=True,
+                extra={
+                    'subject': subject,
+                    'recipient': recipient_email,
+                    'error_type': type(e).__name__
+                }
+            )
 
-    # Start background thread to send email
-    thread = threading.Thread(target=send_email_task, daemon=True)
-    thread.start()
+    # Submit to thread pool executor
+    future = _email_executor.submit(send_email_task)
 
-    logger.info(f"Email '{subject}' queued for sending to {recipient_email}")
+    # Log that email was queued
+    logger.info(f"[EMAIL QUEUED] '{subject}' for {recipient_email}")
 
 
 def send_welcome_email(user, login_url):
